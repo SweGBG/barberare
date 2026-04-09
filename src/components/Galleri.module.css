@@ -1,0 +1,118 @@
+.section {
+  padding: 100px 48px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 48px;
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--warm);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 0.5px;
+  background: var(--warm);
+  display: block;
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 400;
+  color: var(--dark);
+  line-height: 1.1;
+}
+
+.title em { font-style: italic; color: var(--gold); }
+
+.link {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 0.5px solid var(--border2);
+  padding-bottom: 2px;
+  font-weight: 500;
+  transition: color 0.2s;
+  align-self: flex-end;
+}
+
+.link:hover { color: var(--dark); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 280px 280px;
+  gap: 2px;
+}
+
+.item {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wide { grid-column: span 2; }
+.tall { grid-row: span 2; }
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(28,26,23,0);
+  display: flex;
+  align-items: flex-end;
+  padding: 24px;
+  transition: background 0.35s;
+}
+
+.item:hover .overlay { background: rgba(28,26,23,0.4); }
+
+.itemLabel {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--bg);
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.item:hover .itemLabel { opacity:1; transform:translateY(0); }
+
+.placeholder {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-style: italic;
+  color: rgba(28,26,23,0.08);
+  user-select: none;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .section { padding: 72px 24px; }
+  .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+  .wide, .tall { grid-column: auto; grid-row: auto; }
+  .item { aspect-ratio: 1; }
+  .title { font-size: 36px; }
+}

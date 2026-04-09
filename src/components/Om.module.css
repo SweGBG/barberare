@@ -1,0 +1,177 @@
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--warm);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 0.5px;
+  background: var(--warm);
+  display: block;
+}
+
+/* OM OSS */
+.om {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.omLeft {
+  padding: 100px 56px;
+  background: var(--bg2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 0.5px solid var(--border);
+}
+
+.omTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  font-weight: 400;
+  color: var(--dark);
+  line-height: 1.1;
+}
+
+.omTitle em { font-style: italic; color: var(--gold); }
+
+.omRight {
+  padding: 100px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
+
+.omLead {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--dark);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.omBody {
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+.omStats {
+  display: flex;
+  gap: 40px;
+  margin-top: 16px;
+  padding-top: 32px;
+  border-top: 0.5px solid var(--border);
+}
+
+.stat { display: flex; flex-direction: column; gap: 4px; }
+
+.statNum {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* PRISER */
+.priser {
+  padding: 100px 48px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.priserHeader {
+  margin-bottom: 64px;
+}
+
+.priserTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 400;
+  color: var(--dark);
+  line-height: 1.1;
+  margin-top: 0;
+}
+
+.priserTitle em { font-style: italic; color: var(--gold); }
+
+.priserGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-bottom: 24px;
+}
+
+.priserKat {
+  background: var(--bg);
+  padding: 40px 36px;
+}
+
+.katNamn {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--dark);
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.prisRad {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.prisRad:last-child { border-bottom: none; }
+
+.prisNamn {
+  font-size: 13px;
+  color: var(--dark);
+  font-weight: 400;
+}
+
+.prisPris {
+  font-size: 13px;
+  color: var(--warm);
+  font-weight: 500;
+}
+
+.prisNote {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 300;
+  font-style: italic;
+}
+
+@media (max-width: 900px) {
+  .om { grid-template-columns: 1fr; }
+  .omLeft { padding: 72px 24px; border-right: none; border-bottom: 0.5px solid var(--border); }
+  .omRight { padding: 72px 24px; }
+  .omTitle { font-size: 38px; }
+  .priser { padding: 72px 24px; }
+  .priserGrid { grid-template-columns: 1fr; }
+  .priserTitle { font-size: 36px; }
+}

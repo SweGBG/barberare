@@ -1,0 +1,235 @@
+.hero {
+  min-height: 94vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.bgTexture {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 80% 50%, rgba(184, 149, 106, 0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(139, 111, 94, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.content {
+  text-align: center;
+  max-width: 680px;
+  padding: 0 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--warm);
+  margin-bottom: 28px;
+  font-weight: 500;
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 88px;
+  font-weight: 400;
+  line-height: 0.95;
+  color: var(--dark);
+  margin-bottom: 32px;
+}
+
+.title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.dividerWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.dividerLine {
+  display: block;
+  width: 60px;
+  height: 0.5px;
+  background: var(--warm-dim);
+  transform-origin: left;
+  animation: drawLine 1s 0.6s ease both;
+}
+
+@keyframes drawLine {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.dividerDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: shimmer 3s ease infinite;
+}
+
+@keyframes shimmer {
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.sub {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 420px;
+  font-weight: 300;
+  margin-bottom: 44px;
+}
+
+.btns {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.btnPrimary {
+  background: var(--dark);
+  color: var(--bg);
+  padding: 15px 36px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.25s;
+}
+
+.btnPrimary:hover {
+  background: var(--warm);
+}
+
+.btnGhost {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 0.5px solid var(--border2);
+  padding-bottom: 2px;
+  transition: color 0.2s;
+}
+
+.btnGhost:hover {
+  color: var(--dark);
+}
+
+.scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.scrollLine {
+  display: block;
+  width: 0.5px;
+  height: 40px;
+  background: var(--warm-dim);
+  animation: scrollAnim 2s ease-in-out infinite;
+}
+
+@keyframes scrollAnim {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+    opacity: 1;
+  }
+
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+    opacity: 1;
+  }
+
+  100% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+    opacity: 0;
+  }
+}
+
+.scrollText {
+  font-size: 8px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.dekoLeft {
+  position: absolute;
+  left: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.6;
+  animation: fadeIn 1.5s ease both;
+}
+
+.dekoRight {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.6;
+  animation: fadeIn 1.5s ease both;
+}
+
+@media (max-width: 768px) {
+
+  .dekoLeft,
+  .dekoRight {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 56px;
+  }
+}
