@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 
     await resend.emails.send({
       from: 'Atilli Berg <onboarding@resend.dev>',
-      to: email,
+      to: "lenn.soder@protonmail.com",
 
       subject: `Bokningsbekräftelse — ${tjanst.namn} ${datumFormaterat}`,
       html: `
