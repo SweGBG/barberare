@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
+import Mellanrum from '@/components/Mellanrum'
 import Tjanster from '@/components/Tjanster'
 import Galleri from '@/components/Galleri'
 import Om from '@/components/Om'
@@ -10,6 +11,7 @@ export default function Home() {
         <main>
             <Navbar />
             <Hero />
+            <Mellanrum />
             <Tjanster />
             <Galleri />
             <Om />

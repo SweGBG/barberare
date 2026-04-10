@@ -1,0 +1,60 @@
+.wrap {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/hero-bg2.jpg');
+  background-size: cover;
+  background-position: center 30%;
+  transform: scale(1.05);
+  transition: transform 0.6s ease;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--bg) 0%,
+    rgba(245, 240, 232, 0.6) 40%,
+    rgba(245, 240, 232, 0.6) 60%,
+    var(--bg) 100%
+  );
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.line {
+  display: block;
+  width: 80px;
+  height: 0.5px;
+  background: var(--gold);
+  opacity: 0.6;
+}
+
+.citat {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 400;
+  color: var(--dark);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.citat em {
+  color: var(--gold);
+  font-style: italic;
+}
