@@ -1,8 +1,33 @@
+'use client'
+
+import { useEffect, useRef } from 'react'
 import styles from './Hero.module.css'
 
 export default function Hero() {
+  const bgRef = useRef<HTMLDivElement>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY
+      if (bgRef.current) {
+        bgRef.current.style.transform = `translateY(${y * 0.4}px)`
+      }
+      if (overlayRef.current) {
+        overlayRef.current.style.opacity = String(Math.min(y / 400, 0.85))
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
     <section className={styles.hero}>
+
+      <div className={styles.bgWrap}>
+        <div ref={bgRef} className={styles.bg} />
+        <div ref={overlayRef} className={styles.overlay} />
+      </div>
 
       <div className={styles.dekoLeft}>
         <svg width="120" height="300" viewBox="0 0 120 300">
