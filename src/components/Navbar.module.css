@@ -6,14 +6,14 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(239, 223, 200, 0.97);
+  background: var(--bg);
   backdrop-filter: blur(8px);
   border-bottom: 0.5px solid transparent;
   transition: border-color 0.4s, padding 0.4s;
 }
 
 .scrolled {
-  background: rgba(245, 240, 232, 0.97);
+  background: var(--bg);
   border-bottom-color: var(--border);
   padding: 14px 48px;
 }
@@ -25,6 +25,8 @@
   list-style: none;
   align-items: center;
   flex: 1;
+  margin: 0;
+  padding: 0;
 }
 
 .right {
@@ -59,7 +61,7 @@
   color: var(--bg) !important;
 }
 
-/* LOGO */
+/* ===== LOGO ===== */
 .logoWrap {
   position: relative;
   width: 109px;
@@ -69,31 +71,23 @@
   justify-content: center;
   flex-shrink: 0;
   transition: transform 0.6s ease;
+  overflow: hidden;
 }
 
 .logoWrap:hover {
   transform: scale(1.08);
-}
-
-.logoWrap:hover .logoRing {
-  animation: spinSlow 6s linear infinite;
-}
-
-.logoWrap:hover .logoRing2 {
-  animation: spinSlow 10s linear infinite reverse;
+  overflow: visible;
 }
 
 .logoRing {
   position: absolute;
   inset: 0;
-  color: var(--warm-dim);
   animation: spinSlow 20s linear infinite;
 }
 
 .logoRing2 {
   position: absolute;
   inset: -8px;
-  color: var(--border2);
   animation: spinSlow 35s linear infinite reverse;
 }
 
@@ -151,26 +145,180 @@
   letter-spacing: 0.65em;
 }
 
+/* ===== KONTO-KNAPP ===== */
+.kontoKnapp {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  transition: color 0.2s;
+  padding: 0;
+}
+
+.kontoKnapp:hover {
+  color: var(--dark);
+}
+
+.kontoRing {
+  position: absolute;
+  inset: 0;
+  border: 0.5px solid rgba(139, 111, 94, 0.25);
+  border-radius: 50%;
+  transition: border-color 0.3s;
+}
+
+.kontoKnapp:hover .kontoRing {
+  border-color: var(--gold);
+}
+
+.kontoRingActive {
+  border-color: rgba(184, 149, 106, 0.5) !important;
+  box-shadow: 0 0 0 2px rgba(184, 149, 106, 0.08);
+}
+
+/* ===== DROPDOWN ===== */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 16px);
+  right: 0;
+  width: 200px;
+  background: var(--dark);
+  border: 0.5px solid rgba(184, 149, 106, 0.2);
+  overflow: hidden;
+  z-index: 200;
+  animation: dropIn 0.2s ease both;
+}
+
+@keyframes dropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownGeo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.dropdownHeader {
+  padding: 16px 18px 12px;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+}
+
+.dropdownEmail {
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: rgba(184, 149, 106, 0.6);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.dropdownTagline {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(184, 149, 106, 0.5);
+  margin: 0;
+}
+
+.dropdownItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 18px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.15s;
+  position: relative;
+}
+
+.dropdownItem:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(184, 149, 106, 0.06);
+  padding-left: 22px;
+}
+
+.dropdownItemGold {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 18px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: rgba(184, 149, 106, 0.8);
+  text-decoration: none;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.15s;
+}
+
+.dropdownItemGold:hover {
+  color: var(--gold);
+  background: rgba(184, 149, 106, 0.06);
+  padding-left: 22px;
+}
+
+.dropdownArrow {
+  font-size: 16px;
+  opacity: 0.4;
+}
+
+.dropdownLogout {
+  display: block;
+  width: 100%;
+  padding: 13px 18px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: rgba(180, 60, 60, 0.5);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Raleway', sans-serif;
+  transition: all 0.15s;
+}
+
+.dropdownLogout:hover {
+  color: rgba(220, 80, 80, 0.8);
+  background: rgba(180, 60, 60, 0.05);
+}
+
 @media (max-width: 768px) {
   .nav {
     padding: 16px 20px;
   }
 
   .left li:not(:last-child),
-  .right li:not(:last-child):not(:last-child) {
+  .right li:not(:first-child):not(:last-child) {
     display: none;
   }
 
   .logoWrap {
-    width: 150px;
-    height: 150px;
+    width: 80px;
+    height: 80px;
   }
 
   .logoMain {
-    font-size: 12px;
-  }
-
-  .logoRing2 {
-    inset: -1px;
+    font-size: 14px;
   }
 }

@@ -28,13 +28,6 @@ export default function Hero() {
         </svg>
       </div>
 
-      {/* MAIN CONTENT */}
-      ...
-
-
-
-
-      {/* MAIN CONTENT */}
       <div className={styles.content}>
         <p className={`${styles.eyebrow} anim-1`}>Exklusiv salong · Est. 2022</p>
 
@@ -56,16 +49,16 @@ export default function Hero() {
         </p>
 
         <div className={`${styles.btns} anim-4`}>
-          <a href="#boka" className={styles.btnPrimary}>Boka din tid</a>
+          <a href="/boka" className={styles.btnPrimary}>Boka din tid</a>
           <a href="#tjanster" className={styles.btnGhost}>Se tjänster</a>
         </div>
       </div>
 
-      {/* SCROLL INDICATOR */}
       <div className={`${styles.scroll} anim-5`}>
         <span className={styles.scrollLine} />
         <span className={styles.scrollText}>Scrolla</span>
       </div>
+
     </section>
   )
 }
