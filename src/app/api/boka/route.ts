@@ -10,8 +10,8 @@ const supabase = createClient(
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
 const manader = [
-  'Januari','Februari','Mars','April','Maj','Juni',
-  'Juli','Augusti','September','Oktober','November','December',
+  'Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni',
+  'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December',
 ]
 
 export async function POST(req: NextRequest) {
