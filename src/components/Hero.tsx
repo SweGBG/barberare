@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { motion, useAnimation } from 'framer-motion'
+import { motion } from 'framer-motion'
 import styles from './Hero.module.css'
 
-const ease = [0.16, 1, 0.3, 1]
+const ease: [number, number, number, number] = [0.16, 1, 0.3, 1]
 
 const PARTICLES = Array.from({ length: 10 }, (_, i) => ({
   left: `${5 + i * 10}%`,
@@ -32,13 +32,11 @@ export default function Hero() {
   return (
     <section className={styles.hero}>
 
-      {/* Bakgrund */}
       <div className={styles.bgWrap}>
         <div ref={bgRef} className={styles.bg} />
         <div ref={overlayRef} className={styles.overlay} />
       </div>
 
-      {/* Ambient glow */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
         background: `
@@ -47,7 +45,6 @@ export default function Hero() {
         `,
       }} />
 
-      {/* Subtilt diagonal grid */}
       <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }} xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern id="hgrid" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
@@ -57,7 +54,6 @@ export default function Hero() {
         <rect width="100%" height="100%" fill="url(#hgrid)" />
       </svg>
 
-      {/* Floating particles */}
       {PARTICLES.map((p, i) => (
         <motion.div
           key={i}
@@ -72,7 +68,6 @@ export default function Hero() {
         />
       ))}
 
-      {/* DEKO VÄNSTER — flyger in från vänster */}
       <motion.div
         className={styles.dekoLeft}
         initial={{ opacity: 0, x: -30 }}
@@ -94,7 +89,6 @@ export default function Hero() {
         </motion.svg>
       </motion.div>
 
-      {/* DEKO HÖGER — flyger in från höger */}
       <motion.div
         className={styles.dekoRight}
         initial={{ opacity: 0, x: 30 }}
@@ -116,10 +110,8 @@ export default function Hero() {
         </motion.svg>
       </motion.div>
 
-      {/* CONTENT */}
       <div className={styles.content}>
 
-        {/* Pulsande orb */}
         <motion.div
           animate={{ opacity: [0.3, 0.9, 0.3] }}
           transition={{ duration: 3, repeat: Infinity }}
@@ -129,7 +121,6 @@ export default function Hero() {
           }}
         />
 
-        {/* Eyebrow */}
         <motion.p
           className={styles.eyebrow}
           initial={{ opacity: 0, y: -12 }}
@@ -139,7 +130,6 @@ export default function Hero() {
           Exklusiv salong · Est. 2022
         </motion.p>
 
-        {/* Titel — ord för ord */}
         <motion.h1 className={styles.title}>
           {['Håret är', 'ditt ', 'intryck.'].map((word, i) => (
             <motion.span
@@ -149,14 +139,11 @@ export default function Hero() {
               transition={{ duration: 0.9, delay: 0.35 + i * 0.18, ease }}
               style={{ display: i === 1 ? 'inline' : 'block' }}
             >
-              {i === 1 ? (
-                <>ditt <em>första</em><br /></>
-              ) : word}
+              {i === 1 ? (<>ditt <em>första</em><br /></>) : word}
             </motion.span>
           ))}
         </motion.h1>
 
-        {/* Divider — linjer dras ut */}
         <motion.div
           className={styles.dividerWrap}
           initial={{ opacity: 0 }}
@@ -185,7 +172,6 @@ export default function Hero() {
           />
         </motion.div>
 
-        {/* Brödtext */}
         <motion.p
           className={styles.sub}
           initial={{ opacity: 0, y: 16 }}
@@ -196,7 +182,6 @@ export default function Hero() {
           Varje besök är en upplevelse — varje resultat, ett hantverk.
         </motion.p>
 
-        {/* Knappar — glider in */}
         <motion.div
           className={styles.btns}
           initial={{ opacity: 0, y: 20 }}
@@ -223,7 +208,6 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* SCROLL-indikator */}
       <motion.div
         className={styles.scroll}
         initial={{ opacity: 0 }}
