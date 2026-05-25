@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@/utils/supabase'
+import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import styles from './Navbar.module.css'
 
@@ -9,7 +9,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const supabase = createClient()
   const router = useRouter()
 
   useEffect(() => {
@@ -107,12 +106,12 @@ export default function Navbar() {
                   <div className={styles.dropdownHeader}>
                     <p className={styles.dropdownEmail}>{user.email}</p>
                   </div>
-                  <a href="/konto" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
-                    <span>Mina bokningar</span>
+                  <a href="/medlem" className={styles.dropdownItemGold} onClick={() => setDropdownOpen(false)}>
+                    <span>Mina sidor</span>
                     <span className={styles.dropdownArrow}>›</span>
                   </a>
-                  <a href="/konto/profil" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
-                    <span>Min profil</span>
+                  <a href="/boka" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                    <span>Boka ny tid</span>
                     <span className={styles.dropdownArrow}>›</span>
                   </a>
                   <button className={styles.dropdownLogout} onClick={handleLogout}>
