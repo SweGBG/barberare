@@ -1,0 +1,134 @@
+.panel {
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.header {
+  padding: 16px 20px;
+  border-bottom: 0.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dark);
+  letter-spacing: 0.01em;
+}
+
+.action {
+  font-size: 12px;
+  color: var(--gold);
+  cursor: pointer;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tableHead {
+  display: grid;
+  grid-template-columns: 36px 1fr 90px 100px 80px;
+  gap: 12px;
+  padding: 10px 20px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--warm);
+  background: var(--cream);
+  border-bottom: 0.5px solid var(--border);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 36px 1fr 90px 100px 80px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 0.5px solid var(--border);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:hover {
+  background: var(--cream);
+}
+
+.rowActive {
+  background: rgba(184, 149, 106, 0.07);
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 0.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--warm);
+}
+
+.clientName {
+  font-weight: 500;
+  color: var(--dark);
+  margin: 0;
+}
+
+.clientService {
+  font-size: 11px;
+  color: var(--warm);
+  margin: 1px 0 0;
+}
+
+.timeCol {
+  font-size: 12px;
+  color: var(--warm);
+}
+
+.priceCol {
+  font-weight: 500;
+  color: var(--dark);
+  text-align: right;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.confirmed {
+  background: rgba(74, 124, 89, 0.1);
+  color: #4a7c59;
+}
+
+.pending {
+  background: rgba(184, 149, 106, 0.12);
+  color: #8b6d1a;
+}
+
+.done {
+  background: var(--cream);
+  color: var(--warm);
+}
+
+.inProgress {
+  background: rgba(184, 149, 106, 0.15);
+  color: var(--gold);
+}
