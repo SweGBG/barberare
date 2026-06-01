@@ -6,8 +6,8 @@ type Booking = {
   booking_date: string
   status: string
   price: number
-  profiles: { full_name: string; email: string } | null
-  services: { name: string } | null
+  profiles: { full_name: string; email: string }[] | null
+  services: { name: string }[] | null
 }
 
 function initials(name: string) {
@@ -42,7 +42,7 @@ export default async function BookingsTable() {
     .lt('booking_date', today + 'T23:59:59')
     .order('booking_date', { ascending: true })
 
-  const list = (bookings ?? []) as Booking[]
+  const list = (bookings ?? []) as unknown as Booking[]
 
   return (
     <div className={styles.panel}>
@@ -60,7 +60,7 @@ export default async function BookingsTable() {
       </div>
 
       {list.map((b) => {
-        const name = b.profiles?.full_name ?? 'Okänd'
+        const name = b.profiles?.[0]?.full_name ?? 'Okänd'
         const time = new Date(b.booking_date).toLocaleTimeString('sv-SE', {
           hour: '2-digit', minute: '2-digit'
         })
@@ -71,7 +71,7 @@ export default async function BookingsTable() {
             <div className={styles.avatar}>{initials(name)}</div>
             <div>
               <p className={styles.clientName}>{name}</p>
-              <p className={styles.clientService}>{b.services?.name ?? '–'}</p>
+              <p className={styles.clientService}>{b.services?.[0]?.name ?? '–'}</p>
             </div>
             <span className={styles.timeCol}>{time}</span>
             <span className={`${styles.badge} ${st.cls}`}>{st.label}</span>
