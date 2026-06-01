@@ -1,6 +1,15 @@
 import { createClient } from '@/lib/supabase/server'
 import styles from './TodayTimeline.module.css'
 
+type TimelineBooking = {
+  id: string
+  booking_date: string
+  status: string
+  duration_minutes: number | null
+  profiles: { full_name: string }[] | null
+  services: { name: string }[] | null
+}
+
 export default async function TodayTimeline() {
   const supabase = await createClient()
   const today = new Date().toISOString().split('T')[0]
@@ -16,7 +25,7 @@ export default async function TodayTimeline() {
     .lt('booking_date', today + 'T23:59:59')
     .order('booking_date', { ascending: true })
 
-  const list = bookings ?? []
+  const list = (bookings ?? []) as unknown as TimelineBooking[]
 
   return (
     <div className={styles.panel}>
@@ -40,10 +49,10 @@ export default async function TodayTimeline() {
                 <span className={`${styles.dot} ${isActive ? styles.dotActive : isDone ? styles.dotDone : ''}`} />
                 <div className={`${styles.card} ${isActive ? styles.cardActive : ''}`}>
                   <p className={styles.clientName}>
-                    {b.profiles?.full_name ?? 'Okänd'}
+                    {b.profiles?.[0]?.full_name ?? 'Okänd'}
                     {isActive && ' — Pågår nu'}
                   </p>
-                  <p className={styles.service}>{b.services?.name ?? '–'}</p>
+                  <p className={styles.service}>{b.services?.[0]?.name ?? '–'}</p>
                   <span className={`${styles.duration} ${isActive ? styles.durationActive : ''}`}>
                     {b.duration_minutes ?? 30} min{isDone ? ' · Klar' : ''}
                   </span>
