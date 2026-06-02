@@ -1,5 +1,6 @@
 import AdminSidebar from './AdminSidebar'
 import AdminTopbar from './AdminTopbar'
+import BottomNav from './BottomNav'
 import styles from './AdminLayout.module.css'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -12,6 +13,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {children}
         </div>
       </div>
+      <BottomNav />
     </div>
   )
 }

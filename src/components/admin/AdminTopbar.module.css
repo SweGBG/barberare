@@ -46,4 +46,20 @@
   color: var(--dark);
   cursor: pointer;
   border: 0.5px solid rgba(184, 149, 106, 0.4);
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 16px;
+    height: 50px;
+  }
+
+  .title {
+    font-size: 15px;
+  }
+
+  .dateBadge {
+    display: none;
+  }
 }

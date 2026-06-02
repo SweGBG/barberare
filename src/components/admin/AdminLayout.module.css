@@ -10,6 +10,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0;
 }
 
 .content {
@@ -22,8 +23,16 @@
   background: var(--cream);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .content {
     padding: 16px;
+    padding-bottom: 90px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 12px;
+    padding-bottom: 90px;
   }
 }
