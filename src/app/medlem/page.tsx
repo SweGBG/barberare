@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/client';
 import Navbar from '@/components/Navbar';
 import styles from './medlem.module.css';
 
@@ -25,8 +25,8 @@ export default function MedlemPage() {
   const [loading, setLoading] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
   const [cancelModal, setCancelModal] = useState<string | null>(null);
+  const supabase = createClient();
 
-  // Profile form state
   const [profileData, setProfileData] = useState({
     namn: '',
     efternamn: '',
@@ -63,7 +63,6 @@ export default function MedlemPage() {
     if (!error && data && data.length > 0) {
       setBokningar(data);
 
-      // Fyll i profildata från första bokningen
       const firstBokning = data[0];
       setProfileData({
         namn: firstBokning.namn || '',
@@ -91,7 +90,6 @@ export default function MedlemPage() {
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Uppdatera alla bokningar med nya uppgifter
     const { error } = await supabase
       .from('bokningar')
       .update({
@@ -125,7 +123,6 @@ export default function MedlemPage() {
     }
   };
 
-  // Statistik-beräkningar
   const calculateStats = () => {
     const genomforda = bokningar.filter(b => b.status === 'genomford');
     const totalVisits = genomforda.length;
@@ -144,12 +141,7 @@ export default function MedlemPage() {
       return bokningDatum >= new Date() && b.status === 'bekraftad';
     });
 
-    return {
-      totalVisits,
-      totalSpent,
-      memberSince,
-      nextBooking,
-    };
+    return { totalVisits, totalSpent, memberSince, nextBooking };
   };
 
   if (loading) {
@@ -198,7 +190,6 @@ export default function MedlemPage() {
         </div>
 
         <div className={styles.content}>
-          {/* STATISTIK-KORT */}
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
               <p className={styles.statLabel}>Totalt besök</p>
@@ -228,9 +219,7 @@ export default function MedlemPage() {
           <div className={styles.section}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Kommande bokningar</h2>
-              <a href="/boka" className={styles.bookBtn}>
-                Boka ny tid
-              </a>
+              <a href="/boka" className={styles.bookBtn}>Boka ny tid</a>
             </div>
 
             {kommandeBokningar.length === 0 ? (
@@ -240,9 +229,7 @@ export default function MedlemPage() {
                 <p className={styles.emptyText}>
                   Du har inga bokade tider just nu. Boka en tid för att komma igång!
                 </p>
-                <a href="/boka" className={styles.emptyBtn}>
-                  Boka tid
-                </a>
+                <a href="/boka" className={styles.emptyBtn}>Boka tid</a>
               </div>
             ) : (
               <div className={styles.bookingGrid}>
@@ -323,15 +310,12 @@ export default function MedlemPage() {
           </div>
         </div>
 
-        {/* PROFIL MODAL */}
         {showProfile && (
           <div className={styles.modalOverlay} onClick={() => setShowProfile(false)}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
               <div className={styles.modalHeader}>
                 <h2 className={styles.modalTitle}>Redigera profil</h2>
-                <button onClick={() => setShowProfile(false)} className={styles.modalClose}>
-                  ✕
-                </button>
+                <button onClick={() => setShowProfile(false)} className={styles.modalClose}>✕</button>
               </div>
               <form onSubmit={handleUpdateProfile} className={styles.modalForm}>
                 <div className={styles.formField}>
@@ -386,7 +370,6 @@ export default function MedlemPage() {
           </div>
         )}
 
-        {/* AVBOKA MODAL */}
         {cancelModal && (
           <div className={styles.modalOverlay} onClick={() => setCancelModal(null)}>
             <div className={styles.confirmModal} onClick={(e) => e.stopPropagation()}>
