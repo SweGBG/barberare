@@ -7,8 +7,8 @@ import styles from './BottomNav.module.css'
 const nav = [
   { label: 'Dashboard', href: '/admin', icon: 'ti-layout-dashboard' },
   { label: 'Bokningar', href: '/admin/bokningar', icon: 'ti-calendar' },
+  { label: 'Schema', href: '/admin/schema', icon: 'ti-clock' },
   { label: 'Klienter', href: '/admin/klienter', icon: 'ti-users' },
-  { label: 'Tjänster', href: '/admin/tjanster', icon: 'ti-scissors' },
   { label: 'Inställn.', href: '/admin/installningar', icon: 'ti-settings' },
 ]
 
