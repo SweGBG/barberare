@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import AdminLayout from '@/components/admin/AdminLayout'
 import styles from './bokningar.module.css'
 
@@ -40,7 +39,6 @@ export default function BokningarPage() {
   const [filter, setFilter] = useState<'alla' | 'idag' | 'kommande' | 'historik'>('idag')
   const [showModal, setShowModal] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
 
   const [form, setForm] = useState({
     client_name: '',
@@ -53,31 +51,40 @@ export default function BokningarPage() {
     notes: '',
   })
 
-  const supabase = createClient()
-
   useEffect(() => {
     fetchBookings()
   }, [])
 
   async function fetchBookings() {
     setLoading(true)
-    const { data } = await supabase
-      .from('bookings')
-      .select('*, services(name)')
-      .order('booking_date', { ascending: false })
-    setBookings((data as any) ?? [])
+    try {
+      const res = await fetch('/api/admin/booking')
+      const json = await res.json()
+      setBookings(json.data ?? [])
+    } catch (err) {
+      console.error('fetchBookings error:', err)
+      setBookings([])
+    }
     setLoading(false)
   }
 
   function getFiltered() {
     const now = new Date()
-    const todayStr = now.toISOString().split('T')[0]
+    const todayStr = now.toLocaleDateString('sv-SE', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+
     return bookings.filter(b => {
-      const d = new Date(b.booking_date)
-      const dStr = d.toISOString().split('T')[0]
+      const dStr = new Date(b.booking_date).toLocaleDateString('sv-SE', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      })
       if (filter === 'idag') return dStr === todayStr
-      if (filter === 'kommande') return d > now
-      if (filter === 'historik') return d < now
+      if (filter === 'kommande') return dStr > todayStr
+      if (filter === 'historik') return dStr < todayStr
       return true
     })
   }
@@ -91,12 +98,16 @@ export default function BokningarPage() {
     fetchBookings()
   }
 
+  async function handleDelete(id: string) {
+    if (!confirm('Är du säker på att du vill radera denna bokning?')) return
+    await fetch(`/api/admin/booking?id=${id}`, { method: 'DELETE' })
+    fetchBookings()
+  }
+
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault()
     setSaving(true)
-
     const booking_date = `${form.booking_date}T${form.booking_time}:00`
-
     await fetch('/api/admin/booking', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -110,7 +121,6 @@ export default function BokningarPage() {
         notes: form.notes,
       }),
     })
-
     setSaving(false)
     setShowModal(false)
     setForm({
@@ -127,7 +137,6 @@ export default function BokningarPage() {
     <AdminLayout>
       <div className={styles.page}>
 
-        {/* HEADER */}
         <div className={styles.header}>
           <div>
             <h1 className={styles.title}>Bokningar</h1>
@@ -138,7 +147,6 @@ export default function BokningarPage() {
           </button>
         </div>
 
-        {/* FILTER */}
         <div className={styles.filters}>
           {(['idag', 'kommande', 'historik', 'alla'] as const).map(f => (
             <button
@@ -151,7 +159,6 @@ export default function BokningarPage() {
           ))}
         </div>
 
-        {/* TABELL */}
         <div className={styles.panel}>
           <div className={styles.tableHead}>
             <span>Klient</span>
@@ -205,6 +212,12 @@ export default function BokningarPage() {
                       <option value="completed">Genomförd</option>
                       <option value="cancelled">Avboka</option>
                     </select>
+                    <button
+                      className={styles.deleteBtn}
+                      onClick={() => handleDelete(b.id)}
+                    >
+                      Radera
+                    </button>
                   </div>
                 </div>
               )
@@ -213,7 +226,6 @@ export default function BokningarPage() {
         </div>
       </div>
 
-      {/* NY BOKNING MODAL */}
       {showModal && (
         <div className={styles.overlay} onClick={() => setShowModal(false)}>
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
@@ -221,7 +233,6 @@ export default function BokningarPage() {
               <h2 className={styles.modalTitle}>Ny bokning</h2>
               <button className={styles.closeBtn} onClick={() => setShowModal(false)}>✕</button>
             </div>
-
             <form onSubmit={handleCreate} className={styles.form}>
               <div className={styles.formGrid}>
                 <div className={styles.field}>
@@ -265,7 +276,6 @@ export default function BokningarPage() {
                     onChange={e => setForm({ ...form, notes: e.target.value })} rows={3} />
                 </div>
               </div>
-
               <div className={styles.modalActions}>
                 <button type="button" className={styles.cancelBtn} onClick={() => setShowModal(false)}>
                   Avbryt

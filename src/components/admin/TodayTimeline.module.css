@@ -160,11 +160,6 @@
   color: var(--dark);
 }
 
-.qaBtn i {
-  font-size: 15px;
-  color: var(--gold);
-}
-
 .newBooking {
   display: flex;
   align-items: center;
@@ -185,4 +180,147 @@
 
 .newBooking:hover {
   background: var(--gold-light, #d4a843);
+}
+
+/* MODAL */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 20, 10, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal {
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.modalTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--dark);
+  margin: 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--warm);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.form {
+  padding: 24px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--warm);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.input,
+.textarea {
+  padding: 10px 12px;
+  background: var(--cream);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--dark);
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: var(--gold);
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.modalActions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 0.5px solid var(--border);
+}
+
+.cancelBtn {
+  padding: 10px 20px;
+  background: none;
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--warm);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+
+.saveBtn {
+  padding: 10px 24px;
+  background: var(--gold);
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dark);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.15s;
+}
+
+.saveBtn:hover {
+  background: var(--gold-light, #d4a843);
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

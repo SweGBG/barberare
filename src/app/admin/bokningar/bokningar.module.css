@@ -363,4 +363,24 @@
     width: 100%;
     text-align: center;
   }
+
+  .deleteBtn {
+    background: none;
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    color: var(--warm);
+    font-size: 11px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 6px;
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .deleteBtn:hover {
+    background: rgba(180, 60, 60, 0.08);
+    border-color: rgba(180, 60, 60, 0.3);
+    color: #b43c3c;
+  }
 }
