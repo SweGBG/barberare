@@ -74,6 +74,7 @@ export default function Navbar() {
       </ul>
 
       <div className={styles.logoWrap}>
+        <div className={styles.logoMural} />
         <div className={styles.logoRing}>
           <svg className={styles.logoRingSvg} viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="46" fill="none" stroke="#B8956A" strokeWidth="1" strokeDasharray="3 4" />

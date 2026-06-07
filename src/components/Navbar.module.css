@@ -6,15 +6,26 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--bg);
   backdrop-filter: blur(8px);
   border-bottom: 0.5px solid transparent;
   transition: border-color 0.4s, padding 0.4s;
+  background-image: url('/topbarmural.png');
+  background-size: cover;
+  background-position: center 30%;
+  mask-image: linear-gradient(to top, transparent 0%, black 30%);
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
+}
+
+.nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(245, 240, 232, 0.78);
+  z-index: 0;
 }
 
 .scrolled {
-  background: var(--bg);
-  border-bottom-color: var(--border);
+  border-bottom-color: transparent;
   padding: 14px 48px;
 }
 
@@ -27,6 +38,8 @@
   flex: 1;
   margin: 0;
   padding: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .right {
@@ -71,24 +84,25 @@
   justify-content: center;
   flex-shrink: 0;
   transition: transform 0.6s ease;
-  overflow: hidden;
+  z-index: 1;
 }
 
 .logoWrap:hover {
   transform: scale(1.08);
-  overflow: visible;
 }
 
 .logoRing {
   position: absolute;
   inset: 0;
   animation: spinSlow 20s linear infinite;
+  z-index: 1;
 }
 
 .logoRing2 {
   position: absolute;
   inset: -8px;
   animation: spinSlow 35s linear infinite reverse;
+  z-index: 1;
 }
 
 @keyframes spinSlow {
@@ -112,7 +126,7 @@
   flex-direction: column;
   align-items: center;
   text-decoration: none;
-  z-index: 1;
+  z-index: 2;
   line-height: 1;
 }
 
