@@ -1,13 +1,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase/client'  // ← ändrad import
 import { useRouter } from 'next/navigation'
 import styles from './Navbar.module.css'
+
+const supabase = createClient()  // ← skapa instansen här
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [user, setUser] = useState<any>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const router = useRouter()
 
@@ -15,11 +18,14 @@ export default function Navbar() {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
+      if (user) await fetchRole(user.id)
     }
     getUser()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null)
+      if (session?.user) await fetchRole(session.user.id)
+      else setIsAdmin(false)
     })
 
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -30,6 +36,15 @@ export default function Navbar() {
       window.removeEventListener('scroll', onScroll)
     }
   }, [])
+
+  const fetchRole = async (userId: string) => {
+    const { data } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', userId)
+      .single()
+    setIsAdmin(data?.role === 'admin')
+  }
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -43,6 +58,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     await supabase.auth.signOut()
     setUser(null)
+    setIsAdmin(false)
     setDropdownOpen(false)
     router.push('/')
     router.refresh()
@@ -76,7 +92,7 @@ export default function Navbar() {
 
       <ul className={styles.right}>
         <li><a href="#galleri">Galleri</a></li>
-        <li><a href="#kontakt">Kontakt</a></li>
+        <li><a href="/kontakt">Kontakt</a></li>
         <li><a href="/boka" className={styles.bokaCta}>Boka tid</a></li>
 
         <li data-dropdown style={{ position: 'relative' }}>
@@ -106,6 +122,12 @@ export default function Navbar() {
                   <div className={styles.dropdownHeader}>
                     <p className={styles.dropdownEmail}>{user.email}</p>
                   </div>
+                  {isAdmin && (
+                    <a href="/admin" className={styles.dropdownItemGold} onClick={() => setDropdownOpen(false)}>
+                      <span>Admin</span>
+                      <span className={styles.dropdownArrow}>›</span>
+                    </a>
+                  )}
                   <a href="/medlem" className={styles.dropdownItemGold} onClick={() => setDropdownOpen(false)}>
                     <span>Mina sidor</span>
                     <span className={styles.dropdownArrow}>›</span>

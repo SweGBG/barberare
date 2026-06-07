@@ -1,9 +1,9 @@
 import styles from './Footer.module.css'
 
 const marqueeItems = [
-  'Boka tid online', 'Premium salong', 'Est. 2012', 'Mån–Fre 09–19',
-  'Lördag 10–17', 'Söndagar stängt', 'Boka tid online', 'Premium salong',
-  'Est. 2012', 'Mån–Fre 09–19', 'Lördag 10–17', 'Söndagar stängt',
+  'Atilli Berg', 'Est. 2026', 'Göteborg', 'Premium Barbershop',
+  'Atilli Berg', 'Est. 2026', 'Göteborg', 'Premium Barbershop',
+  'Atilli Berg', 'Est. 2026', 'Göteborg', 'Premium Barbershop',
 ]
 
 export default function FooterSection() {
@@ -29,11 +29,11 @@ export default function FooterSection() {
             Redo för ett<br /><em>nytt kapitel?</em>
           </h2>
           <p className={styles.bokaSub}>
-            Vi bokar via Bokadirekt — snabbt, enkelt och alltid bekräftat direkt.
-            Välj din frisör, tid och tjänst på under en minut.
+            Vi tar emot bokningar direkt här på sajten — snabbt, enkelt och alltid bekräftat via e-post.
+            Välj tjänst, tid och fyll i dina uppgifter på under en minut.
           </p>
-          <a href="https://bokadirekt.se" target="_blank" rel="noopener noreferrer" className={styles.bokaBtn}>
-            Öppna Bokadirekt
+          <a href="/boka" className={styles.bokaBtn}>
+            Boka tid nu
           </a>
           <p className={styles.bokaTel}>Eller ring oss: <a href="tel:031000000">031-00 00 00</a></p>
         </div>
@@ -49,8 +49,6 @@ export default function FooterSection() {
       {/* FOOTER */}
       <footer className={styles.footer} id="kontakt">
         <div className={styles.footerTop}>
-
-          {/* LOGO */}
           <div className={styles.footerBrand}>
             <div className={styles.footerLogo}>
               <span className={styles.footerLogoMain}>Atilli</span>
@@ -58,11 +56,10 @@ export default function FooterSection() {
             </div>
             <p className={styles.footerTagline}>
               Din salong. Din stad.<br />
-              Hantverksskicklighet sedan år ett.
+              Hantverksskicklighet sedan 2026.
             </p>
           </div>
 
-          {/* BESÖK */}
           <div className={styles.footerCol}>
             <h5 className={styles.colHead}>Hitta oss</h5>
             <p>Din gata 1</p>
@@ -72,7 +69,6 @@ export default function FooterSection() {
             <p>Söndag: Stängt</p>
           </div>
 
-          {/* KONTAKT */}
           <div className={styles.footerCol}>
             <h5 className={styles.colHead}>Kontakt</h5>
             <a href="tel:">Ditt telefonnummer</a>
@@ -80,21 +76,20 @@ export default function FooterSection() {
             <a href="#">Instagram @dinsalong</a>
           </div>
 
-          {/* SNABBLÄNKAR */}
           <div className={styles.footerCol}>
             <h5 className={styles.colHead}>Navigera</h5>
             <a href="#tjanster">Tjänster</a>
             <a href="#galleri">Galleri</a>
             <a href="#priser">Prislista</a>
             <a href="#om">Om oss</a>
+            <a href="/kontakt">Kontakt</a>
             <a href="#boka">Boka tid</a>
           </div>
-
         </div>
 
         <div className={styles.footerBottom}>
           <p>© 2026 Atilli Berg. Alla rättigheter förbehållna.</p>
-          <p>Din stad, Sverige</p>
+          <p>Göteborg, Sverige</p>
         </div>
       </footer>
     </>

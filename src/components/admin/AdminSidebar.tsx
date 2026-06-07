@@ -37,6 +37,11 @@ export default function AdminSidebar() {
         <span className={styles.sub}>Admin Panel</span>
       </div>
 
+      <Link href="/" className={styles.homeLink}>
+        <i className="ti ti-arrow-left" aria-hidden="true" />
+        Hemsidan
+      </Link>
+
       <nav className={styles.nav}>
         {nav.map((group) => (
           <div key={group.section}>
