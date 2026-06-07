@@ -24,7 +24,7 @@ export default function Home() {
                 overflow: 'hidden',
                 background: 'var(--cream, #F5F0E8)',
                 position: 'relative',
-                zIndex: 99,
+                zIndex: 50,
             }}>
                 <div style={{
                     display: 'flex',

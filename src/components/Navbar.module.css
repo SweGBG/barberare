@@ -12,16 +12,17 @@
   background-image: url('/topbarmural.png');
   background-size: cover;
   background-position: center 30%;
-  mask-image: linear-gradient(to top, transparent 0%, black 30%);
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
+  overflow: visible;
 }
 
 .nav::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(245, 240, 232, 0.78);
+  background: rgba(245, 240, 232, 0.88);
   z-index: 0;
+  mask-image: linear-gradient(to top, transparent 0%, black 30%);
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
 }
 
 .scrolled {
