@@ -31,8 +31,33 @@ export default function LoginPage() {
   return (
     <div className={styles.page}>
 
+      {/* Guldgradient bakgrund */}
+      <div style={{
+        position: 'fixed',
+        inset: 0,
+        background: `
+          radial-gradient(ellipse at 50% 50%, rgba(184,149,106,0.18) 0%, transparent 65%),
+          radial-gradient(ellipse at 80% 20%, rgba(184,149,106,0.08) 0%, transparent 50%),
+          radial-gradient(ellipse at 20% 80%, rgba(184,149,106,0.06) 0%, transparent 50%)
+        `,
+        zIndex: 0,
+        pointerEvents: 'none',
+      }} />
+
+      {/* SVG ringar */}
+      <svg style={{
+        position: 'fixed', inset: 0,
+        width: '100%', height: '100%',
+        zIndex: 0, pointerEvents: 'none',
+      }} xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50%" cy="50%" r="200" fill="none" stroke="rgba(184,149,106,0.1)" strokeWidth="0.5" />
+        <circle cx="50%" cy="50%" r="350" fill="none" stroke="rgba(184,149,106,0.08)" strokeWidth="0.5" />
+        <circle cx="50%" cy="50%" r="500" fill="none" stroke="rgba(184,149,106,0.06)" strokeWidth="0.5" />
+        <circle cx="50%" cy="50%" r="680" fill="none" stroke="rgba(184,149,106,0.04)" strokeWidth="0.5" />
+      </svg>
+
       {/* Mini-header */}
-      <div className={styles.miniHeader}>
+      <div className={styles.miniHeader} style={{ position: 'relative', zIndex: 2 }}>
         <a href="/" className={styles.miniLogo}>
           <span className={styles.miniLogoMain}>Atilli</span>
           <span className={styles.miniLogoSub}>Berg</span>
@@ -41,9 +66,6 @@ export default function LoginPage() {
 
       {/* Formulär */}
       <div className={styles.container}>
-        <div className={styles.dekoRing1} />
-        <div className={styles.dekoRing2} />
-
         <div className={styles.formWrap}>
           <div className={styles.header}>
             <p className={styles.eyebrow}>Välkommen tillbaka</p>
