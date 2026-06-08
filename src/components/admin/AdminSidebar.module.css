@@ -20,6 +20,7 @@
   pointer-events: none;
 }
 
+/* ── Logo ── */
 .logo {
   padding: 24px 20px 20px;
   border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
@@ -44,6 +45,7 @@
   text-transform: uppercase;
 }
 
+/* ── Home-länk ── */
 .homeLink {
   display: flex;
   align-items: center;
@@ -53,46 +55,52 @@
   text-transform: uppercase;
   color: #B8956A;
   opacity: 0.6;
-  padding: 6px 20px;
-  margin-bottom: 4px;
+  padding: 10px 20px 12px;
   transition: opacity 0.2s;
   text-decoration: none;
   border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
-  padding-bottom: 12px;
 }
 
 .homeLink:hover {
   opacity: 1;
 }
 
+/* ── Nav ── */
 .nav {
   flex: 1;
-  padding: 12px 0;
+  padding: 8px 0;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.nav::-webkit-scrollbar {
+  display: none;
 }
 
 .sectionLabel {
-  font-size: 10px;
-  letter-spacing: 0.14em;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.2);
-  padding: 12px 20px 4px;
+  color: rgba(255, 255, 255, 0.18);
+  padding: 14px 20px 4px;
   margin: 0;
 }
 
+/* ── Nav-item ── */
 .navItem {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 20px;
+  padding: 9px 20px;
   font-size: 13px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.45);
   text-decoration: none;
   border-left: 2px solid transparent;
-  transition: all 0.15s;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  position: relative;
 }
 
 .navItem:hover {
@@ -104,17 +112,37 @@
   color: var(--gold);
   background: rgba(184, 149, 106, 0.1);
   border-left-color: var(--gold);
+  font-weight: 500;
 }
 
 .navItem i {
   font-size: 16px;
+  flex-shrink: 0;
 }
 
+/* ── NY-badge ── */
+.newBadge {
+  margin-left: auto;
+  font-family: 'Raleway', sans-serif;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  background: rgba(184, 149, 106, 0.15);
+  border: 1px solid rgba(184, 149, 106, 0.35);
+  border-radius: 20px;
+  padding: 2px 7px;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+/* ── Footer ── */
 .footer {
   padding: 16px 20px;
   border-top: 0.5px solid rgba(255, 255, 255, 0.08);
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.25);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.18);
+  letter-spacing: 0.04em;
 }
 
 @media (max-width: 1024px) {

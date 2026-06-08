@@ -6,29 +6,38 @@ import styles from './AdminSidebar.module.css'
 
 const nav = [
   {
-    section: 'Översikt', items: [
-      { label: 'Dashboard', href: '/admin', icon: 'ti-layout-dashboard' },
-      { label: 'Bokningar', href: '/admin/bokningar', icon: 'ti-calendar' },
-      { label: 'Schema', href: '/admin/schema', icon: 'ti-clock' },
-    ]
+    group: 'ÖVERSIKT',
+    links: [
+      { href: '/admin', label: 'Dashboard', exact: true, icon: 'ti-layout-dashboard' },
+      { href: '/admin/bokningar', label: 'Bokningar', icon: 'ti-calendar-event' },
+      { href: '/admin/schema', label: 'Schema', icon: 'ti-clock' },
+    ],
   },
   {
-    section: 'Kunder', items: [
-      { label: 'Klientregister', href: '/admin/klienter', icon: 'ti-users' },
-      { label: 'Meddelanden', href: '/admin/meddelanden', icon: 'ti-message' },
-    ]
+    group: 'KUNDER',
+    links: [
+      { href: '/admin/klienter', label: 'Klientregister', icon: 'ti-users' },
+      { href: '/admin/meddelanden', label: 'Meddelanden', icon: 'ti-message' },
+    ],
   },
   {
-    section: 'Verksamhet', items: [
-      { label: 'Tjänster & Priser', href: '/admin/tjanster', icon: 'ti-scissors' },
-      { label: 'Rapporter', href: '/admin/rapporter', icon: 'ti-chart-bar' },
-      { label: 'Inställningar', href: '/admin/installningar', icon: 'ti-settings' },
-    ]
+    group: 'VERKSAMHET',
+    links: [
+      { href: '/admin/tjanster', label: 'Tjänster & Priser', icon: 'ti-scissors' },
+      { href: '/admin/trender', label: 'Trender', icon: 'ti-trending-up', badge: 'NY' },
+      { href: '/admin/rapporter', label: 'Rapporter', icon: 'ti-chart-bar' },
+      { href: '/admin/installningar', label: 'Inställningar', icon: 'ti-settings' },
+    ],
   },
 ]
 
 export default function AdminSidebar() {
   const pathname = usePathname()
+
+  function isActive(href: string, exact?: boolean) {
+    if (exact) return pathname === href
+    return pathname.startsWith(href)
+  }
 
   return (
     <aside className={styles.sidebar}>
@@ -38,29 +47,34 @@ export default function AdminSidebar() {
       </div>
 
       <Link href="/" className={styles.homeLink}>
-        <i className="ti ti-arrow-left" aria-hidden="true" />
+        <i className="ti ti-home" />
         Hemsidan
       </Link>
 
       <nav className={styles.nav}>
-        {nav.map((group) => (
-          <div key={group.section}>
-            <p className={styles.sectionLabel}>{group.section}</p>
-            {group.items.map((item) => (
+        {nav.map(section => (
+          <div key={section.group}>
+            <p className={styles.sectionLabel}>{section.group}</p>
+            {section.links.map(link => (
               <Link
-                key={item.href}
-                href={item.href}
-                className={`${styles.navItem} ${pathname === item.href ? styles.active : ''}`}
+                key={link.href}
+                href={link.href}
+                className={`${styles.navItem} ${isActive(link.href, link.exact) ? styles.active : ''}`}
               >
-                <i className={`ti ${item.icon}`} aria-hidden="true" />
-                {item.label}
+                <i className={`ti ${link.icon}`} />
+                {link.label}
+                {link.badge && (
+                  <span className={styles.newBadge}>{link.badge}</span>
+                )}
               </Link>
             ))}
           </div>
         ))}
       </nav>
 
-      <div className={styles.footer}>v1.0 · Atilli Admin</div>
+      <div className={styles.footer}>
+        Atilli Berg © {new Date().getFullYear()}
+      </div>
     </aside>
   )
 }

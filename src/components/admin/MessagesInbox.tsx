@@ -14,15 +14,22 @@ type Message = {
     created_at: string
 }
 
+function initials(name: string) {
+    return name
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2)
+}
+
 export default function MessagesInbox() {
     const [messages, setMessages] = useState<Message[]>([])
     const [selected, setSelected] = useState<Message | null>(null)
     const [loading, setLoading] = useState(true)
     const supabase = createClient()
 
-    useEffect(() => {
-        fetchMessages()
-    }, [])
+    useEffect(() => { fetchMessages() }, [])
 
     const fetchMessages = async () => {
         const { data } = await supabase
@@ -53,60 +60,118 @@ export default function MessagesInbox() {
 
     const formatDate = (iso: string) =>
         new Date(iso).toLocaleDateString('sv-SE', {
-            day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+            day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
         })
 
     return (
         <div className={styles.wrap}>
+
+            {/* ── Header ── */}
             <div className={styles.header}>
-                <div>
-                    <h1 className={styles.title}>Meddelanden</h1>
-                    <p className={styles.sub}>{messages.length} totalt · {unreadCount} olästa</p>
+                <div className={styles.headerLeft}>
+                    <div className={styles.iconWrap}>
+                        <i className="ti ti-mail" />
+                    </div>
+                    <div>
+                        <h1 className={styles.title}>Meddelanden</h1>
+                        <p className={styles.sub}>Inkommande kundmeddelanden</p>
+                    </div>
+                </div>
+                <div className={styles.stats}>
+                    <div className={styles.statPill}>
+                        <span className={styles.statNum}>{messages.length}</span>
+                        <span className={styles.statLabel}>Totalt</span>
+                    </div>
+                    {unreadCount > 0 && (
+                        <div className={`${styles.statPill} ${styles.statPillUnread}`}>
+                            <span className={styles.statNum}>{unreadCount}</span>
+                            <span className={styles.statLabel}>Olästa</span>
+                        </div>
+                    )}
+                    {unreadCount === 0 && messages.length > 0 && (
+                        <div className={`${styles.statPill} ${styles.statPillDone}`}>
+                            <i className="ti ti-check" />
+                            <span className={styles.statLabel}>Allt läst</span>
+                        </div>
+                    )}
                 </div>
             </div>
 
             <div className={styles.grid}>
 
-                {/* LISTA */}
+                {/* ── Lista ── */}
                 <div className={styles.list}>
-                    {loading && <p className={styles.empty}>Laddar...</p>}
-                    {!loading && messages.length === 0 && (
-                        <p className={styles.empty}>Inga meddelanden än.</p>
+                    {loading && (
+                        <div className={styles.skeletonList}>
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className={styles.skeletonItem}>
+                                    <div className={styles.skeletonAvatar} />
+                                    <div className={styles.skeletonLines}>
+                                        <div className={styles.skeletonLine} style={{ width: '60%' }} />
+                                        <div className={styles.skeletonLine} style={{ width: '85%' }} />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     )}
+
+                    {!loading && messages.length === 0 && (
+                        <div className={styles.emptyList}>
+                            <div className={styles.emptyRing}>
+                                <i className="ti ti-inbox" />
+                            </div>
+                            <p className={styles.emptyText}>Inga meddelanden än</p>
+                            <p className={styles.emptyHint}>Kundmeddelanden från kontaktformuläret visas här</p>
+                        </div>
+                    )}
+
                     {messages.map(msg => (
                         <div
                             key={msg.id}
                             className={`${styles.listItem} ${selected?.id === msg.id ? styles.active : ''} ${!msg.read ? styles.unread : ''}`}
                             onClick={() => handleSelect(msg)}
                         >
-                            <div className={styles.listTop}>
-                                <span className={styles.listName}>{msg.name}</span>
-                                <span className={styles.listDate}>{formatDate(msg.created_at)}</span>
+                            <div className={styles.listAvatar}>
+                                {initials(msg.name)}
                             </div>
-                            <p className={styles.listEmail}>{msg.email}</p>
-                            <p className={styles.listPreview}>{msg.message.slice(0, 60)}...</p>
+                            <div className={styles.listContent}>
+                                <div className={styles.listTop}>
+                                    <span className={styles.listName}>{msg.name}</span>
+                                    <span className={styles.listDate}>{formatDate(msg.created_at)}</span>
+                                </div>
+                                <p className={styles.listEmail}>{msg.email}</p>
+                                <p className={styles.listPreview}>
+                                    {msg.message.slice(0, 55)}{msg.message.length > 55 ? '…' : ''}
+                                </p>
+                            </div>
                             {!msg.read && <span className={styles.unreadDot} />}
                         </div>
                     ))}
                 </div>
 
-                {/* DETALJ */}
+                {/* ── Detalj ── */}
                 <div className={styles.detail}>
                     {!selected ? (
                         <div className={styles.detailEmpty}>
-                            <i className="ti ti-mail" />
-                            <p>Välj ett meddelande</p>
+                            <div className={styles.detailEmptyRing}>
+                                <i className="ti ti-mail-opened" />
+                            </div>
+                            <p className={styles.detailEmptyText}>Välj ett meddelande</p>
                         </div>
                     ) : (
                         <>
                             <div className={styles.detailHeader}>
-                                <div>
-                                    <h2 className={styles.detailName}>{selected.name}</h2>
-                                    <p className={styles.detailMeta}>{formatDate(selected.created_at)}</p>
+                                <div className={styles.detailSender}>
+                                    <div className={styles.detailAvatar}>{initials(selected.name)}</div>
+                                    <div>
+                                        <h2 className={styles.detailName}>{selected.name}</h2>
+                                        <p className={styles.detailMeta}>{formatDate(selected.created_at)}</p>
+                                    </div>
                                 </div>
                                 <button
                                     className={styles.deleteBtn}
                                     onClick={() => deleteMessage(selected.id)}
+                                    title="Radera meddelande"
                                 >
                                     <i className="ti ti-trash" />
                                 </button>
@@ -136,7 +201,6 @@ export default function MessagesInbox() {
                         </>
                     )}
                 </div>
-
             </div>
         </div>
     )
