@@ -29,7 +29,11 @@ function formatAge(iso: string): string {
   return `${m}m sedan`
 }
 
-export default function TrenderWidget() {
+interface Props {
+  expanded?: boolean
+}
+
+export default function TrenderWidget({ expanded }: Props) {
   const [data, setData] = useState<TrenderResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
