@@ -103,6 +103,18 @@
   color: var(--gold) !important;
 }
 
+.moreBadge {
+  margin-left: auto;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  background: rgba(184, 149, 106, 0.15);
+  border: 1px solid rgba(184, 149, 106, 0.35);
+  border-radius: 20px;
+  padding: 2px 7px;
+}
+
 @media (max-width: 1024px) {
   .nav {
     display: flex;

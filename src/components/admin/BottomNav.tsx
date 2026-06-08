@@ -15,9 +15,17 @@ const mainNav = [
 const moreNav = [
   { label: 'Meddelanden', href: '/admin/meddelanden', icon: 'ti-message' },
   { label: 'Tjänster & Priser', href: '/admin/tjanster', icon: 'ti-scissors' },
+  { label: 'Trender', href: '/admin/trender', icon: 'ti-trending-up', badge: 'NY' },
   { label: 'Rapporter', href: '/admin/rapporter', icon: 'ti-chart-bar' },
   { label: 'Inställningar', href: '/admin/installningar', icon: 'ti-settings' },
 ]
+
+type MoreNavItem = {
+  label: string
+  href: string
+  icon: string
+  badge?: string
+}
 
 export default function BottomNav() {
   const pathname = usePathname()
@@ -30,8 +38,8 @@ export default function BottomNav() {
       {moreOpen && (
         <div className={styles.moreOverlay} onClick={() => setMoreOpen(false)}>
           <div className={styles.morePanel} onClick={e => e.stopPropagation()}>
-            <p className={styles.morePanelLabel}>Mer</p>
-            {moreNav.map(item => (
+            <p className={styles.morePanelLabel}>MER</p>
+            {moreNav.map((item: MoreNavItem) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -40,6 +48,9 @@ export default function BottomNav() {
               >
                 <i className={`ti ${item.icon}`} />
                 <span>{item.label}</span>
+                {item.badge && (
+                  <span className={styles.moreBadge}>{item.badge}</span>
+                )}
               </Link>
             ))}
           </div>
