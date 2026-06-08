@@ -6,190 +6,242 @@ import { createClient } from '@/lib/supabase/client';
 import Navbar from '@/components/Navbar';
 import styles from './medlem.module.css';
 
-interface Bokning {
+// Matchar bookings-tabellens faktiska kolumner
+interface Booking {
   id: string;
-  tjanst: string;
-  pris: string;
-  datum: string;
-  tid: string;
+  user_id: string | null;
+  service_id: string | null;
+  booking_date: string;
   status: string;
-  skapad: string;
-  namn: string;
-  efternamn: string;
-  telefon: string;
+  duration_minutes: number | null;
+  price: number | null;
+  notes: string | null;
+  created_at: string;
+  client_name: string | null;
+  client_email: string | null;
+  client_phone: string | null;
+  services?: { name: string } | null; // join med services-tabellen
 }
+
+const STATUS_LABELS: Record<string, string> = {
+  confirmed: 'Bekräftad',
+  pending: 'Väntar',
+  in_progress: 'Pågår',
+  completed: 'Genomförd',
+  cancelled: 'Avbokad',
+};
 
 export default function MedlemPage() {
   const [user, setUser] = useState<any>(null);
-  const [bokningar, setBokningar] = useState<Bokning[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
   const [cancelModal, setCancelModal] = useState<string | null>(null);
-  const supabase = createClient();
 
   const [profileData, setProfileData] = useState({
-    namn: '',
-    efternamn: '',
-    telefon: '',
+    client_name: '',
+    client_phone: '',
     email: '',
   });
 
+  const supabase = createClient();
   const router = useRouter();
 
-  useEffect(() => {
-    checkUser();
-  }, []);
+  useEffect(() => { checkUser(); }, []);
 
+  /* ── AUTH ── */
   const checkUser = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error || !user) { router.push('/logga-in'); return; }
+      setUser(user);
+      await fetchBookings(user.email!, user.id);
+    } catch (err) {
+      console.error('Auth error:', err);
       router.push('/logga-in');
-      return;
-    }
-
-    setUser(user);
-    await fetchBokningar(user.email!);
-    setLoading(false);
-  };
-
-  const fetchBokningar = async (email: string) => {
-    const { data, error } = await supabase
-      .from('bokningar')
-      .select('*')
-      .eq('email', email)
-      .order('datum', { ascending: false });
-
-    if (!error && data && data.length > 0) {
-      setBokningar(data);
-
-      const firstBokning = data[0];
-      setProfileData({
-        namn: firstBokning.namn || '',
-        efternamn: firstBokning.efternamn || '',
-        telefon: firstBokning.telefon || '',
-        email: email,
-      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleCancelBooking = async (bokningId: string) => {
-    const { error } = await supabase
-      .from('bokningar')
-      .update({ status: 'avbokad' })
-      .eq('id', bokningId);
+  /* ── HÄMTA BOKNINGAR ──
+     Söker på client_email ELLER user_id så det funkar oavsett hur bokningen skapades */
+  const fetchBookings = async (email: string, userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('bookings')
+        .select('*, services(name)')
+        .or(`client_email.eq.${email},user_id.eq.${userId}`)
+        .order('booking_date', { ascending: false });
 
-    if (!error) {
-      setBokningar(bokningar.map(b =>
-        b.id === bokningId ? { ...b, status: 'avbokad' } : b
-      ));
-      setCancelModal(null);
+      if (error) { console.error('Bookings fetch error:', error); return; }
+
+      if (data && data.length > 0) {
+        setBookings(data);
+        const first = data[0];
+        setProfileData({
+          client_name: first.client_name ?? '',
+          client_phone: first.client_phone ?? '',
+          email,
+        });
+      }
+    } catch (err) {
+      console.error('Fetch error:', err);
     }
   };
 
+  /* ── AVBOKA ── */
+  const handleCancelBooking = async (bookingId: string) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'cancelled' })
+        .eq('id', bookingId);
+
+      if (!error) {
+        setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: 'cancelled' } : b));
+        setCancelModal(null);
+      } else {
+        console.error('Cancel error:', error);
+      }
+    } catch (err) {
+      console.error('Cancel error:', err);
+    }
+  };
+
+  /* ── UPPDATERA PROFIL ── */
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({
+          client_name: profileData.client_name,
+          client_phone: profileData.client_phone,
+        })
+        .eq('client_email', user.email);
 
-    const { error } = await supabase
-      .from('bokningar')
-      .update({
-        namn: profileData.namn,
-        efternamn: profileData.efternamn,
-        telefon: profileData.telefon,
-      })
-      .eq('email', user.email);
-
-    if (!error) {
-      setShowProfile(false);
-      await fetchBokningar(user.email!);
+      if (!error) {
+        setShowProfile(false);
+        await fetchBookings(user.email!, user.id);
+      } else {
+        console.error('Update profile error:', error);
+      }
+    } catch (err) {
+      console.error('Profile update error:', err);
     }
   };
 
+  /* ── LOGOUT ── */
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      router.push('/');
+      router.refresh();
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
+
+  /* ── HJÄLPFUNKTIONER ── */
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    const manader = [
-      'januari', 'februari', 'mars', 'april', 'maj', 'juni',
-      'juli', 'augusti', 'september', 'oktober', 'november', 'december'
-    ];
+    const manader = ['januari', 'februari', 'mars', 'april', 'maj', 'juni',
+      'juli', 'augusti', 'september', 'oktober', 'november', 'december'];
     return `${date.getDate()} ${manader[date.getMonth()]} ${date.getFullYear()}`;
   };
 
-  const getStatusColor = (status: string) => {
+  const formatTime = (dateStr: string) =>
+    new Date(dateStr).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
+
+  const getStatusClass = (status: string) => {
     switch (status) {
-      case 'bekraftad': return styles.statusConfirmed;
-      case 'avbokad': return styles.statusCancelled;
-      case 'genomford': return styles.statusCompleted;
+      case 'confirmed': return styles.statusConfirmed;
+      case 'cancelled': return styles.statusCancelled;
+      case 'completed': return styles.statusCompleted;
+      case 'pending': return styles.statusPending;
+      case 'in_progress': return styles.statusInProgress;
       default: return '';
     }
   };
 
+  const getServiceName = (b: Booking) =>
+    (b.services as any)?.[0]?.name ?? (b.services as any)?.name ?? '–';
+
+  /* ── STATISTIK ── */
   const calculateStats = () => {
-    const genomforda = bokningar.filter(b => b.status === 'genomford');
-    const totalVisits = genomforda.length;
+    const completed = bookings.filter(b => b.status === 'completed');
+    const totalVisits = completed.length;
+    const totalSpent = completed.reduce((sum, b) => sum + (b.price ?? 0), 0);
 
-    const totalSpent = genomforda.reduce((sum, b) => {
-      const pris = parseInt(b.pris.replace(/[^0-9]/g, '')) || 0;
-      return sum + pris;
-    }, 0);
-
-    const memberSince = bokningar.length > 0
-      ? new Date(bokningar[bokningar.length - 1].skapad)
+    const memberSince = bookings.length > 0
+      ? new Date(bookings[bookings.length - 1].created_at)
       : new Date();
 
-    const nextBooking = bokningar.find(b => {
-      const bokningDatum = new Date(b.datum);
-      return bokningDatum >= new Date() && b.status === 'bekraftad';
+    const nextBooking = bookings.find(b => {
+      return new Date(b.booking_date) >= new Date() &&
+        (b.status === 'confirmed' || b.status === 'pending');
     });
 
     return { totalVisits, totalSpent, memberSince, nextBooking };
   };
 
+  /* ── LOADING ── */
   if (loading) {
     return (
       <>
         <Navbar />
         <div className={styles.loadingContainer}>
-          <div className={styles.loader}></div>
+          <div className={styles.loader} />
           <p>Laddar din profil...</p>
         </div>
       </>
     );
   }
 
-  const kommandeBokningar = bokningar.filter(b => {
-    const bokningDatum = new Date(b.datum);
-    return bokningDatum >= new Date() && b.status === 'bekraftad';
+  /* ── FILTRERA ── */
+  const kommande = bookings.filter(b => {
+    return new Date(b.booking_date) >= new Date() &&
+      b.status !== 'cancelled';
   });
 
-  const tidigareBokningar = bokningar.filter(b => {
-    const bokningDatum = new Date(b.datum);
-    return bokningDatum < new Date() || b.status !== 'bekraftad';
+  const tidigare = bookings.filter(b => {
+    return new Date(b.booking_date) < new Date() ||
+      b.status === 'cancelled';
   });
 
   const stats = calculateStats();
 
+  /* ── RENDER ── */
   return (
     <>
       <Navbar />
 
       <div className={styles.container}>
+
+        {/* HEADER */}
         <div className={styles.header}>
           <div className={styles.headerContent}>
             <div>
               <p className={styles.eyebrow}>Välkommen tillbaka</p>
               <h1 className={styles.title}>
-                {profileData.namn || user?.email?.split('@')[0]}
+                {profileData.client_name || user?.email?.split('@')[0]}
               </h1>
             </div>
             <div className={styles.headerActions}>
               <button onClick={() => setShowProfile(true)} className={styles.profileBtn}>
                 Redigera profil
               </button>
+              <button onClick={handleLogout} className={styles.logoutBtn}>
+                Logga ut
+              </button>
             </div>
           </div>
         </div>
 
         <div className={styles.content}>
+
+          {/* STATS */}
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
               <p className={styles.statLabel}>Totalt besök</p>
@@ -209,20 +261,20 @@ export default function MedlemPage() {
               <p className={styles.statLabel}>Nästa besök</p>
               <p className={styles.statValue}>
                 {stats.nextBooking
-                  ? `${new Date(stats.nextBooking.datum).getDate()}/${new Date(stats.nextBooking.datum).getMonth() + 1}`
-                  : 'Ingen bokning'
-                }
+                  ? `${new Date(stats.nextBooking.booking_date).getDate()}/${new Date(stats.nextBooking.booking_date).getMonth() + 1}`
+                  : 'Ingen bokning'}
               </p>
             </div>
           </div>
 
+          {/* KOMMANDE BOKNINGAR */}
           <div className={styles.section}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Kommande bokningar</h2>
               <a href="/boka" className={styles.bookBtn}>Boka ny tid</a>
             </div>
 
-            {kommandeBokningar.length === 0 ? (
+            {kommande.length === 0 ? (
               <div className={styles.emptyState}>
                 <p className={styles.emptyIcon}>📅</p>
                 <p className={styles.emptyTitle}>Inga kommande bokningar</p>
@@ -233,56 +285,66 @@ export default function MedlemPage() {
               </div>
             ) : (
               <div className={styles.bookingGrid}>
-                {kommandeBokningar.map((bokning) => (
-                  <div key={bokning.id} className={styles.bookingCard}>
+                {kommande.map(b => (
+                  <div key={b.id} className={styles.bookingCard}>
                     <div className={styles.bookingHeader}>
-                      <h3 className={styles.bookingService}>{bokning.tjanst}</h3>
-                      <span className={`${styles.status} ${getStatusColor(bokning.status)}`}>
-                        {bokning.status}
+                      <h3 className={styles.bookingService}>{getServiceName(b)}</h3>
+                      <span className={`${styles.status} ${getStatusClass(b.status)}`}>
+                        {STATUS_LABELS[b.status] ?? b.status}
                       </span>
                     </div>
                     <div className={styles.bookingDetails}>
                       <div className={styles.detail}>
                         <span className={styles.detailLabel}>Datum</span>
-                        <span className={styles.detailValue}>{formatDate(bokning.datum)}</span>
+                        <span className={styles.detailValue}>{formatDate(b.booking_date)}</span>
                       </div>
                       <div className={styles.detail}>
                         <span className={styles.detailLabel}>Tid</span>
-                        <span className={styles.detailValue}>{bokning.tid}</span>
+                        <span className={styles.detailValue}>{formatTime(b.booking_date)}</span>
                       </div>
+                      {b.duration_minutes && (
+                        <div className={styles.detail}>
+                          <span className={styles.detailLabel}>Varaktighet</span>
+                          <span className={styles.detailValue}>{b.duration_minutes} min</span>
+                        </div>
+                      )}
                       <div className={styles.detail}>
                         <span className={styles.detailLabel}>Pris</span>
-                        <span className={styles.detailPrice}>{bokning.pris}</span>
+                        <span className={styles.detailPrice}>
+                          {b.price ? `${b.price.toLocaleString('sv-SE')} kr` : '–'}
+                        </span>
                       </div>
                     </div>
-                    <button
-                      onClick={() => setCancelModal(bokning.id)}
-                      className={styles.cancelBtn}
-                    >
-                      Avboka
-                    </button>
+                    {b.status !== 'cancelled' && (
+                      <button onClick={() => setCancelModal(b.id)} className={styles.cancelBtn}>
+                        Avboka
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          {tidigareBokningar.length > 0 && (
+          {/* TIDIGARE BOKNINGAR */}
+          {tidigare.length > 0 && (
             <div className={styles.section}>
               <h2 className={styles.sectionTitle}>Tidigare bokningar</h2>
               <div className={styles.historyList}>
-                {tidigareBokningar.map((bokning) => (
-                  <div key={bokning.id} className={styles.historyItem}>
+                {tidigare.map(b => (
+                  <div key={b.id} className={styles.historyItem}>
                     <div className={styles.historyLeft}>
-                      <p className={styles.historyService}>{bokning.tjanst}</p>
+                      <p className={styles.historyService}>{getServiceName(b)}</p>
                       <p className={styles.historyDate}>
-                        {formatDate(bokning.datum)} kl {bokning.tid}
+                        {formatDate(b.booking_date)} kl {formatTime(b.booking_date)}
                       </p>
                     </div>
                     <div className={styles.historyRight}>
-                      <span className={styles.historyPrice}>{bokning.pris}</span>
-                      <span className={`${styles.status} ${getStatusColor(bokning.status)}`}>
-                        {bokning.status}
+                      <span className={styles.historyPrice}>
+                        {b.price ? `${b.price.toLocaleString('sv-SE')} kr` : '–'}
+                      </span>
+                      <span className={`${styles.status} ${getStatusClass(b.status)}`}>
+                        {STATUS_LABELS[b.status] ?? b.status}
                       </span>
                     </div>
                   </div>
@@ -291,6 +353,7 @@ export default function MedlemPage() {
             </div>
           )}
 
+          {/* SNABBLÄNKAR */}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Snabblänkar</h2>
             <div className={styles.quickLinks}>
@@ -310,30 +373,21 @@ export default function MedlemPage() {
           </div>
         </div>
 
+        {/* MODAL – REDIGERA PROFIL */}
         {showProfile && (
           <div className={styles.modalOverlay} onClick={() => setShowProfile(false)}>
-            <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modal} onClick={e => e.stopPropagation()}>
               <div className={styles.modalHeader}>
                 <h2 className={styles.modalTitle}>Redigera profil</h2>
                 <button onClick={() => setShowProfile(false)} className={styles.modalClose}>✕</button>
               </div>
               <form onSubmit={handleUpdateProfile} className={styles.modalForm}>
                 <div className={styles.formField}>
-                  <label className={styles.formLabel}>Förnamn</label>
+                  <label className={styles.formLabel}>Namn</label>
                   <input
                     type="text"
-                    value={profileData.namn}
-                    onChange={(e) => setProfileData({ ...profileData, namn: e.target.value })}
-                    className={styles.formInput}
-                    required
-                  />
-                </div>
-                <div className={styles.formField}>
-                  <label className={styles.formLabel}>Efternamn</label>
-                  <input
-                    type="text"
-                    value={profileData.efternamn}
-                    onChange={(e) => setProfileData({ ...profileData, efternamn: e.target.value })}
+                    value={profileData.client_name}
+                    onChange={e => setProfileData({ ...profileData, client_name: e.target.value })}
                     className={styles.formInput}
                     required
                   />
@@ -342,10 +396,9 @@ export default function MedlemPage() {
                   <label className={styles.formLabel}>Telefon</label>
                   <input
                     type="tel"
-                    value={profileData.telefon}
-                    onChange={(e) => setProfileData({ ...profileData, telefon: e.target.value })}
+                    value={profileData.client_phone}
+                    onChange={e => setProfileData({ ...profileData, client_phone: e.target.value })}
                     className={styles.formInput}
-                    required
                   />
                 </div>
                 <div className={styles.formField}>
@@ -370,9 +423,10 @@ export default function MedlemPage() {
           </div>
         )}
 
+        {/* MODAL – AVBOKA BEKRÄFTELSE */}
         {cancelModal && (
           <div className={styles.modalOverlay} onClick={() => setCancelModal(null)}>
-            <div className={styles.confirmModal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.confirmModal} onClick={e => e.stopPropagation()}>
               <h3 className={styles.confirmTitle}>Avboka bokning?</h3>
               <p className={styles.confirmText}>
                 Är du säker på att du vill avboka denna tid? Detta kan inte ångras.
