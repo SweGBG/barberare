@@ -4,9 +4,10 @@ import { useRef } from 'react'
 import AdminGuard from '@/components/AdminGuard'
 import AdminLayout from '@/components/admin/AdminLayout'
 import TrenderWidget, { TrenderWidgetHandle } from '@/components/admin/trender-widget'
+import FirecrawlWidget, { FirecrawlWidgetHandle } from '@/components/admin/firecrawl-widget'
 import styles from './trender.module.css'
 
-const TIPS = [
+const NEWS_TIPS = [
   'fade haircut 2026',
   'barber business tips',
   'men grooming trends',
@@ -16,15 +17,14 @@ const TIPS = [
 ]
 
 export default function TrenderPage() {
-  const widgetRef = useRef<TrenderWidgetHandle>(null)
-
-  function handleChipClick(tip: string) {
-    widgetRef.current?.addQuery(tip)
-  }
+  const newsRef = useRef<TrenderWidgetHandle>(null)
+  const firecrawlRef = useRef<FirecrawlWidgetHandle>(null)
 
   return (
     <AdminGuard>
       <AdminLayout>
+
+        {/* ── Page header ── */}
         <div className={styles.pageHeader}>
           <div className={styles.headerLeft}>
             <div className={styles.iconWrap}>
@@ -35,25 +35,79 @@ export default function TrenderPage() {
             </div>
             <div>
               <h1 className={styles.pageTitle}>Trender</h1>
-              <p className={styles.pageSubtitle}>Aktuella nyheter inom barbershop &amp; hårstyling</p>
+              <p className={styles.pageSubtitle}>Nyheter &amp; intelligence från webben</p>
             </div>
           </div>
-          <div className={styles.badge}>
-            <span className={styles.badgeDot} />
-            Live via NewsAPI
+          <div className={styles.headerBadges}>
+            <div className={styles.badge}>
+              <span className={styles.badgeDot} />
+              NewsAPI
+            </div>
+            <div className={`${styles.badge} ${styles.badgeFirecrawl}`}>
+              <span className={`${styles.badgeDot} ${styles.badgeDotOrange}`} />
+              Firecrawl
+            </div>
           </div>
+        </div>
+
+        {/* ── Sektion 1: Firecrawl ── */}
+        <div className={styles.sectionHeader}>
+          <div className={styles.sectionLine} />
+          <span className={styles.sectionLabel}>KÄLLSCRAPING</span>
+          <div className={styles.sectionLine} />
         </div>
 
         <div className={styles.layout}>
           <div className={styles.mainCol}>
-            <TrenderWidget ref={widgetRef} />
+            <FirecrawlWidget ref={firecrawlRef} />
           </div>
-
           <aside className={styles.sideCol}>
             <div className={styles.infoCard}>
-              <p className={styles.infoLabel}>OM TRENDER</p>
+              <p className={styles.infoLabel}>OM FIRECRAWL</p>
               <p className={styles.infoText}>
-                Widgeten hämtar artiklar automatiskt baserat på dina sökord. Nyheter cachas i <strong>1 timme</strong> för att spara API-anrop.
+                Scrapar direkt från specifika webbsidor — produktsidor, bloggar, konkurrenters priser. Mer träffsäkert än nyhetsflöden.
+              </p>
+            </div>
+            <div className={styles.infoCard}>
+              <p className={styles.infoLabel}>BRA KÄLLOR</p>
+              <div className={styles.chipList}>
+                {[
+                  'americancrew.com/blogs/news',
+                  'schwarzkopf.com/en/professionals',
+                  'menshairstyletrends.com',
+                  'gq.com/grooming/hair',
+                  'barbermag.com',
+                ].map(tip => (
+                  <button
+                    key={tip}
+                    className={styles.chip}
+                    onClick={() => firecrawlRef.current?.openEditor()}
+                    title={`https://${tip}`}
+                  >
+                    + {tip}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        {/* ── Sektion 2: NewsAPI ── */}
+        <div className={styles.sectionHeader} style={{ marginTop: 32 }}>
+          <div className={styles.sectionLine} />
+          <span className={styles.sectionLabel}>NYHETSFLÖDE</span>
+          <div className={styles.sectionLine} />
+        </div>
+
+        <div className={styles.layout}>
+          <div className={styles.mainCol}>
+            <TrenderWidget ref={newsRef} />
+          </div>
+          <aside className={styles.sideCol}>
+            <div className={styles.infoCard}>
+              <p className={styles.infoLabel}>OM NEWSAPI</p>
+              <p className={styles.infoText}>
+                Söker nyhetsartiklar baserat på sökord. Använd <strong>AND</strong>, <strong>OR</strong> och <strong>"citattecken"</strong> för bättre träffar.
               </p>
             </div>
             <div className={styles.infoCard}>
@@ -67,11 +121,11 @@ export default function TrenderPage() {
               <p className={styles.infoLabel}>TIPS PÅ SÖKORD</p>
               <p className={styles.infoHint}>Klicka för att lägga till</p>
               <div className={styles.chipList}>
-                {TIPS.map(tip => (
+                {NEWS_TIPS.map(tip => (
                   <button
                     key={tip}
                     className={styles.chip}
-                    onClick={() => handleChipClick(tip)}
+                    onClick={() => newsRef.current?.addQuery(tip)}
                   >
                     + {tip}
                   </button>
@@ -80,6 +134,7 @@ export default function TrenderPage() {
             </div>
           </aside>
         </div>
+
       </AdminLayout>
     </AdminGuard>
   )
