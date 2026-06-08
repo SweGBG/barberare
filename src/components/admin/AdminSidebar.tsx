@@ -4,7 +4,15 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import styles from './AdminSidebar.module.css'
 
-const nav = [
+type NavLink = {
+  href: string
+  label: string
+  icon: string
+  exact?: boolean
+  badge?: string
+}
+
+const nav: { group: string; links: NavLink[] }[] = [
   {
     group: 'ÖVERSIKT',
     links: [
