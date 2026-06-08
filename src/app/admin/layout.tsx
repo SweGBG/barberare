@@ -8,10 +8,11 @@ import styles from '@/components/admin/AdminLayout.module.css'
 export default async function AdminRootLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
+  // Verifiera session
+  const { data: { user }, error } = await supabase.auth.getUser()
+  if (error || !user) redirect('/logga-in')
 
-  if (!user) redirect('/logga-in')
-
+  // Verifiera admin-roll
   const { data: profile } = await supabase
     .from('profiles')
     .select('role')

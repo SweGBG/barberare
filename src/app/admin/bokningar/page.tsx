@@ -1,8 +1,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
 import AdminLayout from '@/components/admin/AdminLayout'
 import styles from './bokningar.module.css'
+
+type Service = {
+  id: string
+  name: string
+  price: number
+  duration_minutes: number
+}
 
 type Booking = {
   id: string
@@ -35,10 +43,13 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function BokningarPage() {
   const [bookings, setBookings] = useState<Booking[]>([])
+  const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'alla' | 'idag' | 'kommande' | 'historik'>('idag')
   const [showModal, setShowModal] = useState(false)
   const [saving, setSaving] = useState(false)
+
+  const supabase = createClient()
 
   const [form, setForm] = useState({
     client_name: '',
@@ -46,6 +57,7 @@ export default function BokningarPage() {
     client_phone: '',
     booking_date: '',
     booking_time: '',
+    service_id: '',   // ← NY
     duration_minutes: '30',
     price: '',
     notes: '',
@@ -53,7 +65,17 @@ export default function BokningarPage() {
 
   useEffect(() => {
     fetchBookings()
+    fetchServices()
   }, [])
+
+  // Hämta tjänster från Supabase direkt
+  async function fetchServices() {
+    const { data } = await supabase
+      .from('services')
+      .select('id, name, price, duration_minutes')
+      .order('name')
+    if (data) setServices(data)
+  }
 
   async function fetchBookings() {
     setLoading(true)
@@ -68,19 +90,25 @@ export default function BokningarPage() {
     setLoading(false)
   }
 
+  // När tjänst väljs – fyll i pris och tid automatiskt
+  function handleServiceChange(serviceId: string) {
+    const svc = services.find(s => s.id === serviceId)
+    setForm(prev => ({
+      ...prev,
+      service_id: serviceId,
+      duration_minutes: svc ? String(svc.duration_minutes) : prev.duration_minutes,
+      price: svc ? String(svc.price) : prev.price,
+    }))
+  }
+
   function getFiltered() {
     const now = new Date()
     const todayStr = now.toLocaleDateString('sv-SE', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
+      year: 'numeric', month: '2-digit', day: '2-digit',
     })
-
     return bookings.filter(b => {
       const dStr = new Date(b.booking_date).toLocaleDateString('sv-SE', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
+        year: 'numeric', month: '2-digit', day: '2-digit',
       })
       if (filter === 'idag') return dStr === todayStr
       if (filter === 'kommande') return dStr > todayStr
@@ -108,6 +136,7 @@ export default function BokningarPage() {
     e.preventDefault()
     setSaving(true)
     const booking_date = `${form.booking_date}T${form.booking_time}:00`
+
     await fetch('/api/admin/booking', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -116,17 +145,19 @@ export default function BokningarPage() {
         client_email: form.client_email,
         client_phone: form.client_phone,
         booking_date,
+        service_id: form.service_id || null,   // ← NY
         duration_minutes: parseInt(form.duration_minutes),
         price: parseInt(form.price) || 0,
         notes: form.notes,
       }),
     })
+
     setSaving(false)
     setShowModal(false)
     setForm({
       client_name: '', client_email: '', client_phone: '',
-      booking_date: '', booking_time: '', duration_minutes: '30',
-      price: '', notes: '',
+      booking_date: '', booking_time: '', service_id: '',
+      duration_minutes: '30', price: '', notes: '',
     })
     fetchBookings()
   }
@@ -178,6 +209,7 @@ export default function BokningarPage() {
               const date = new Date(b.booking_date)
               const datum = date.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' })
               const tid = date.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
+              const svcName = (b.services as any)?.[0]?.name ?? (b.services as any)?.name ?? '–'
 
               return (
                 <div key={b.id} className={styles.row}>
@@ -189,9 +221,7 @@ export default function BokningarPage() {
                     <p className={styles.dateMain}>{datum}</p>
                     <p className={styles.dateSub}>{tid} · {b.duration_minutes ?? 30} min</p>
                   </div>
-                  <div className={styles.service}>
-                    {(b.services as any)?.[0]?.name ?? (b.services as any)?.name ?? '–'}
-                  </div>
+                  <div className={styles.service}>{svcName}</div>
                   <div className={styles.price}>
                     {b.price ? `${b.price.toLocaleString('sv-SE')} kr` : '–'}
                   </div>
@@ -212,10 +242,7 @@ export default function BokningarPage() {
                       <option value="completed">Genomförd</option>
                       <option value="cancelled">Avboka</option>
                     </select>
-                    <button
-                      className={styles.deleteBtn}
-                      onClick={() => handleDelete(b.id)}
-                    >
+                    <button className={styles.deleteBtn} onClick={() => handleDelete(b.id)}>
                       Radera
                     </button>
                   </div>
@@ -226,6 +253,7 @@ export default function BokningarPage() {
         </div>
       </div>
 
+      {/* MODAL – NY BOKNING */}
       {showModal && (
         <div className={styles.overlay} onClick={() => setShowModal(false)}>
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
@@ -235,47 +263,73 @@ export default function BokningarPage() {
             </div>
             <form onSubmit={handleCreate} className={styles.form}>
               <div className={styles.formGrid}>
+
                 <div className={styles.field}>
                   <label className={styles.label}>Namn *</label>
                   <input className={styles.input} value={form.client_name}
                     onChange={e => setForm({ ...form, client_name: e.target.value })} required />
                 </div>
+
                 <div className={styles.field}>
                   <label className={styles.label}>E-post</label>
                   <input className={styles.input} type="email" value={form.client_email}
                     onChange={e => setForm({ ...form, client_email: e.target.value })} />
                 </div>
+
                 <div className={styles.field}>
                   <label className={styles.label}>Telefon</label>
                   <input className={styles.input} type="tel" value={form.client_phone}
                     onChange={e => setForm({ ...form, client_phone: e.target.value })} />
                 </div>
+
+                {/* TJÄNST-DROPDOWN – fyller i pris & tid automatiskt */}
+                <div className={styles.field}>
+                  <label className={styles.label}>Tjänst</label>
+                  <select
+                    className={styles.input}
+                    value={form.service_id}
+                    onChange={e => handleServiceChange(e.target.value)}
+                  >
+                    <option value="">– Välj tjänst –</option>
+                    {services.map(s => (
+                      <option key={s.id} value={s.id}>
+                        {s.name} · {s.price} kr · {s.duration_minutes} min
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 <div className={styles.field}>
                   <label className={styles.label}>Datum *</label>
                   <input className={styles.input} type="date" value={form.booking_date}
                     onChange={e => setForm({ ...form, booking_date: e.target.value })} required />
                 </div>
+
                 <div className={styles.field}>
                   <label className={styles.label}>Tid *</label>
                   <input className={styles.input} type="time" value={form.booking_time}
                     onChange={e => setForm({ ...form, booking_time: e.target.value })} required />
                 </div>
+
                 <div className={styles.field}>
                   <label className={styles.label}>Varaktighet (min)</label>
                   <input className={styles.input} type="number" value={form.duration_minutes}
                     onChange={e => setForm({ ...form, duration_minutes: e.target.value })} />
                 </div>
+
                 <div className={styles.field}>
                   <label className={styles.label}>Pris (kr)</label>
                   <input className={styles.input} type="number" value={form.price}
                     onChange={e => setForm({ ...form, price: e.target.value })} />
                 </div>
+
                 <div className={`${styles.field} ${styles.fullWidth}`}>
                   <label className={styles.label}>Notering</label>
                   <textarea className={styles.textarea} value={form.notes}
                     onChange={e => setForm({ ...form, notes: e.target.value })} rows={3} />
                 </div>
               </div>
+
               <div className={styles.modalActions}>
                 <button type="button" className={styles.cancelBtn} onClick={() => setShowModal(false)}>
                   Avbryt

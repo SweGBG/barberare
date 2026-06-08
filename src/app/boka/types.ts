@@ -1,7 +1,10 @@
 export interface Tjanst {
+  id: string           // service_id för bookings-tabellen
   namn: string
-  tid: string
-  pris: string
+  tid: string          // t.ex. "45 min"
+  pris: string         // t.ex. "550 kr"
+  duration_minutes: number
+  price: number
 }
 
 export interface Datum {
