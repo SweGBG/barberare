@@ -34,21 +34,33 @@ export default function MedlemPage() {
 
   const checkUser = async () => {
     try {
-      // FIX 1: getSession är snabb och lokal — ingen nätverksrunda
+      // Steg 1: Försök med getSession (snabb, lokal)
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) {
-        router.push('/logga-in');
-        return; // returnera utan setLoading(false) — redirect sker
+
+      // Steg 2: Om session finns, använd den
+      if (session?.user) {
+        setUser(session.user);
+        await fetchBookings(session.user.email!, session.user.id);
+        setLoading(false);
+        return;
       }
-      setUser(session.user);
-      await fetchBookings(session.user.email!, session.user.id);
+
+      // Steg 3: Ingen session — försök refresha token (fixar Vercel-miljö)
+      const { data: { user: refreshedUser }, error } = await supabase.auth.getUser();
+
+      if (error || !refreshedUser) {
+        router.push('/logga-in');
+        return;
+      }
+
+      setUser(refreshedUser);
+      await fetchBookings(refreshedUser.email!, refreshedUser.id);
+      setLoading(false);
+
     } catch (err) {
       console.error('Auth error:', err);
       router.push('/logga-in');
-      return;
     }
-    // FIX 2: loading=false bara när vi har data, inte vid redirect
-    setLoading(false);
   };
 
   const fetchBookings = async (email: string, userId: string) => {
@@ -88,24 +100,43 @@ export default function MedlemPage() {
     if (!error) { setShowProfile(false); await fetchBookings(user.email!, user.id); }
   };
 
-  const handleLogout = async () => { await supabase.auth.signOut(); router.push('/'); router.refresh(); };
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/');
+    router.refresh();
+  };
 
-  const formatDate = (d: string) => { const dt = new Date(d); const m = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december']; return `${dt.getDate()} ${m[dt.getMonth()]} ${dt.getFullYear()}`; };
+  const formatDate = (d: string) => {
+    const dt = new Date(d);
+    const m = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
+    return `${dt.getDate()} ${m[dt.getMonth()]} ${dt.getFullYear()}`;
+  };
   const formatTime = (d: string) => new Date(d).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
   const getStatusClass = (s: string) => ({ confirmed: styles.statusConfirmed, cancelled: styles.statusCancelled, completed: styles.statusCompleted, pending: styles.statusPending, in_progress: styles.statusInProgress }[s] ?? '');
   const getServiceName = (b: Booking) => (b.services as any)?.[0]?.name ?? (b.services as any)?.name ?? '–';
 
-  const stats = () => {
+  const calcStats = () => {
     const done = bookings.filter(b => b.status === 'completed');
     const next = bookings.find(b => new Date(b.booking_date) >= new Date() && (b.status === 'confirmed' || b.status === 'pending'));
-    return { totalVisits: done.length, totalSpent: done.reduce((s, b) => s + (b.price ?? 0), 0), memberSince: bookings.length > 0 ? new Date(bookings[bookings.length - 1].created_at) : new Date(), nextBooking: next };
+    return {
+      totalVisits: done.length,
+      totalSpent: done.reduce((s, b) => s + (b.price ?? 0), 0),
+      memberSince: bookings.length > 0 ? new Date(bookings[bookings.length - 1].created_at) : new Date(),
+      nextBooking: next,
+    };
   };
 
-  if (loading) return (<><Navbar /><div className={styles.loadingContainer}><div className={styles.loader} /><p>Laddar din profil...</p></div></>);
+  if (loading) return (
+    <><Navbar />
+    <div className={styles.loadingContainer}>
+      <div className={styles.loader} />
+      <p>Laddar din profil...</p>
+    </div></>
+  );
 
   const kommande = bookings.filter(b => new Date(b.booking_date) >= new Date() && b.status !== 'cancelled');
   const tidigare = bookings.filter(b => new Date(b.booking_date) < new Date() || b.status === 'cancelled');
-  const s = stats();
+  const s = calcStats();
 
   return (
     <>
@@ -113,13 +144,17 @@ export default function MedlemPage() {
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.headerContent}>
-            <div><p className={styles.eyebrow}>Välkommen tillbaka</p><h1 className={styles.title}>{profileData.client_name || user?.email?.split('@')[0]}</h1></div>
+            <div>
+              <p className={styles.eyebrow}>Välkommen tillbaka</p>
+              <h1 className={styles.title}>{profileData.client_name || user?.email?.split('@')[0]}</h1>
+            </div>
             <div className={styles.headerActions}>
               <button onClick={() => setShowProfile(true)} className={styles.profileBtn}>Redigera profil</button>
               <button onClick={handleLogout} className={styles.logoutBtn}>Logga ut</button>
             </div>
           </div>
         </div>
+
         <div className={styles.content}>
           <div className={styles.statsGrid}>
             <div className={styles.statCard}><p className={styles.statLabel}>Totalt besök</p><p className={styles.statValue}>{s.totalVisits}</p></div>
@@ -127,15 +162,27 @@ export default function MedlemPage() {
             <div className={styles.statCard}><p className={styles.statLabel}>Medlem sedan</p><p className={styles.statValue}>{s.memberSince.toLocaleDateString('sv-SE', { month: 'short', year: 'numeric' })}</p></div>
             <div className={styles.statCard}><p className={styles.statLabel}>Nästa besök</p><p className={styles.statValue}>{s.nextBooking ? `${new Date(s.nextBooking.booking_date).getDate()}/${new Date(s.nextBooking.booking_date).getMonth() + 1}` : 'Ingen bokning'}</p></div>
           </div>
+
           <div className={styles.section}>
-            <div className={styles.sectionHeader}><h2 className={styles.sectionTitle}>Kommande bokningar</h2><a href="/boka" className={styles.bookBtn}>Boka ny tid</a></div>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>Kommande bokningar</h2>
+              <a href="/boka" className={styles.bookBtn}>Boka ny tid</a>
+            </div>
             {kommande.length === 0 ? (
-              <div className={styles.emptyState}><p className={styles.emptyIcon}>📅</p><p className={styles.emptyTitle}>Inga kommande bokningar</p><p className={styles.emptyText}>Du har inga bokade tider just nu.</p><a href="/boka" className={styles.emptyBtn}>Boka tid</a></div>
+              <div className={styles.emptyState}>
+                <p className={styles.emptyIcon}>📅</p>
+                <p className={styles.emptyTitle}>Inga kommande bokningar</p>
+                <p className={styles.emptyText}>Du har inga bokade tider just nu.</p>
+                <a href="/boka" className={styles.emptyBtn}>Boka tid</a>
+              </div>
             ) : (
               <div className={styles.bookingGrid}>
                 {kommande.map(b => (
                   <div key={b.id} className={styles.bookingCard}>
-                    <div className={styles.bookingHeader}><h3 className={styles.bookingService}>{getServiceName(b)}</h3><span className={`${styles.status} ${getStatusClass(b.status)}`}>{STATUS_LABELS[b.status] ?? b.status}</span></div>
+                    <div className={styles.bookingHeader}>
+                      <h3 className={styles.bookingService}>{getServiceName(b)}</h3>
+                      <span className={`${styles.status} ${getStatusClass(b.status)}`}>{STATUS_LABELS[b.status] ?? b.status}</span>
+                    </div>
                     <div className={styles.bookingDetails}>
                       <div className={styles.detail}><span className={styles.detailLabel}>Datum</span><span className={styles.detailValue}>{formatDate(b.booking_date)}</span></div>
                       <div className={styles.detail}><span className={styles.detailLabel}>Tid</span><span className={styles.detailValue}>{formatTime(b.booking_date)}</span></div>
@@ -148,6 +195,7 @@ export default function MedlemPage() {
               </div>
             )}
           </div>
+
           {tidigare.length > 0 && (
             <div className={styles.section}>
               <h2 className={styles.sectionTitle}>Tidigare bokningar</h2>
@@ -161,6 +209,7 @@ export default function MedlemPage() {
               </div>
             </div>
           )}
+
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Snabblänkar</h2>
             <div className={styles.quickLinks}>
