@@ -196,3 +196,31 @@
     grid-template-columns: 1fr;
   }
 }
+
+.infoHint {
+  font-family: 'Raleway', sans-serif;
+  font-size: 10px;
+  color: rgba(28, 26, 23, 0.35);
+  margin: -6px 0 8px;
+  font-style: italic;
+}
+
+.chip {
+  font-family: 'Raleway', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #5C4F40;
+  background: #EDE5D6;
+  border: 1px solid #C4B49A;
+  border-radius: 20px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  text-align: left;
+}
+
+.chip:hover {
+  background: #3B2F2F;
+  color: #F5F0E8;
+  border-color: #3B2F2F;
+}

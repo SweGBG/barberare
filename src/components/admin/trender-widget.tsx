@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, forwardRef, useImperativeHandle } from 'react'
 import styles from './trender-widget.module.css'
 
 interface Article {
@@ -20,6 +20,10 @@ interface TrenderResponse {
   error?: string
 }
 
+export interface TrenderWidgetHandle {
+  addQuery: (query: string) => void
+}
+
 function formatAge(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
   const h = Math.floor(diff / 3_600_000)
@@ -33,12 +37,11 @@ interface Props {
   expanded?: boolean
 }
 
-export default function TrenderWidget({ expanded }: Props) {
+const TrenderWidget = forwardRef<TrenderWidgetHandle, Props>(function TrenderWidget({ expanded }, ref) {
   const [data, setData] = useState<TrenderResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Editor-state
   const [editing, setEditing] = useState(false)
   const [draftQueries, setDraftQueries] = useState<string[]>([])
   const [saving, setSaving] = useState(false)
@@ -62,6 +65,27 @@ export default function TrenderWidget({ expanded }: Props) {
   }
 
   useEffect(() => { load() }, [])
+
+  // Exponerar addQuery till parent via ref
+  useImperativeHandle(ref, () => ({
+    addQuery(query: string) {
+      const current = data?.queries ?? draftQueries
+      if (current.includes(query)) {
+        // Redan tillagd — öppna bara editorn
+        setDraftQueries(current)
+        setEditing(true)
+        return
+      }
+      if (current.length >= 5) {
+        setDraftQueries(current)
+        setEditing(true)
+        return
+      }
+      const updated = [...current, query]
+      setDraftQueries(updated)
+      setEditing(true)
+    }
+  }))
 
   function openEditor() {
     setDraftQueries(data?.queries ?? [])
@@ -104,7 +128,6 @@ export default function TrenderWidget({ expanded }: Props) {
 
   return (
     <div className={styles.widget}>
-      {/* Masthead */}
       <div className={styles.masthead}>
         <div className={styles.mastheadLeft}>
           <span className={styles.edition}>BARBERSHOP DISPATCH</span>
@@ -112,19 +135,8 @@ export default function TrenderWidget({ expanded }: Props) {
           <span className={styles.tagline}>Trender &amp; Inspiration</span>
         </div>
         <div className={styles.mastheadActions}>
-          <button
-            className={styles.iconBtn}
-            onClick={openEditor}
-            title="Redigera sökord"
-          >
-            ✎
-          </button>
-          <button
-            className={styles.iconBtn}
-            onClick={() => load(true)}
-            disabled={loading}
-            title="Uppdatera"
-          >
+          <button className={styles.iconBtn} onClick={openEditor} title="Redigera sökord">✎</button>
+          <button className={styles.iconBtn} onClick={() => load(true)} disabled={loading} title="Uppdatera">
             {loading ? '◌' : '↻'}
           </button>
         </div>
@@ -132,7 +144,6 @@ export default function TrenderWidget({ expanded }: Props) {
 
       <div className={styles.rule} />
 
-      {/* Sökords-editor */}
       {editing && (
         <div className={styles.editor}>
           <p className={styles.editorLabel}>SÖKORD — max 5 st</p>
@@ -144,45 +155,33 @@ export default function TrenderWidget({ expanded }: Props) {
                 onChange={e => updateQuery(i, e.target.value)}
                 placeholder="t.ex. barbershop trends"
                 maxLength={60}
+                autoFocus={i === draftQueries.length - 1}
               />
               <button
                 className={styles.removeBtn}
                 onClick={() => removeQuery(i)}
                 disabled={draftQueries.length <= 1}
                 title="Ta bort"
-              >
-                ×
-              </button>
+              >×</button>
             </div>
           ))}
           {draftQueries.length < 5 && (
-            <button className={styles.addBtn} onClick={addQuery}>
-              + Lägg till sökord
-            </button>
+            <button className={styles.addBtn} onClick={addQuery}>+ Lägg till sökord</button>
           )}
           <div className={styles.editorFooter}>
             {saveMsg && <span className={styles.saveMsg}>{saveMsg}</span>}
             <div className={styles.editorBtns}>
-              <button
-                className={styles.cancelBtn}
-                onClick={() => setEditing(false)}
-                disabled={saving}
-              >
-                Avbryt
-              </button>
+              <button className={styles.cancelBtn} onClick={() => setEditing(false)} disabled={saving}>Avbryt</button>
               <button
                 className={styles.saveBtn}
                 onClick={saveQueries}
                 disabled={saving || draftQueries.filter(q => q.trim()).length === 0}
-              >
-                {saving ? 'Sparar...' : 'Spara & hämta'}
-              </button>
+              >{saving ? 'Sparar...' : 'Spara & hämta'}</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Aktiva sökord — pills */}
       {!editing && data?.queries && (
         <div className={styles.queryPills}>
           {data.queries.map(q => (
@@ -190,25 +189,18 @@ export default function TrenderWidget({ expanded }: Props) {
           ))}
           <span className={styles.cacheNote}>
             {data.fromCache ? '⊙' : '⊛'}{' '}
-            {new Date(data.cachedAt).toLocaleTimeString('sv-SE', {
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
+            {new Date(data.cachedAt).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}
           </span>
         </div>
       )}
 
-      {/* Felmeddelande */}
       {error && (
         <div className={styles.errorBox}>
           <span>⚠ {error}</span>
-          <button className={styles.retryBtn} onClick={() => load()}>
-            Försök igen
-          </button>
+          <button className={styles.retryBtn} onClick={() => load()}>Försök igen</button>
         </div>
       )}
 
-      {/* Skeleton */}
       {loading && !error && (
         <div className={styles.skeletonList}>
           {[...Array(4)].map((_, i) => (
@@ -223,7 +215,6 @@ export default function TrenderWidget({ expanded }: Props) {
         </div>
       )}
 
-      {/* Artikellista */}
       {!loading && data && (
         <ol className={styles.articleList}>
           {data.articles.map((a, i) => (
@@ -234,19 +225,12 @@ export default function TrenderWidget({ expanded }: Props) {
                   <span className={styles.source}>{a.source.name}</span>
                   <span className={styles.age}>{formatAge(a.publishedAt)}</span>
                 </div>
-                <a
-                  href={a.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.articleTitle}
-                >
+                <a href={a.url} target="_blank" rel="noopener noreferrer" className={styles.articleTitle}>
                   {a.title}
                 </a>
                 {a.description && (
                   <p className={styles.articleDesc}>
-                    {a.description.length > 120
-                      ? a.description.slice(0, 120) + '…'
-                      : a.description}
+                    {a.description.length > 120 ? a.description.slice(0, 120) + '…' : a.description}
                   </p>
                 )}
               </div>
@@ -265,4 +249,6 @@ export default function TrenderWidget({ expanded }: Props) {
       )}
     </div>
   )
-}
+})
+
+export default TrenderWidget

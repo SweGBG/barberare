@@ -1,11 +1,27 @@
+'use client'
+
+import { useRef } from 'react'
 import AdminGuard from '@/components/AdminGuard'
 import AdminLayout from '@/components/admin/AdminLayout'
-import TrenderWidget from '@/components/admin/trender-widget'
+import TrenderWidget, { TrenderWidgetHandle } from '@/components/admin/trender-widget'
 import styles from './trender.module.css'
 
-export const metadata = { title: 'Trender — Atilli Berg' }
+const TIPS = [
+  'fade haircut 2026',
+  'barber business tips',
+  'men grooming trends',
+  'beard styles',
+  'barbershop marketing',
+  'hair color trends',
+]
 
 export default function TrenderPage() {
+  const widgetRef = useRef<TrenderWidgetHandle>(null)
+
+  function handleChipClick(tip: string) {
+    widgetRef.current?.addQuery(tip)
+  }
+
   return (
     <AdminGuard>
       <AdminLayout>
@@ -29,12 +45,10 @@ export default function TrenderPage() {
         </div>
 
         <div className={styles.layout}>
-          {/* Huvud-widget */}
           <div className={styles.mainCol}>
-            <TrenderWidget expanded />
+            <TrenderWidget ref={widgetRef} />
           </div>
 
-          {/* Sidopanel */}
           <aside className={styles.sideCol}>
             <div className={styles.infoCard}>
               <p className={styles.infoLabel}>OM TRENDER</p>
@@ -51,16 +65,16 @@ export default function TrenderPage() {
             </div>
             <div className={styles.infoCard}>
               <p className={styles.infoLabel}>TIPS PÅ SÖKORD</p>
+              <p className={styles.infoHint}>Klicka för att lägga till</p>
               <div className={styles.chipList}>
-                {[
-                  'fade haircut 2026',
-                  'barber business tips',
-                  'men grooming trends',
-                  'beard styles',
-                  'barbershop marketing',
-                  'hair color trends',
-                ].map(tip => (
-                  <span key={tip} className={styles.chip}>{tip}</span>
+                {TIPS.map(tip => (
+                  <button
+                    key={tip}
+                    className={styles.chip}
+                    onClick={() => handleChipClick(tip)}
+                  >
+                    + {tip}
+                  </button>
                 ))}
               </div>
             </div>
