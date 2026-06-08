@@ -7,11 +7,7 @@
   margin-top: 0;
 }
 
-.trendsRow {
-  margin-top: 16px;
-  /* Widget tar hela bredden — kan begränsas om önskas */
-  max-width: 480px;
-}
+
 
 @media (max-width: 1024px) {
   .twoCol {
