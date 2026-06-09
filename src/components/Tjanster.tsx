@@ -83,11 +83,7 @@ export default function Tjanster() {
         ))}
       </div>
 
-      <div className={styles.stripe}>
-        {Array(6).fill('ATILLI BERG · GÖTEBORG · SEDAN 2026 · ').map((t, i) => (
-          <span key={i}>{t}</span>
-        ))}
-      </div>
+
 
     </section>
   )
