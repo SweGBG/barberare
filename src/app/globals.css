@@ -54,6 +54,16 @@ body {
   }
 }
 
+@keyframes tickerSlide {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-25%);
+  }
+}
+
 @keyframes drawLine {
   from {
     transform: scaleX(0);
