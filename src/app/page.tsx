@@ -7,7 +7,7 @@ import Footer from '@/components/Footer'
 
 const ticker = [
     'Atilli Berg', 'Est. 2026', 'Göteborg',
-    'Premium Barbershop', 'Herrfrisör', 'Boka online',
+    'Premium Barbershop', 'Atilli Berg', 'Boka online',
 ]
 
 export default function Home() {
@@ -165,7 +165,7 @@ function CtaBanner() {
                 Välkommen till <em style={{ color: '#B8956A', fontStyle: 'italic' }}>Atilli Berg</em>
             </h2>
             <p style={{ fontFamily: 'Raleway, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.45)', margin: '0 0 32px', letterSpacing: '0.05em', position: 'relative' }}>
-                Göteborg · Herrfrisör &amp; Barbershop · Est. 2026
+                Göteborg · Atilli Berg &amp; Barbershop · Est. 2026
             </p>
             <a href="/boka" style={{
                 display: 'inline-block',
