@@ -73,9 +73,8 @@ export default function BokaPage() {
           {stegLabels.map((label, i) => (
             <div
               key={i}
-              className={`${styles.steg} ${
-                steg === i + 1 ? styles.aktiv : steg > i + 1 ? styles.klar : ''
-              }`}
+              className={`${styles.steg} ${steg === i + 1 ? styles.aktiv : steg > i + 1 ? styles.klar : ''
+                }`}
             >
               {i + 1} · {label}
             </div>

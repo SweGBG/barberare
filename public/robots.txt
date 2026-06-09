@@ -1,0 +1,14 @@
+# robots.txt – Atilli Berg Barberare
+# Uppdaterad: 2026-06-08
+
+User-agent: *
+Allow: /
+
+# Blockera admin-panel och API-routes från indexering
+Disallow: /admin/
+Disallow: /api/
+Disallow: /medlem/
+Disallow: /_next/
+
+# Sitemap
+Sitemap: https://barberare.vercel.app/sitemap.xml
