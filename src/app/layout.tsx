@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     languages: { 'sv-SE': 'https://barberare.vercel.app' },
   },
   verification: {
-    google: 'google7a341cab5c99395b',
+    google: 'UeGhODDdMQ3TXFNRzUgOel8hGvgH5DJ8_6fha1NcFPk',
   },
 }
 
