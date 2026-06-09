@@ -105,8 +105,8 @@ function Stapelgraf({ data }: { data: TjanstData[] }) {
   const max = Math.max(...data.map((d) => d.intakter), 1)
   return (
     <div className={styles.stapelWrap}>
-      {data.slice(0, 6).map((t) => (
-        <div key={t.namn} className={styles.stapelRow}>
+      {data.slice(0, 6).map((t, i) => (
+        <div key={`${t.namn}-${i}`} className={styles.stapelRow}>
           <span className={styles.stapelNamn}>{t.namn}</span>
           <div className={styles.stapelBarWrap}>
             <div

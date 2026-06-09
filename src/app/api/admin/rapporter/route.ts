@@ -20,11 +20,11 @@ export async function GET() {
     if (error) throw error
 
     const { data: services } = await supabase
-      .from('tjanster')
-      .select('id, namn, pris')
+      .from('services')
+      .select('id, name, price')
 
     const serviceMap: Record<string, string> = {}
-    services?.forEach((s) => { serviceMap[s.id] = s.namn })
+    services?.forEach((s) => { serviceMap[s.id] = s.name })
 
     // Bygger månadsdata (senaste 6 månader)
     const monthlyMap: Record<string, { manad: string; intakter: number; bokningar: number }> = {}
