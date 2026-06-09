@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     const supabase = getSupabase()
     const resend = new Resend(process.env.RESEND_API_KEY!)
     const body = await req.json()
-    const { client_name, client_email, client_phone, booking_date, duration_minutes, price, notes } = body
+    const { client_name, client_email, client_phone, booking_date, service_id, duration_minutes, price, notes } = body
 
     const { data, error } = await supabase
       .from('bookings')
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
         client_email,
         client_phone,
         booking_date,
+        service_id: service_id || null,   // ← detta saknades
         duration_minutes: duration_minutes || 30,
         price: price || 0,
         notes: notes || null,
@@ -52,7 +53,6 @@ export async function POST(req: NextRequest) {
       })
       .select()
       .single()
-
     if (error) {
       console.error('Supabase error:', error)
       return NextResponse.json({ error: error.message }, { status: 500 })

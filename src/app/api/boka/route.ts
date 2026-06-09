@@ -24,19 +24,19 @@ export async function POST(req: NextRequest) {
     }
 
     const datumStr = `${datum.ar}-${String(datum.manad + 1).padStart(2, '0')}-${String(datum.dag).padStart(2, '0')}`
+    const bookingDatetime = `${datumStr}T${tid}:00`
 
-    const { error: dbError } = await supabase.from('bokningar').insert([{
-      tjanst: tjanst.namn,
-      pris: tjanst.pris,
-      datum: datumStr,
-      tid,
-      namn,
-      efternamn,
-      email,
-      telefon,
-      meddelande: meddelande || '',
-      status: 'bekraftad',
-      skapad: new Date().toISOString(),
+    // Skriver till bookings-tabellen med rätt kolumner och service_id
+    const { error: dbError } = await supabase.from('bookings').insert([{
+      service_id: tjanst.id,
+      booking_date: bookingDatetime,
+      status: 'confirmed',
+      price: tjanst.price,
+      duration_minutes: tjanst.duration_minutes,
+      client_name: `${namn} ${efternamn}`.trim(),
+      client_email: email,
+      client_phone: telefon,
+      notes: meddelande || '',
     }])
 
     if (dbError) {
@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
 
     const datumFormaterat = `${datum.dag} ${manader[datum.manad]} ${datum.ar}`
 
+    // Mejl till kund
     const kundHtml = `
       <!DOCTYPE html>
       <html lang="sv">
@@ -94,6 +95,7 @@ export async function POST(req: NextRequest) {
       </html>
     `
 
+    // Mejl till ägaren
     const agarHtml = `
       <!DOCTYPE html>
       <html lang="sv">

@@ -6,12 +6,23 @@ type Booking = {
   booking_date: string
   status: string
   price: number
-  profiles: { full_name: string; email: string }[] | null
-  services: { name: string }[] | null
+  service_id: string | null
+  client_name: string | null
+  client_phone: string | null
+}
+
+type Service = {
+  id: string
+  name: string
 }
 
 function initials(name: string) {
-  return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+  return name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
 }
 
 function statusLabel(s: string) {
@@ -28,21 +39,23 @@ export default async function BookingsTable() {
   const supabase = await createClient()
   const today = new Date().toISOString().split('T')[0]
 
-  const { data: bookings } = await supabase
-    .from('bookings')
-    .select(`
-      id,
-      booking_date,
-      status,
-      price,
-      profiles ( full_name, email ),
-      services ( name )
-    `)
-    .gte('booking_date', today)
-    .lt('booking_date', today + 'T23:59:59')
-    .order('booking_date', { ascending: true })
+  const [{ data: bookings }, { data: services }] = await Promise.all([
+    supabase
+      .from('bookings')
+      .select('id, booking_date, status, price, service_id, client_name, client_phone')
+      .gte('booking_date', today)
+      .lt('booking_date', today + 'T23:59:59')
+      .order('booking_date', { ascending: true }),
+    supabase
+      .from('services')
+      .select('id, name'),
+  ])
 
-  const list = (bookings ?? []) as unknown as Booking[]
+  const serviceMap = Object.fromEntries(
+    (services ?? []).map((s: Service) => [s.id, s.name])
+  )
+
+  const list = (bookings ?? []) as Booking[]
 
   return (
     <div className={styles.panel}>
@@ -59,23 +72,34 @@ export default async function BookingsTable() {
         <span className={styles.priceCol}>Pris</span>
       </div>
 
+      {list.length === 0 && (
+        <p className={styles.empty}>Inga bokningar idag.</p>
+      )}
+
       {list.map((b) => {
-        const name = b.profiles?.[0]?.full_name ?? 'Okänd'
+        const name = b.client_name ?? 'Okänd'
+        const tjanstNamn = b.service_id ? (serviceMap[b.service_id] ?? '–') : '–'
         const time = new Date(b.booking_date).toLocaleTimeString('sv-SE', {
-          hour: '2-digit', minute: '2-digit'
+          hour: '2-digit',
+          minute: '2-digit',
         })
         const st = statusLabel(b.status)
 
         return (
-          <div key={b.id} className={`${styles.row} ${b.status === 'in_progress' ? styles.rowActive : ''}`}>
+          <div
+            key={b.id}
+            className={`${styles.row} ${b.status === 'in_progress' ? styles.rowActive : ''}`}
+          >
             <div className={styles.avatar}>{initials(name)}</div>
             <div>
               <p className={styles.clientName}>{name}</p>
-              <p className={styles.clientService}>{b.services?.[0]?.name ?? '–'}</p>
+              <p className={styles.clientService}>{tjanstNamn}</p>
             </div>
             <span className={styles.timeCol}>{time}</span>
             <span className={`${styles.badge} ${st.cls}`}>{st.label}</span>
-            <span className={styles.priceCol}>{b.price?.toLocaleString('sv-SE')} kr</span>
+            <span className={styles.priceCol}>
+              {b.price?.toLocaleString('sv-SE')} kr
+            </span>
           </div>
         )
       })}
