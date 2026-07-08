@@ -1,0 +1,263 @@
+/* firecrawl-widget.module.css — Atilli Berg Intel Panel */
+
+.panel {
+  background: #F5F0E8;
+  border: 1px solid #D4C5A9;
+  border-radius: 2px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  font-family: Georgia, serif;
+}
+
+/* ── Masthead ── */
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.mastheadLeft { display: flex; align-items: center; gap: 10px; }
+.mastheadIcon {
+  width: 28px; height: 28px;
+  background: #3B2F2F; border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  color: #B8956A; font-size: 14px; flex-shrink: 0;
+}
+.edition {
+  font-family: 'Raleway', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.18em; color: #B8956A; text-transform: uppercase;
+}
+.divider { color: #C4B49A; font-size: 11px; margin: 0 4px; }
+.tagline { font-size: 11px; color: #8A7560; font-style: italic; }
+
+.clearBtn {
+  display: flex; align-items: center; gap: 5px;
+  background: none; border: 1px solid #D4C5A9; border-radius: 2px;
+  padding: 4px 10px; font-size: 11px; color: #8A7560;
+  cursor: pointer; font-family: 'Raleway', sans-serif;
+  transition: all 0.15s;
+}
+.clearBtn:hover { background: #3B2F2F; color: #F5F0E8; border-color: #3B2F2F; }
+
+/* ── Regel ── */
+.rule {
+  height: 3px; background: #3B2F2F; margin-bottom: 14px; position: relative;
+}
+.rule::after {
+  content: ''; position: absolute; right: 0; top: 0;
+  width: 15%; height: 3px; background: #B8956A;
+}
+
+/* ── Action-tabs ── */
+.actionTabs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0; margin-bottom: 12px;
+  border: 1px solid #D4C5A9; border-radius: 2px; overflow: hidden;
+}
+.actionTab {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 10px; border: none; background: #EDE5D6;
+  font-family: 'Raleway', sans-serif; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.05em; color: #8A7560; cursor: pointer;
+  transition: all 0.15s; border-right: 1px solid #D4C5A9;
+}
+.actionTab:last-child { border-right: none; }
+.actionTab i { font-size: 14px; }
+.actionTabActive {
+  background: #3B2F2F; color: #B8956A;
+}
+
+/* ── Input ── */
+.inputRow {
+  display: flex; gap: 8px; margin-bottom: 10px;
+}
+.input {
+  flex: 1; background: #fff; border: 1px solid #D4C5A9; border-radius: 2px;
+  padding: 10px 14px; font-size: 13px; color: #2C2118;
+  font-family: 'Raleway', sans-serif; outline: none;
+  transition: border-color 0.15s;
+}
+.input:focus { border-color: #B8956A; }
+.input::placeholder { color: #C4B49A; font-style: italic; }
+.runBtn {
+  display: flex; align-items: center; gap: 7px;
+  background: #B8956A; border: none; border-radius: 2px;
+  padding: 10px 18px; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.08em; color: #F5F0E8; cursor: pointer;
+  font-family: 'Raleway', sans-serif; white-space: nowrap;
+  transition: background 0.15s;
+}
+.runBtn:hover:not(:disabled) { background: #3B2F2F; }
+.runBtn:disabled { opacity: 0.5; cursor: default; }
+.runBtn i { font-size: 14px; }
+
+/* ── Mode-tabs ── */
+.modeTabs {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 6px; margin-bottom: 16px;
+}
+.modeTab {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 8px 4px; border: 1px solid #D4C5A9; border-radius: 2px;
+  background: #fff; font-family: 'Raleway', sans-serif;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+  color: #8A7560; cursor: pointer; transition: all 0.15s;
+}
+.modeTab i { font-size: 15px; }
+.modeTab:hover { border-color: #B8956A; color: #B8956A; }
+.modeTabActive { background: #3B2F2F; border-color: #3B2F2F; color: #B8956A; }
+
+/* ── Snabbval ── */
+.quickSection { margin-bottom: 4px; }
+.quickLabel {
+  font-family: 'Raleway', sans-serif; font-size: 9px; font-weight: 700;
+  letter-spacing: 0.16em; color: #C4B49A; margin: 0 0 8px;
+}
+.quickList { display: flex; flex-wrap: wrap; gap: 6px; }
+.quickChip {
+  display: flex; align-items: center; gap: 5px;
+  font-family: 'Raleway', sans-serif; font-size: 10px; font-weight: 600;
+  color: #5C4F40; background: #EDE5D6; border: 1px solid #C4B49A;
+  border-radius: 20px; padding: 4px 10px; cursor: pointer;
+  transition: all 0.15s;
+}
+.quickChip:hover { background: #3B2F2F; color: #F5F0E8; border-color: #3B2F2F; }
+.quickChipUrl { color: #7A5C30; border-color: #D4A870; background: #F5EDE0; }
+.quickChipUrl:hover { background: #B8956A; color: #F5F0E8; border-color: #B8956A; }
+
+/* ── Fel ── */
+.errorBox {
+  display: flex; align-items: center; gap: 8px;
+  background: #fff3cd; border: 1px solid #D4A843; border-radius: 2px;
+  padding: 10px 14px; font-family: 'Raleway', sans-serif;
+  font-size: 13px; color: #7A5C00; margin-top: 12px;
+}
+
+/* ── Skeleton ── */
+.skeletonWrap { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.skeletonMsg {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Raleway', sans-serif; font-size: 12px;
+  color: #B8956A; font-style: italic; margin-bottom: 4px;
+}
+.skeletonCard {
+  background: #fff; border: 1px solid #D4C5A9; border-radius: 2px;
+  padding: 14px; display: flex; flex-direction: column; gap: 8px;
+}
+.skeletonLine {
+  height: 11px; border-radius: 2px; background: #D4C5A9;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Resultater ── */
+.resultWrap { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+.resultMeta {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Raleway', sans-serif; font-size: 11px; color: #5C8A60;
+  background: #E8F2E9; border: 1px solid #A8CFA8; border-radius: 2px;
+  padding: 7px 12px;
+}
+.resultUrl {
+  flex: 1; color: #5C8A60; text-decoration: none; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.resultUrl:hover { text-decoration: underline; }
+.resultTime { color: #8A7560; white-space: nowrap; margin-left: auto; }
+
+/* ── Sektioner ── */
+.sectionLabel {
+  font-family: 'Raleway', sans-serif; font-size: 9px; font-weight: 700;
+  letter-spacing: 0.16em; color: #B8956A; margin: 0 0 8px;
+}
+.trendsWrap, .summaryBox, .pricesWrap, .seoWrap, .factsWrap {
+  background: #fff; border: 1px solid #D4C5A9; border-radius: 2px; padding: 12px 14px;
+}
+.trendChips { display: flex; flex-wrap: wrap; gap: 6px; }
+.trendChip {
+  font-family: 'Raleway', sans-serif; font-size: 10px; font-weight: 600;
+  color: #3B2F2F; background: #F5F0E8; border: 1px solid #D4C5A9;
+  border-radius: 20px; padding: 3px 9px;
+}
+.summaryText {
+  font-size: 13px; line-height: 1.7; color: #3B2F2F; margin: 0; font-style: italic;
+}
+.priceList { display: flex; flex-direction: column; gap: 4px; }
+.priceRow {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 10px; background: #F5F0E8; border-radius: 2px;
+  font-family: 'Raleway', sans-serif; font-size: 12px;
+}
+.priceName { color: #3B2F2F; }
+.priceVal { color: #B8956A; font-weight: 700; }
+.seoItem {
+  display: flex; gap: 10px; padding: 5px 0;
+  border-bottom: 1px solid #EDE5D6; font-family: 'Raleway', sans-serif; font-size: 12px;
+}
+.seoItem:last-child { border-bottom: none; }
+.seoKey { font-weight: 700; color: #B8956A; min-width: 48px; font-size: 10px; letter-spacing: 0.08em; padding-top: 1px; }
+.seoVal { color: #3B2F2F; line-height: 1.5; }
+.factRow {
+  display: flex; align-items: flex-start; gap: 6px;
+  font-family: 'Raleway', sans-serif; font-size: 12px; color: #5C4F40;
+  padding: 3px 0;
+}
+.factRow i { color: #B8956A; flex-shrink: 0; margin-top: 2px; }
+.rawToggle {
+  display: flex; align-items: center; gap: 6px;
+  background: none; border: none; font-family: 'Raleway', sans-serif;
+  font-size: 11px; color: #C4B49A; cursor: pointer; padding: 4px 0;
+}
+.rawToggle:hover { color: #8A7560; }
+.rawBox {
+  background: #fff; border: 1px solid #D4C5A9; border-radius: 2px;
+  padding: 12px; font-size: 10px; color: #8A7560;
+  white-space: pre-wrap; word-break: break-word;
+  max-height: 280px; overflow-y: auto; line-height: 1.5;
+}
+
+/* ── Search-cards ── */
+.emptyMsg {
+  font-family: 'Raleway', sans-serif; font-size: 13px;
+  color: #C4B49A; text-align: center; padding: 20px 0;
+}
+.searchCard {
+  background: #fff; border: 1px solid #D4C5A9; border-radius: 2px; overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+.searchCard:hover { box-shadow: 0 2px 12px rgba(59,47,47,0.08); }
+.searchCardOpen { border-color: #B8956A; }
+.searchCardHead {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 14px; cursor: pointer; user-select: none;
+}
+.searchCardMeta { flex: 1; min-width: 0; }
+.searchTitle {
+  font-family: 'Raleway', sans-serif; font-size: 13px; font-weight: 700;
+  color: #2C2118; margin: 0 0 3px; line-height: 1.3;
+}
+.searchUrlText {
+  font-size: 10px; color: #C4B49A; font-family: 'Raleway', sans-serif;
+  margin: 0 0 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.searchDesc {
+  font-size: 11px; color: #8A7560; font-family: 'Raleway', sans-serif;
+  margin: 0; line-height: 1.4;
+}
+.chevron { font-size: 13px; color: #C4B49A; flex-shrink: 0; margin-top: 2px; }
+.searchCardOpen .chevron { color: #B8956A; }
+.searchCardBody {
+  padding: 10px 14px 14px; border-top: 1px solid #EDE5D6;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.sourceLink {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'Raleway', sans-serif; font-size: 11px; font-weight: 600;
+  color: #8A7560; text-decoration: none; border: 1px solid #D4C5A9;
+  border-radius: 2px; padding: 5px 12px; align-self: flex-start;
+  transition: all 0.15s; margin-top: 4px;
+}
+.sourceLink:hover { background: #3B2F2F; color: #F5F0E8; border-color: #3B2F2F; }

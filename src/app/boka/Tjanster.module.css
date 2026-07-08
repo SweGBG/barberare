@@ -1,0 +1,150 @@
+.section {
+  padding: 100px 48px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 64px;
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--warm);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 0.5px;
+  background: var(--warm);
+  display: block;
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 400;
+  color: var(--dark);
+  line-height: 1.1;
+}
+
+.title em { font-style: italic; color: var(--gold); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+
+.card {
+  background: var(--bg);
+  padding: 44px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transition: background 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.card:hover { background: var(--bg2); }
+.card:hover::after { transform: scaleX(1); }
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.nr {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  color: var(--gold-dim);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.tid {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.namn {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--dark);
+  margin-bottom: 16px;
+}
+
+.desc {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--muted);
+  font-weight: 300;
+  flex: 1;
+  margin-bottom: 32px;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 0.5px solid var(--border);
+}
+
+.pris {
+  font-size: 14px;
+  color: var(--dark);
+  font-weight: 500;
+}
+
+.bokabtn {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--warm);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.bokabtn:hover { color: var(--dark); }
+
+@media (max-width: 900px) {
+  .section { padding: 72px 24px; }
+  .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .grid { grid-template-columns: 1fr 1fr; }
+  .title { font-size: 36px; }
+}
+
+@media (max-width: 600px) {
+  .grid { grid-template-columns: 1fr; }
+}

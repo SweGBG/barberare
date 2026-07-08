@@ -1,0 +1,230 @@
+/* ── Om Atilli Berg ── */
+
+.om {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 90px 28px;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.omImageWrap {
+  position: relative;
+}
+
+.omImage {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 3px;
+  filter: saturate(0.85);
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(201, 162, 75, 0.35);
+}
+
+.omFrame {
+  position: absolute;
+  inset: -14px 14px 14px -14px;
+  border: 1px solid rgba(201, 162, 75, 0.4);
+  border-radius: 3px;
+  z-index: 0;
+}
+
+.omTitle {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: clamp(26px, 3.2vw, 38px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--gold-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 22px;
+}
+
+.omLead {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #D8CDB2;
+  margin-bottom: 16px;
+}
+
+.omLead strong {
+  color: var(--gold-dim);
+  font-weight: 600;
+}
+
+.omBody {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-bottom: 30px;
+}
+
+.omStats {
+  display: flex;
+  gap: 38px;
+  margin-bottom: 34px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.statNum {
+  font-family: 'Playfair Display', serif;
+  font-size: 30px;
+  color: var(--gold-dim);
+}
+
+.statLabel {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--warm-dim);
+  font-weight: 600;
+}
+
+.omBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 34px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--gold-grad);
+  border: 1px solid rgba(255, 232, 170, 0.4);
+  border-radius: 3px;
+  box-shadow: 0 4px 22px rgba(201, 162, 75, 0.28);
+  transition: filter 0.2s ease;
+}
+
+.omBtn:hover {
+  filter: brightness(1.08);
+}
+
+/* ── Prislista ── */
+
+.priser {
+  background: #0D0B08;
+  border-top: 1px solid rgba(201, 162, 75, 0.14);
+  border-bottom: 1px solid rgba(201, 162, 75, 0.14);
+  padding: 90px 28px;
+}
+
+.priserHeader {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.priserTitle {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: clamp(26px, 3.2vw, 38px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--gold-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 10px;
+}
+
+.priserSub {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--warm-dim);
+}
+
+.priserGrid {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+}
+
+.priserKat {
+  background: linear-gradient(180deg, #16130D 0%, #100E09 100%);
+  border: 1px solid rgba(201, 162, 75, 0.2);
+  border-radius: 4px;
+  padding: 30px 28px;
+}
+
+.katNamn {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(201, 162, 75, 0.2);
+}
+
+.prisRad {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.prisNamn {
+  font-size: 13px;
+  color: #D3C8AE;
+}
+
+.prisDots {
+  flex: 1;
+  border-bottom: 1px dotted rgba(201, 162, 75, 0.3);
+  transform: translateY(-3px);
+}
+
+.prisPris {
+  font-family: 'Playfair Display', serif;
+  font-size: 14.5px;
+  color: var(--gold-dim);
+  white-space: nowrap;
+}
+
+.prisNote {
+  max-width: 1240px;
+  margin: 26px auto 0;
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--warm-dim);
+  font-style: italic;
+}
+
+/* ── Responsivt ── */
+@media (max-width: 1100px) {
+  .om {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .omImageWrap { max-width: 560px; margin: 0 auto; width: 100%; }
+  .priserGrid { grid-template-columns: 1fr; max-width: 640px; }
+}
+
+@media (max-width: 768px) {
+  .om, .priser { padding: 70px 20px; }
+}
+
+@media (max-width: 480px) {
+  .omStats { gap: 24px; }
+}

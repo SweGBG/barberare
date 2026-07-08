@@ -1,0 +1,36 @@
+# Atilli Berg Barberare
+
+> Professionell herrfrisör och barberare i Göteborg. Boka herrklippning, skäggtrimning och rakning online.
+
+## Om oss
+
+Atilli Berg är en exklusiv barberarsalong i Göteborg med fokus på hantverk och personlig service. Vi erbjuder herrklippning, skäggtrimning och traditionell rakning i en avslappnad miljö.
+
+## Tjänster
+
+- Herrklippning — klassisk klippning anpassad efter hårets form och personlighet
+- Skäggtrimning — professionell formning och trimning av skägg
+- Rakning — traditionell rakning med rakkniv
+- Fade & Design — modern fade med designdetaljer
+- Barnklippning — för barn under 12 år
+
+## Bokning
+
+Boka tid online på: https://barberare.vercel.app/boka
+Välj tjänst, datum och tid direkt i bokningssystemet.
+
+## Kontakt
+
+Webbplats: https://barberare.vercel.app
+E-post: info@atilliberg.se
+Stad: Göteborg, Sverige
+
+## Öppettider
+
+Måndag–Fredag: 09:00–18:00
+Lördag: 10:00–16:00
+Söndag: Stängt
+
+## Nyckelord
+
+barberare Göteborg, herrfrisör Göteborg, herrklippning Göteborg, skäggtrimning, rakning, boka barberare, Atilli Berg

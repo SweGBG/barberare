@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Raleway:wght@300;400;500;600;700&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* ── Atilli Berg · Svart & Guld ── */
+  --bg: #0A0908;
+  --bg2: #14110C;
+  --panel: #15120C;
+  --cream: #14110C;
+  /* --dark används som TEXTFÄRG i modulerna → ljus i mörkt tema */
+  --dark: #EDE3CB;
+  --ink: #0C0A07;
+  --warm: #A3947A;
+  --warm-dim: #7D7059;
+  --gold: #C9A24B;
+  --gold-dim: #E3C57B;
+  --gold-deep: #8C6A2F;
+  --gold-grad: linear-gradient(160deg, #E9CD8C 0%, #C9A24B 45%, #96712F 100%);
+  --muted: #9A8E77;
+  --border: rgba(201, 162, 75, 0.16);
+  --border2: rgba(201, 162, 75, 0.32);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--dark);
+  font-family: 'Raleway', sans-serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(201, 162, 75, 0.35);
+  color: #FFF6E0;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes tickerSlide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-25%); }
+}
+
+@keyframes drawLine {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes goldGlow {
+  0%, 100% { box-shadow: 0 0 0 rgba(201, 162, 75, 0); }
+  50% { box-shadow: 0 0 24px rgba(201, 162, 75, 0.25); }
+}
+
+.anim-1 { animation: fadeUp 0.8s 0.0s ease both; }
+.anim-2 { animation: fadeUp 0.8s 0.15s ease both; }
+.anim-3 { animation: fadeUp 0.8s 0.3s ease both; }
+.anim-4 { animation: fadeUp 0.8s 0.45s ease both; }
+.anim-5 { animation: fadeUp 0.8s 0.6s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}

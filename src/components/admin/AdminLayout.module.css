@@ -1,0 +1,38 @@
+.root {
+  display: flex;
+  min-height: 100vh;
+  background: var(--cream);
+  font-family: 'Inter', sans-serif;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.content {
+  flex: 1;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  background: var(--cream);
+}
+
+@media (max-width: 1024px) {
+  .content {
+    padding: 16px;
+    padding-bottom: 90px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 12px;
+    padding-bottom: 90px;
+  }
+}
