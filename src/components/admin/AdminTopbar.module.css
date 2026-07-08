@@ -1,0 +1,220 @@
+.topbar {
+  background: var(--bg);
+  border-bottom: 0.5px solid var(--border);
+  padding: 0 28px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--dark);
+  letter-spacing: 0.01em;
+  flex: 1;
+}
+
+/* ── Mini-logga ── */
+.logoWrap {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.logoRing {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.logoRingSvg {
+  width: 100%;
+  height: 100%;
+  animation: spin 20s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.logoText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.logoMain {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dark);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.logoSub {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: #B8956A;
+  text-transform: uppercase;
+}
+
+/* ── Höger ── */
+.right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.dateBadge {
+  font-size: 12px;
+  color: var(--warm);
+  background: var(--cream);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 0.5px solid var(--border);
+  text-transform: capitalize;
+}
+
+.avatarWrap {
+  position: relative;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--dark);
+  cursor: pointer;
+  border: 0.5px solid rgba(184, 149, 106, 0.4);
+  flex-shrink: 0;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 200px;
+  background: var(--dark);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.dropdownHeader {
+  padding: 12px 16px;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+}
+
+.dropdownEmail {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: all 0.15s;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dropdownItem:hover {
+  color: var(--gold);
+  background: rgba(184, 149, 106, 0.08);
+}
+
+.dropdownItem i {
+  font-size: 15px;
+}
+
+.dropdownLogout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.35);
+  width: 100%;
+  background: none;
+  border: none;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+}
+
+.dropdownLogout:hover {
+  color: #e07070;
+  background: rgba(224, 112, 112, 0.06);
+}
+
+.dropdownLogout i {
+  font-size: 15px;
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 16px;
+    height: 50px;
+  }
+
+  .title {
+    font-size: 15px;
+  }
+
+  .dateBadge {
+    display: none;
+  }
+
+  .logoMain {
+    font-size: 11px;
+  }
+
+  .logoSub {
+    font-size: 8px;
+  }
+
+  .logoRing {
+    width: 28px;
+    height: 28px;
+  }
+}

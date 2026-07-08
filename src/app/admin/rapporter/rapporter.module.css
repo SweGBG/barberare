@@ -1,0 +1,327 @@
+.page {
+  --cream: #F5F0E8;
+  --gold: #B8956A;
+  --gold-light: #d4b48c;
+  --dark: #3B2F2F;
+  --mid: #6b5545;
+  --border: rgba(184, 149, 106, 0.18);
+  --card-bg: #ffffff;
+  --skeleton-from: #ede8df;
+  --skeleton-to: #e0d9ce;
+
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: var(--cream);
+  min-height: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.sub {
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin: 4px 0 0;
+}
+
+.errorBox {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.85rem;
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.kpiCard {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.kpiCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  border-radius: 12px 12px 0 0;
+}
+
+.kpiLabel {
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.kpiVarde {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.1;
+}
+
+.kpiTrend {
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.sektion {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sektionTitel {
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.sektionTitel .ti {
+  color: var(--gold);
+  font-size: 1rem;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.gridLine {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.axisLabel {
+  font-family: 'Raleway', sans-serif;
+  font-size: 10px;
+  fill: var(--mid);
+}
+
+.areaFill {
+  fill: var(--gold);
+  opacity: 0.1;
+}
+
+.linePath {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dot {
+  fill: var(--gold);
+  stroke: var(--card-bg);
+  stroke-width: 2;
+  cursor: pointer;
+}
+
+.stapelWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stapelRow {
+  display: grid;
+  grid-template-columns: 140px 1fr 100px;
+  align-items: center;
+  gap: 12px;
+}
+
+.stapelNamn {
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.82rem;
+  color: var(--dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stapelBarWrap {
+  background: var(--skeleton-from);
+  border-radius: 4px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.stapelBar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stapelVarde {
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--dark);
+  text-align: right;
+}
+
+.statusGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.statusPill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--cream);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.statusLabel {
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.78rem;
+  color: var(--mid);
+  margin: 0;
+}
+
+.statusVarde {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin: 0;
+  line-height: 1;
+}
+
+.statusProcent {
+  margin-left: auto;
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--mid);
+}
+
+.bottenGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.tomText {
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.85rem;
+  color: var(--mid);
+  text-align: center;
+  padding: 24px 0;
+  margin: 0;
+}
+
+.skeleton {
+  background: linear-gradient(90deg,
+      var(--skeleton-from) 25%,
+      var(--skeleton-to) 50%,
+      var(--skeleton-from) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 1100px) {
+  .kpiGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .kpiGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .kpiVarde {
+    font-size: 1.2rem;
+  }
+
+  .bottenGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .stapelRow {
+    grid-template-columns: 100px 1fr 80px;
+  }
+}

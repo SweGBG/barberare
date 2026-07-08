@@ -1,0 +1,226 @@
+.page {
+  min-height: 100vh;
+  background: var(--cream, #14110C);
+  padding: 120px 40px 80px;
+}
+
+.header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 64px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #C9A24B;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 400;
+  color: #EDE3CB;
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+
+.title em {
+  font-style: italic;
+  color: #C9A24B;
+}
+
+.sub {
+  font-size: 15px;
+  color: rgba(237, 227, 203, 0.72);
+  line-height: 1.7;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 32px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* FORMULÄR */
+.formCard {
+  background: #15120D;
+  border: 0.5px solid rgba(201, 162, 75, 0.2);
+  border-radius: 4px;
+  padding: 40px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.field label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(237, 227, 203, 0.65);
+}
+
+.field input,
+.field textarea {
+  background: #14110C;
+  border: 0.5px solid rgba(201, 162, 75, 0.25);
+  border-radius: 3px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #EDE3CB;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  resize: none;
+  outline: none;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: #C9A24B;
+}
+
+.submitBtn {
+  width: 100%;
+  background: var(--gold-grad);
+  color: #141109;
+  font-weight: 700;
+  border: none;
+  padding: 16px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 0.2s;
+  margin-top: 4px;
+}
+
+.submitBtn:hover {
+  filter: brightness(1.08);
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.errorMsg {
+  font-size: 13px;
+  color: #e07070;
+  margin-bottom: 12px;
+}
+
+.success {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.successIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(201, 162, 75, 0.15);
+  color: #C9A24B;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.success h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  color: #EDE3CB;
+  margin-bottom: 8px;
+}
+
+.success p {
+  color: rgba(237, 227, 203, 0.72);
+}
+
+/* INFO */
+.infoCard {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.infoBlock h4 {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #C9A24B;
+  margin-bottom: 12px;
+}
+
+.infoBlock p,
+.infoBlock a {
+  font-size: 14px;
+  color: rgba(237, 227, 203, 0.8);
+  display: flex;
+  justify-content: space-between;
+  text-decoration: none;
+  line-height: 1.8;
+}
+
+.infoBlock a:hover {
+  color: #C9A24B;
+}
+
+.infoBlock p span {
+  color: #EDE3CB;
+  font-weight: 500;
+}
+
+.bokaBtn {
+  display: inline-block;
+  background: var(--gold-grad);
+  color: #141109;
+  font-weight: 700;
+  padding: 14px 28px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 3px;
+  transition: background 0.2s;
+  text-align: center;
+}
+
+.bokaBtn:hover {
+  background: #2A2418;
+  color: #C9A24B;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 100px 20px 60px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .formCard {
+    padding: 24px;
+  }
+}

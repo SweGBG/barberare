@@ -1,0 +1,403 @@
+/* ── Atilli Berg Navbar · Svart & Guld ── */
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(8, 7, 5, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(201, 162, 75, 0.12);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.scrolled {
+  background: rgba(8, 7, 5, 0.96);
+  border-bottom-color: rgba(201, 162, 75, 0.28);
+}
+
+.inner {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 28px;
+  height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* ── Brand ── */
+.brand {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.brandMain {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--gold-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.brandSub {
+  margin-top: 3px;
+  font-size: 7.5px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* ── Länkar ── */
+.links {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 0;
+}
+
+.linkItem {
+  display: flex;
+  align-items: center;
+}
+
+.linkItem a {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #D8CDB4;
+  text-decoration: none;
+  padding: 12px 16px;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.linkItem a::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 6px;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.linkItem a:hover {
+  color: var(--gold-dim);
+}
+
+.linkItem a:hover::after {
+  transform: scaleX(1);
+}
+
+.sep {
+  color: rgba(201, 162, 75, 0.45);
+  flex-shrink: 0;
+}
+
+/* ── Auth-knappar ── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.btnOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 20px;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #E4D8BC;
+  text-decoration: none;
+  border: 1px solid rgba(201, 162, 75, 0.45);
+  border-radius: 3px;
+  background: transparent;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.btnOutline:hover {
+  border-color: var(--gold);
+  color: var(--gold-dim);
+  background: rgba(201, 162, 75, 0.07);
+}
+
+.btnGold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 22px;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 3px;
+  background: var(--gold-grad);
+  border: 1px solid rgba(255, 232, 170, 0.4);
+  box-shadow: 0 2px 14px rgba(201, 162, 75, 0.25);
+  transition: filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btnGold:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 4px 20px rgba(201, 162, 75, 0.4);
+}
+
+/* ── Konto-dropdown ── */
+.kontoWrap {
+  position: relative;
+}
+
+.kontoBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 16px;
+  background: transparent;
+  border: 1px solid rgba(201, 162, 75, 0.45);
+  border-radius: 3px;
+  color: var(--gold-dim);
+  cursor: pointer;
+  font-family: 'Raleway', sans-serif;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.kontoBtn:hover {
+  border-color: var(--gold);
+  background: rgba(201, 162, 75, 0.07);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 220px;
+  background: #12100A;
+  border: 1px solid rgba(201, 162, 75, 0.3);
+  border-radius: 4px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+  overflow: hidden;
+  animation: fadeIn 0.18s ease both;
+}
+
+.dropdownHeader {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(201, 162, 75, 0.14);
+  background: rgba(201, 162, 75, 0.05);
+}
+
+.dropdownEmail {
+  font-size: 11px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdownItem,
+.dropdownItemGold {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  min-height: 44px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-decoration: none;
+  color: #D8CDB4;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.dropdownItemGold {
+  color: var(--gold-dim);
+}
+
+.dropdownItem:hover,
+.dropdownItemGold:hover {
+  background: rgba(201, 162, 75, 0.08);
+  color: #F0E3C0;
+}
+
+.dropdownArrow {
+  color: rgba(201, 162, 75, 0.6);
+  font-size: 14px;
+}
+
+.dropdownLogout {
+  display: block;
+  width: 100%;
+  padding: 13px 16px;
+  min-height: 44px;
+  background: transparent;
+  border: none;
+  border-top: 1px solid rgba(201, 162, 75, 0.14);
+  color: #B08A7A;
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.dropdownLogout:hover {
+  background: rgba(176, 92, 74, 0.1);
+  color: #D89A85;
+}
+
+/* ── Hamburgare ── */
+.burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid rgba(201, 162, 75, 0.35);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.burger span {
+  display: block;
+  height: 1.5px;
+  width: 100%;
+  background: var(--gold-dim);
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+
+.burgerOpen span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.burgerOpen span:nth-child(2) { opacity: 0; }
+.burgerOpen span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ── Mobilmeny (slide-down) ── */
+.mobileMenu {
+  display: none;
+  overflow: hidden;
+  max-height: 0;
+  background: #080705;
+  border-bottom: 1px solid transparent;
+  transition: max-height 0.35s ease, border-color 0.3s ease;
+}
+
+.mobileMenuOpen {
+  max-height: calc(100vh - 66px);
+  overflow-y: auto;
+  border-bottom-color: rgba(201, 162, 75, 0.28);
+}
+
+.mobileLinks {
+  list-style: none;
+  padding: 10px 28px;
+}
+
+.mobileLinks a {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #E4D8BC;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 162, 75, 0.1);
+  transition: color 0.2s ease;
+}
+
+.mobileLinks a:hover {
+  color: var(--gold-dim);
+}
+
+.mobileAuth {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 28px 30px;
+}
+
+.mobileAuth .btnOutline,
+.mobileAuth .btnGold {
+  min-height: 48px;
+  justify-content: center;
+}
+
+.mobileEmail {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.mobileLogout {
+  min-height: 48px;
+  background: transparent;
+  border: 1px solid rgba(176, 92, 74, 0.4);
+  border-radius: 3px;
+  color: #C98F7C;
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Responsivt ── */
+@media (max-width: 1100px) {
+  .links { display: none; }
+  .burger { display: flex; }
+  .mobileMenu { display: block; }
+}
+
+@media (max-width: 768px) {
+  .kontoLabel {
+    display: none;
+  }
+
+  .actions > .btnOutline,
+  .actions > .btnGold {
+    display: none;
+  }
+
+  .inner { padding: 0 18px; height: 60px; }
+  .mobileMenuOpen { max-height: calc(100vh - 60px); }
+}
+
+@media (max-width: 480px) {
+  .brandMain { font-size: 16px; }
+  .brandSub { font-size: 6.5px; letter-spacing: 0.34em; }
+}

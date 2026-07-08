@@ -1,0 +1,20 @@
+/* admin.module.css */
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 16px;
+  margin-top: 0;
+}
+
+
+
+@media (max-width: 1024px) {
+  .twoCol {
+    grid-template-columns: 1fr;
+  }
+
+  .trendsRow {
+    max-width: 100%;
+  }
+}
