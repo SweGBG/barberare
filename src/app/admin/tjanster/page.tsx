@@ -294,7 +294,7 @@ export default function TjansterPage() {
                     className={styles.input}
                     type="number"
                     min="0"
-                    step="50"
+                    step="1"
                     value={form.price}
                     onChange={e => setForm({ ...form, price: e.target.value })}
                     placeholder="0"

@@ -1,0 +1,100 @@
+/* ════════════════════════════════════════════
+   ATILLI BERG · TIME SLOT PICKER
+   Slot-grid i svart/guld · ersätter native time-input
+   ════════════════════════════════════════════ */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(201, 162, 75, 0.02);
+
+  /* Diskret scrollbar i guld-ton */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 162, 75, 0.3) transparent;
+}
+
+.grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.grid::-webkit-scrollbar-thumb {
+  background: rgba(201, 162, 75, 0.3);
+  border-radius: 3px;
+}
+
+.grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.slot {
+  padding: 9px 4px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--warm);
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s ease, color 0.15s ease,
+              background 0.15s ease, transform 0.1s ease;
+}
+
+.slot:hover:not(:disabled) {
+  border-color: var(--border2);
+  color: var(--gold-dim);
+  transform: translateY(-1px);
+}
+
+.slot:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+}
+
+.slotActive {
+  background: var(--gold-grad);
+  color: var(--ink);
+  border-color: var(--gold-deep);
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(201, 162, 75, 0.3);
+}
+
+.slotActive:hover:not(:disabled) {
+  color: var(--ink);
+}
+
+.slot:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  text-decoration: line-through;
+  transform: none;
+}
+
+.empty {
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0;
+  padding: 12px;
+  text-align: center;
+}
+
+/* Mobil: 3 kolumner så knapparna blir större tap-ytor */
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-height: 240px;
+  }
+
+  .slot {
+    padding: 11px 4px;
+    font-size: 0.88rem;
+  }
+}
