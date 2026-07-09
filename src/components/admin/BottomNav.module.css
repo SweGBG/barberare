@@ -1,122 +1,204 @@
+/* ════════════════════════════════════════════
+   ATILLI BERG · BOTTOM NAV (mobil)
+   Mörk bas · guldpunkt markerar aktiv flik
+   ════════════════════════════════════════════ */
+
 .nav {
-  display: none;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 100;
-  background: var(--dark);
-  border-top: 0.5px solid rgba(255, 255, 255, 0.08);
-  padding: 8px 0 max(12px, env(safe-area-inset-bottom));
+  z-index: 90;
+  display: none;
+  grid-template-columns: repeat(5, 1fr);
+  background: rgba(14, 12, 8, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+  /* Respektera gest-fältet på moderna mobiler */
+  padding: 0.35rem 0.25rem calc(0.35rem + env(safe-area-inset-bottom));
 }
 
+/* Tunn guldlinje som toning längs överkanten */
+.nav::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(201, 162, 75, 0.45) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Flikar ── */
 .item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  flex: 1;
-  text-decoration: none;
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 10px;
-  letter-spacing: 0.04em;
-  transition: color 0.15s;
-  padding: 4px 0;
-  background: none;
+  gap: 0.2rem;
+  padding: 0.45rem 0.2rem 0.3rem;
   border: none;
+  background: transparent;
+  color: var(--warm-dim);
+  font-family: 'Raleway', sans-serif;
+  text-decoration: none;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s ease;
 }
 
-.item i {
-  font-size: 20px;
+.itemIcon {
+  font-size: 1.35rem;
   line-height: 1;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
-.item:hover {
-  color: rgba(255, 255, 255, 0.7);
+.itemLabel {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
-.item.active {
-  color: var(--gold);
+/* Guldpunkt ovanför aktiv flik */
+.itemDot {
+  position: absolute;
+  top: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px rgba(201, 162, 75, 0.7);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-.moreBtn {
-  font-family: inherit;
+.itemActive {
+  color: var(--gold-dim);
 }
 
-/* MER-PANEL */
-.moreOverlay {
+.itemActive .itemIcon {
+  transform: translateY(-1px);
+}
+
+.itemActive .itemDot {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── "Mer"-sheet ── */
+.sheetOverlay {
   position: fixed;
   inset: 0;
-  z-index: 99;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(2px);
+  z-index: 95;
+  background: rgba(6, 5, 3, 0.6);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: fadeIn 0.2s ease both;
 }
 
-.morePanel {
+.sheet {
   position: absolute;
-  bottom: 72px;
-  right: 12px;
-  width: 220px;
-  background: var(--dark);
-  border: 0.5px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  border-radius: 20px 20px 0 0;
+  padding: 0.6rem 1rem calc(4.5rem + env(safe-area-inset-bottom));
+  animation: sheetUp 0.28s ease both;
+  box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.5);
 }
 
-.morePanelLabel {
-  font-size: 10px;
-  letter-spacing: 0.16em;
+@keyframes sheetUp {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.sheetHandle {
+  width: 38px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--border2);
+  margin: 0.25rem auto 0.75rem;
+}
+
+.sheetTitle {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.2);
-  padding: 14px 18px 8px;
+  color: var(--gold-deep);
+  padding: 0 0.5rem 0.5rem;
 }
 
-.morePanelItem {
+.sheetLink {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 13px 18px;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.55);
+  gap: 0.8rem;
+  padding: 0.8rem 0.75rem;
+  border-radius: 10px;
+  color: var(--warm);
+  font-size: 0.92rem;
+  font-weight: 500;
   text-decoration: none;
-  border-top: 0.5px solid rgba(255, 255, 255, 0.06);
-  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
-.morePanelItem i {
-  font-size: 17px;
-  color: rgba(255, 255, 255, 0.3);
+.sheetLink i {
+  font-size: 1.2rem;
+  color: var(--warm-dim);
+  width: 1.4rem;
+  text-align: center;
 }
 
-.morePanelItem:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.85);
+.sheetLink:active {
+  background: rgba(201, 162, 75, 0.08);
 }
 
-.morePanelActive {
-  color: var(--gold) !important;
+.sheetLinkActive {
+  background: rgba(201, 162, 75, 0.1);
+  color: var(--gold-dim);
 }
 
-.morePanelActive i {
-  color: var(--gold) !important;
-}
-
-.moreBadge {
-  margin-left: auto;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+.sheetLinkActive i {
   color: var(--gold);
-  background: rgba(184, 149, 106, 0.15);
-  border: 1px solid rgba(184, 149, 106, 0.35);
-  border-radius: 20px;
-  padding: 2px 7px;
 }
 
-@media (max-width: 1024px) {
+.sheetLabel {
+  flex: 1;
+}
+
+.badge {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 0.16rem 0.5rem;
+  border-radius: 999px;
+  color: var(--ink);
+  background: var(--gold-grad);
+}
+
+/* ── Visa endast på mobil (sidebar tar över ≥769px) ── */
+@media (max-width: 768px) {
   .nav {
-    display: flex;
+    display: grid;
+  }
+}
+
+@media (min-width: 769px) {
+  .sheetOverlay {
+    display: none;
   }
 }
