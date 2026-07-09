@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import AdminLayout from '@/components/admin/AdminLayout'
+import TimeSlotPicker from '@/components/admin/TimeSlotPicker'
 import styles from './bokningar.module.css'
 
 type Service = {
@@ -41,6 +42,18 @@ const STATUS_COLORS: Record<string, string> = {
   cancelled: styles.cancelled,
 }
 
+const EMPTY_FORM = {
+  client_name: '',
+  client_email: '',
+  client_phone: '',
+  booking_date: '',
+  booking_time: '',
+  service_id: '',
+  duration_minutes: '30',
+  price: '',
+  notes: '',
+}
+
 export default function BokningarPage() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [services, setServices] = useState<Service[]>([])
@@ -48,32 +61,56 @@ export default function BokningarPage() {
   const [filter, setFilter] = useState<'alla' | 'idag' | 'kommande' | 'historik'>('idag')
   const [showModal, setShowModal] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
+  const [bookedTimes, setBookedTimes] = useState<string[]>([])
 
   const supabase = createClient()
 
-  const [form, setForm] = useState({
-    client_name: '',
-    client_email: '',
-    client_phone: '',
-    booking_date: '',
-    booking_time: '',
-    service_id: '',   // ← NY
-    duration_minutes: '30',
-    price: '',
-    notes: '',
-  })
+  const [form, setForm] = useState(EMPTY_FORM)
 
   useEffect(() => {
     fetchBookings()
     fetchServices()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Hämta tjänster från Supabase direkt
+  // Hämta upptagna tider när datum väljs i modalen — gråas ut i TimeSlotPicker
+  useEffect(() => {
+    if (!form.booking_date) {
+      setBookedTimes([])
+      return
+    }
+
+    supabase
+      .from('bookings')
+      .select('booking_date')
+      .gte('booking_date', `${form.booking_date}T00:00:00`)
+      .lte('booking_date', `${form.booking_date}T23:59:59`)
+      .in('status', ['confirmed', 'pending', 'in_progress'])
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('Kunde inte hämta upptagna tider:', error.message)
+          return
+        }
+        setBookedTimes(
+          (data ?? []).map(b =>
+            new Date(b.booking_date).toLocaleTimeString('sv-SE', {
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+          )
+        )
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.booking_date])
+
   async function fetchServices() {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('services')
       .select('id, name, price, duration_minutes')
       .order('name')
+
+    if (error) console.error('Kunde inte hämta tjänster:', error.message)
     if (data) setServices(data)
   }
 
@@ -90,7 +127,7 @@ export default function BokningarPage() {
     setLoading(false)
   }
 
-  // När tjänst väljs – fyll i pris och tid automatiskt
+  // När tjänst väljs — fyll i pris och varaktighet automatiskt
   function handleServiceChange(serviceId: string) {
     const svc = services.find(s => s.id === serviceId)
     setForm(prev => ({
@@ -118,47 +155,114 @@ export default function BokningarPage() {
   }
 
   async function handleStatusChange(id: string, status: string) {
-    await fetch('/api/admin/booking/status', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status }),
-    })
+    try {
+      const res = await fetch('/api/admin/booking/status', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status }),
+      })
+      if (!res.ok) {
+        const json = await res.json().catch(() => null)
+        alert(`Kunde inte ändra status: ${json?.error ?? res.statusText}`)
+      }
+    } catch (err) {
+      console.error('handleStatusChange error:', err)
+      alert('Kunde inte ändra status — kontrollera anslutningen.')
+    }
     fetchBookings()
   }
 
   async function handleDelete(id: string) {
     if (!confirm('Är du säker på att du vill radera denna bokning?')) return
-    await fetch(`/api/admin/booking?id=${id}`, { method: 'DELETE' })
+
+    try {
+      const res = await fetch(`/api/admin/booking?id=${id}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const json = await res.json().catch(() => null)
+        alert(`Kunde inte radera: ${json?.error ?? res.statusText}`)
+      }
+    } catch (err) {
+      console.error('handleDelete error:', err)
+      alert('Kunde inte radera — kontrollera anslutningen.')
+    }
     fetchBookings()
+  }
+
+  function openModal() {
+    setForm(EMPTY_FORM)
+    setFormError(null)
+    setShowModal(true)
+  }
+
+  function closeModal() {
+    setShowModal(false)
+    setFormError(null)
   }
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault()
+    setFormError(null)
+
+    // Validera — konvertera strängar till number här, inte i onChange
+    const duration = Number(form.duration_minutes)
+    const price = form.price === '' ? 0 : Number(form.price)
+
+    if (!form.client_name.trim()) {
+      setFormError('Ange klientens namn.')
+      return
+    }
+    if (!form.booking_date) {
+      setFormError('Välj ett datum.')
+      return
+    }
+    if (!form.booking_time) {
+      setFormError('Välj en tid.')
+      return
+    }
+    if (Number.isNaN(duration) || duration < 5) {
+      setFormError('Ange en giltig varaktighet (minst 5 min).')
+      return
+    }
+    if (Number.isNaN(price) || price < 0) {
+      setFormError('Ange ett giltigt pris.')
+      return
+    }
+
     setSaving(true)
     const booking_date = `${form.booking_date}T${form.booking_time}:00`
 
-    await fetch('/api/admin/booking', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        client_name: form.client_name,
-        client_email: form.client_email,
-        client_phone: form.client_phone,
-        booking_date,
-        service_id: form.service_id || null,   // ← NY
-        duration_minutes: parseInt(form.duration_minutes),
-        price: parseInt(form.price) || 0,
-        notes: form.notes,
-      }),
-    })
+    try {
+      const res = await fetch('/api/admin/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_name: form.client_name.trim(),
+          client_email: form.client_email.trim() || null,
+          client_phone: form.client_phone.trim() || null,
+          booking_date,
+          service_id: form.service_id || null,
+          duration_minutes: duration,
+          price,
+          notes: form.notes.trim() || null,
+        }),
+      })
 
-    setSaving(false)
+      setSaving(false)
+
+      if (!res.ok) {
+        const json = await res.json().catch(() => null)
+        setFormError(`Kunde inte spara: ${json?.error ?? res.statusText}`)
+        return
+      }
+    } catch (err) {
+      console.error('handleCreate error:', err)
+      setSaving(false)
+      setFormError('Kunde inte spara — kontrollera anslutningen.')
+      return
+    }
+
     setShowModal(false)
-    setForm({
-      client_name: '', client_email: '', client_phone: '',
-      booking_date: '', booking_time: '', service_id: '',
-      duration_minutes: '30', price: '', notes: '',
-    })
+    setForm(EMPTY_FORM)
     fetchBookings()
   }
 
@@ -173,7 +277,7 @@ export default function BokningarPage() {
             <h1 className={styles.title}>Bokningar</h1>
             <p className={styles.sub}>{filtered.length} bokningar</p>
           </div>
-          <button className={styles.newBtn} onClick={() => setShowModal(true)}>
+          <button className={styles.newBtn} onClick={openModal}>
             + Ny bokning
           </button>
         </div>
@@ -253,13 +357,13 @@ export default function BokningarPage() {
         </div>
       </div>
 
-      {/* MODAL – NY BOKNING */}
+      {/* MODAL — NY BOKNING */}
       {showModal && (
-        <div className={styles.overlay} onClick={() => setShowModal(false)}>
+        <div className={styles.overlay} onClick={closeModal}>
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>Ny bokning</h2>
-              <button className={styles.closeBtn} onClick={() => setShowModal(false)}>✕</button>
+              <button className={styles.closeBtn} onClick={closeModal} aria-label="Stäng">✕</button>
             </div>
             <form onSubmit={handleCreate} className={styles.form}>
               <div className={styles.formGrid}>
@@ -282,7 +386,7 @@ export default function BokningarPage() {
                     onChange={e => setForm({ ...form, client_phone: e.target.value })} />
                 </div>
 
-                {/* TJÄNST-DROPDOWN – fyller i pris & tid automatiskt */}
+                {/* Tjänst-dropdown — fyller i pris & varaktighet automatiskt */}
                 <div className={styles.field}>
                   <label className={styles.label}>Tjänst</label>
                   <select
@@ -302,24 +406,34 @@ export default function BokningarPage() {
                 <div className={styles.field}>
                   <label className={styles.label}>Datum *</label>
                   <input className={styles.input} type="date" value={form.booking_date}
-                    onChange={e => setForm({ ...form, booking_date: e.target.value })} required />
-                </div>
-
-                <div className={styles.field}>
-                  <label className={styles.label}>Tid *</label>
-                  <input className={styles.input} type="time" value={form.booking_time}
-                    onChange={e => setForm({ ...form, booking_time: e.target.value })} required />
+                    onChange={e => setForm({ ...form, booking_date: e.target.value, booking_time: '' })}
+                    required />
                 </div>
 
                 <div className={styles.field}>
                   <label className={styles.label}>Varaktighet (min)</label>
-                  <input className={styles.input} type="number" value={form.duration_minutes}
+                  <input className={styles.input} type="number" min="5" step="1"
+                    value={form.duration_minutes}
                     onChange={e => setForm({ ...form, duration_minutes: e.target.value })} />
+                </div>
+
+                {/* Tid — slot-grid istället för native time-input */}
+                <div className={`${styles.field} ${styles.fullWidth}`}>
+                  <label className={styles.label}>Tid *</label>
+                  <TimeSlotPicker
+                    value={form.booking_time}
+                    onChange={time => setForm({ ...form, booking_time: time })}
+                    open="09:00"
+                    close="18:00"
+                    stepMin={15}
+                    bookedTimes={bookedTimes}
+                  />
                 </div>
 
                 <div className={styles.field}>
                   <label className={styles.label}>Pris (kr)</label>
-                  <input className={styles.input} type="number" value={form.price}
+                  <input className={styles.input} type="number" min="0" step="1"
+                    value={form.price}
                     onChange={e => setForm({ ...form, price: e.target.value })} />
                 </div>
 
@@ -330,8 +444,12 @@ export default function BokningarPage() {
                 </div>
               </div>
 
+              {formError && (
+                <p className={styles.formError} role="alert">{formError}</p>
+              )}
+
               <div className={styles.modalActions}>
-                <button type="button" className={styles.cancelBtn} onClick={() => setShowModal(false)}>
+                <button type="button" className={styles.cancelBtn} onClick={closeModal}>
                   Avbryt
                 </button>
                 <button type="submit" className={styles.saveBtn} disabled={saving}>

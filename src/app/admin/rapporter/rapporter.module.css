@@ -1,20 +1,16 @@
-.page {
-  --cream: #F5F0E8;
-  --gold: #B8956A;
-  --gold-light: #d4b48c;
-  --dark: #3B2F2F;
-  --mid: #6b5545;
-  --border: rgba(184, 149, 106, 0.18);
-  --card-bg: #ffffff;
-  --skeleton-from: #ede8df;
-  --skeleton-to: #e0d9ce;
+/* ════════════════════════════════════════════
+   ATILLI BERG · RAPPORTER
+   Svart & Guld · globala tokens, inga lokala overrides
+   Klassnamnen är identiska med tidigare — page.tsx orörd
+   ════════════════════════════════════════════ */
 
+.page {
   padding: 28px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  background: var(--cream);
   min-height: 100%;
+  /* Ingen egen bakgrund — ärver mörka temat från layouten */
 }
 
 .header {
@@ -26,7 +22,7 @@
 .title {
   font-family: 'Playfair Display', serif;
   font-size: 1.75rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--dark);
   margin: 0;
   line-height: 1.1;
@@ -37,20 +33,21 @@
   font-size: 0.78rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--mid);
+  color: var(--muted);
   margin: 4px 0 0;
 }
 
 .errorBox {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #b91c1c;
-  border-radius: 8px;
+  background: rgba(224, 91, 91, 0.08);
+  border: 1px solid rgba(224, 91, 91, 0.3);
+  color: #E88;
+  border-radius: 10px;
   padding: 12px 16px;
   font-family: 'Raleway', sans-serif;
   font-size: 0.85rem;
 }
 
+/* ── KPI-kort ── */
 .kpiGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -58,9 +55,9 @@
 }
 
 .kpiCard {
-  background: var(--card-bg);
+  background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 20px 22px;
   display: flex;
   flex-direction: column;
@@ -69,6 +66,7 @@
   overflow: hidden;
 }
 
+/* Guld-topplinje — behållen, nu med gradient-token */
 .kpiCard::before {
   content: '';
   position: absolute;
@@ -76,8 +74,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--gold), var(--gold-light));
-  border-radius: 12px 12px 0 0;
+  background: var(--gold-grad);
 }
 
 .kpiLabel {
@@ -85,13 +82,13 @@
   font-size: 0.72rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--mid);
+  color: var(--muted);
 }
 
 .kpiVarde {
   font-family: 'Playfair Display', serif;
   font-size: 1.6rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--dark);
   line-height: 1.1;
 }
@@ -105,10 +102,11 @@
   margin-top: 2px;
 }
 
+/* ── Sektioner ── */
 .sektion {
-  background: var(--card-bg);
+  background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 22px 24px;
   display: flex;
   flex-direction: column;
@@ -121,7 +119,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--mid);
+  color: var(--warm);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -133,6 +131,7 @@
   font-size: 1rem;
 }
 
+/* ── Linjegraf (SVG) ── */
 .svg {
   width: 100%;
   height: auto;
@@ -141,19 +140,19 @@
 }
 
 .gridLine {
-  stroke: var(--border);
+  stroke: rgba(201, 162, 75, 0.12);
   stroke-width: 1;
 }
 
 .axisLabel {
   font-family: 'Raleway', sans-serif;
   font-size: 10px;
-  fill: var(--mid);
+  fill: var(--muted);
 }
 
 .areaFill {
   fill: var(--gold);
-  opacity: 0.1;
+  opacity: 0.12;
 }
 
 .linePath {
@@ -162,15 +161,17 @@
   stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+  filter: drop-shadow(0 0 6px rgba(201, 162, 75, 0.35));
 }
 
 .dot {
-  fill: var(--gold);
-  stroke: var(--card-bg);
+  fill: var(--gold-dim);
+  stroke: var(--panel);
   stroke-width: 2;
   cursor: pointer;
 }
 
+/* ── Stapelgraf ── */
 .stapelWrap {
   display: flex;
   flex-direction: column;
@@ -194,7 +195,7 @@
 }
 
 .stapelBarWrap {
-  background: var(--skeleton-from);
+  background: rgba(201, 162, 75, 0.08);
   border-radius: 4px;
   height: 10px;
   overflow: hidden;
@@ -202,7 +203,7 @@
 
 .stapelBar {
   height: 100%;
-  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  background: var(--gold-grad);
   border-radius: 4px;
   transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -211,10 +212,11 @@
   font-family: 'Raleway', sans-serif;
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--dark);
+  color: var(--gold-dim);
   text-align: right;
 }
 
+/* ── Statuspiller ── */
 .statusGrid {
   display: flex;
   flex-direction: column;
@@ -225,8 +227,9 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: var(--cream);
-  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
   padding: 10px 14px;
 }
 
@@ -235,19 +238,20 @@
   height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
+  box-shadow: 0 0 8px currentColor;
 }
 
 .statusLabel {
   font-family: 'Raleway', sans-serif;
   font-size: 0.78rem;
-  color: var(--mid);
+  color: var(--muted);
   margin: 0;
 }
 
 .statusVarde {
   font-family: 'Playfair Display', serif;
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--dark);
   margin: 0;
   line-height: 1;
@@ -258,9 +262,10 @@
   font-family: 'Raleway', sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--mid);
+  color: var(--warm);
 }
 
+/* ── Botten-grid & tomtext ── */
 .bottenGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -270,32 +275,29 @@
 .tomText {
   font-family: 'Raleway', sans-serif;
   font-size: 0.85rem;
-  color: var(--mid);
+  color: var(--muted);
   text-align: center;
   padding: 24px 0;
   margin: 0;
 }
 
+/* ── Skeleton (mörk variant) ── */
 .skeleton {
   background: linear-gradient(90deg,
-      var(--skeleton-from) 25%,
-      var(--skeleton-to) 50%,
-      var(--skeleton-from) 75%);
+      rgba(201, 162, 75, 0.06) 25%,
+      rgba(201, 162, 75, 0.14) 50%,
+      rgba(201, 162, 75, 0.06) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
+  animation: skeletonShimmer 1.4s infinite;
   border-radius: 6px;
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-
-  100% {
-    background-position: -200% 0;
-  }
+@keyframes skeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
+/* ── Responsivt ── */
 @media (max-width: 1100px) {
   .kpiGrid {
     grid-template-columns: repeat(2, 1fr);
