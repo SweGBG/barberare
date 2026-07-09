@@ -1,424 +1,495 @@
+/* ════════════════════════════════════════════
+   ATILLI BERG · TJÄNSTER & PRISER
+   Svart & Guld · matchar admin-panelens tema
+   ════════════════════════════════════════════ */
+
 .page {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1.5rem;
+  animation: fadeIn 0.4s ease both;
 }
 
+/* ── Header ── */
 .header {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 16px;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .title {
   font-family: 'Playfair Display', serif;
-  font-size: 26px;
-  font-weight: 500;
+  font-size: 1.7rem;
+  font-weight: 600;
   color: var(--dark);
-  margin: 0 0 4px;
+  letter-spacing: 0.02em;
 }
 
 .sub {
-  font-size: 13px;
-  color: var(--warm);
-  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
 }
 
 .newBtn {
-  background: var(--gold);
+  padding: 0.65rem 1.4rem;
   border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--dark);
+  border-radius: 10px;
+  background: var(--gold-grad);
+  color: var(--ink);
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  white-space: nowrap;
-  transition: opacity 0.15s;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
 
 .newBtn:hover {
-  opacity: 0.85;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(201, 162, 75, 0.25);
 }
 
-/* STATS */
+/* ── Stats ── */
 .statsRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: 1rem;
 }
 
 .statCard {
-  background: var(--bg);
-  border: 0.5px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.1rem 1.3rem;
 }
 
 .statLabel {
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--warm);
-  margin: 0 0 8px;
+  color: var(--muted);
+  margin-bottom: 0.45rem;
 }
 
 .statValue {
   font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 600;
   color: var(--dark);
-  margin: 0;
-  line-height: 1;
 }
 
-/* GRID */
+/* ── Tom-/laddningsläge ── */
+.empty {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px dashed var(--border2);
+  border-radius: 14px;
+  font-size: 0.9rem;
+}
+
+/* ── Tjänstekort ── */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 1rem;
 }
 
 .card {
-  background: var(--bg);
-  border: 0.5px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  transition: border-color 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  transition: border-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
 }
 
 .card:hover {
-  border-color: rgba(184, 149, 106, 0.4);
+  border-color: var(--border2);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 .cardTop {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 16px;
 }
 
 .cardIcon {
-  width: 36px;
-  height: 36px;
-  background: rgba(184, 149, 106, 0.1);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  border: 1px solid var(--border);
+  background: rgba(201, 162, 75, 0.07);
   color: var(--gold);
+  font-size: 1.25rem;
 }
 
+/* Redigera / Ta bort — nedtonade i vila, vaknar vid kort-hover */
 .cardActions {
   display: flex;
-  gap: 6px;
+  gap: 0.4rem;
 }
 
 .editBtn,
 .deleteBtn {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  border: 0.5px solid var(--border);
-  background: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: rgba(201, 162, 75, 0.04);
+  color: var(--warm-dim);
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.15s;
+  opacity: 0.35;
+  transition: opacity 0.2s ease, color 0.2s ease,
+              border-color 0.2s ease, background 0.2s ease,
+              transform 0.15s ease;
 }
 
-.editBtn {
-  color: var(--warm);
+.card:hover .editBtn,
+.card:hover .deleteBtn {
+  opacity: 1;
 }
 
 .editBtn:hover {
-  background: var(--cream);
-  color: var(--dark);
-}
-
-.deleteBtn {
-  color: var(--warm);
+  color: var(--gold-dim);
+  border-color: var(--border2);
+  background: rgba(201, 162, 75, 0.12);
+  transform: translateY(-1px);
 }
 
 .deleteBtn:hover {
-  background: rgba(155, 58, 42, 0.08);
-  color: #9b3a2a;
-  border-color: rgba(155, 58, 42, 0.2);
+  color: #E05B5B;
+  border-color: rgba(224, 91, 91, 0.4);
+  background: rgba(224, 91, 91, 0.1);
+  transform: translateY(-1px);
 }
 
 .deleteBtn:disabled {
-  opacity: 0.4;
+  opacity: 0.2;
   cursor: not-allowed;
+  transform: none;
+}
+
+.editBtn:focus-visible,
+.deleteBtn:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
 }
 
 .cardName {
   font-family: 'Playfair Display', serif;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: var(--dark);
-  margin: 0 0 8px;
 }
 
 .cardMeta {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 0.75rem;
 }
 
 .duration {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  color: var(--warm);
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--muted);
 }
 
 .duration i {
-  font-size: 14px;
+  font-size: 0.95rem;
+  color: var(--warm-dim);
 }
 
 .cardPrice {
   font-family: 'Playfair Display', serif;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--gold);
-  line-height: 1;
+  font-size: 1.45rem;
+  font-weight: 600;
+  background: var(--gold-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  margin-top: auto;
 }
 
-/* PRISLISTA */
+/* ── Prislista-förhandsvisning ── */
 .priceList {
-  background: var(--bg);
-  border: 0.5px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
 }
 
 .priceListHeader {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 0.5px solid var(--border);
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.25rem;
 }
 
 .panelTitle {
   font-family: 'Playfair Display', serif;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--dark);
 }
 
 .previewNote {
-  font-size: 12px;
-  color: var(--warm);
+  font-size: 0.75rem;
   font-style: italic;
+  color: var(--muted);
 }
 
 .priceRow {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  padding: 14px 20px;
-  border-bottom: 0.5px solid var(--border);
-  transition: background 0.1s;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid rgba(201, 162, 75, 0.08);
 }
 
 .priceRow:last-child {
   border-bottom: none;
 }
 
-.priceRow:hover {
-  background: var(--cream);
-}
-
 .priceName {
-  font-size: 14px;
+  font-size: 0.92rem;
   font-weight: 500;
   color: var(--dark);
-  margin-right: 12px;
 }
 
 .priceDur {
-  font-size: 12px;
-  color: var(--warm);
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-left: 0.6rem;
 }
 
 .priceAmount {
   font-family: 'Playfair Display', serif;
-  font-size: 16px;
-  color: var(--dark);
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gold-dim);
+  white-space: nowrap;
 }
 
-.empty {
-  padding: 48px 20px;
-  text-align: center;
-  color: var(--warm);
-  font-size: 14px;
-  font-style: italic;
-}
-
-/* MODAL */
+/* ── Modal ── */
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(6, 5, 3, 0.7);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease both;
 }
 
 .modal {
-  background: var(--bg);
-  border-radius: 16px;
   width: 100%;
-  max-width: 440px;
+  max-width: 480px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  animation: fadeUp 0.3s ease both;
 }
 
 .modalHeader {
-  padding: 20px 24px 16px;
-  border-bottom: 0.5px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 1.25rem;
 }
 
 .modalTitle {
   font-family: 'Playfair Display', serif;
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 1.25rem;
+  font-weight: 600;
   color: var(--dark);
-  margin: 0;
 }
 
 .closeBtn {
-  background: none;
-  border: none;
-  font-size: 16px;
-  color: var(--warm);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.85rem;
   cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
 
+.closeBtn:hover {
+  color: var(--dark);
+  border-color: var(--border2);
+}
+
+/* ── Formulär ── */
 .form {
-  padding: 20px 24px 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
 }
 
 .formRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 1rem;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 0.4rem;
 }
 
 .label {
-  font-size: 11px;
-  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--warm);
 }
 
 .input {
-  background: var(--cream);
-  border: 0.5px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 13px;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
   color: var(--dark);
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  transition: border-color 0.2s;
-  width: 100%;
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input::placeholder {
+  color: var(--warm-dim);
 }
 
 .input:focus {
+  outline: none;
   border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.15);
+}
+
+.formError {
+  color: #E05B5B;
+  font-size: 0.82rem;
+  padding: 0.55rem 0.8rem;
+  background: rgba(224, 91, 91, 0.08);
+  border: 1px solid rgba(224, 91, 91, 0.25);
+  border-radius: 8px;
 }
 
 .modalActions {
   display: flex;
-  gap: 12px;
   justify-content: flex-end;
-  padding-top: 4px;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
 }
 
 .cancelBtn {
-  padding: 10px 20px;
-  border: 0.5px solid var(--border);
-  border-radius: 8px;
-  background: none;
-  font-size: 13px;
+  padding: 0.65rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
   color: var(--warm);
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.cancelBtn:hover {
+  color: var(--dark);
+  border-color: var(--border2);
 }
 
 .saveBtn {
-  padding: 10px 24px;
-  background: var(--gold);
+  padding: 0.65rem 1.4rem;
   border: none;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--dark);
+  border-radius: 10px;
+  background: var(--gold-grad);
+  color: var(--ink);
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  transition: opacity 0.15s;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 .saveBtn:hover {
-  opacity: 0.85;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(201, 162, 75, 0.25);
 }
 
 .saveBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  opacity: 0.55;
+  cursor: wait;
+  transform: none;
+  box-shadow: none;
 }
 
-@media (max-width: 1024px) {
+/* ── Responsivt ── */
+@media (max-width: 1100px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
   }
-
   .statsRow {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 768px) {
+  /* Touch: ingen hover — knapparna alltid tydligare */
+  .editBtn,
+  .deleteBtn {
+    opacity: 0.6;
+  }
+}
+
+@media (max-width: 480px) {
   .grid {
     grid-template-columns: 1fr;
   }
-
   .statsRow {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
   }
-
-  .header {
-    flex-direction: column;
-  }
-
-  .newBtn {
-    width: 100%;
-    text-align: center;
-  }
-
   .formRow {
     grid-template-columns: 1fr;
+  }
+  .header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .newBtn {
+    width: 100%;
   }
 }

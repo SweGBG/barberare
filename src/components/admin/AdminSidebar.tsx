@@ -4,33 +4,37 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import styles from './AdminSidebar.module.css'
 
-type NavLink = {
+type NavItem = {
   href: string
   label: string
   icon: string
-  exact?: boolean
   badge?: string
 }
 
-const nav: { group: string; links: NavLink[] }[] = [
+type NavSection = {
+  title: string
+  items: NavItem[]
+}
+
+const SECTIONS: NavSection[] = [
   {
-    group: 'ÖVERSIKT',
-    links: [
-      { href: '/admin', label: 'Dashboard', exact: true, icon: 'ti-layout-dashboard' },
-      { href: '/admin/bokningar', label: 'Bokningar', icon: 'ti-calendar-event' },
-      { href: '/admin/schema', label: 'Schema', icon: 'ti-clock' },
+    title: 'Översikt',
+    items: [
+      { href: '/admin', label: 'Dashboard', icon: 'ti-layout-dashboard' },
+      { href: '/admin/bokningar', label: 'Bokningar', icon: 'ti-calendar-check' },
+      { href: '/admin/schema', label: 'Schema', icon: 'ti-clock-hour-4' },
     ],
   },
   {
-    group: 'KUNDER',
-    links: [
+    title: 'Kunder',
+    items: [
       { href: '/admin/klienter', label: 'Klientregister', icon: 'ti-users' },
-      { href: '/admin/meddelanden', label: 'Meddelanden', icon: 'ti-message' },
+      { href: '/admin/meddelanden', label: 'Meddelanden', icon: 'ti-mail' },
     ],
   },
   {
-    group: 'VERKSAMHET',
-    links: [
+    title: 'Verksamhet',
+    items: [
       { href: '/admin/tjanster', label: 'Tjänster & Priser', icon: 'ti-scissors' },
       { href: '/admin/trender', label: 'Trender', icon: 'ti-trending-up', badge: 'NY' },
       { href: '/admin/rapporter', label: 'Rapporter', icon: 'ti-chart-bar' },
@@ -42,46 +46,57 @@ const nav: { group: string; links: NavLink[] }[] = [
 export default function AdminSidebar() {
   const pathname = usePathname()
 
-  function isActive(href: string, exact?: boolean) {
-    if (exact) return pathname === href
-    return pathname.startsWith(href)
-  }
+  const isActive = (href: string) =>
+    href === '/admin' ? pathname === '/admin' : pathname.startsWith(href)
 
   return (
     <aside className={styles.sidebar}>
-      <div className={styles.logo}>
-        <span className={styles.wordmark}>Atilli Berg</span>
-        <span className={styles.sub}>Admin Panel</span>
+      {/* Guldskimmer i toppen */}
+      <div className={styles.glow} aria-hidden="true" />
+
+      {/* Logotyp */}
+      <div className={styles.brand}>
+        <span className={styles.brandName}>Atilli Berg</span>
+        <span className={styles.brandRule} aria-hidden="true" />
+        <span className={styles.brandSub}>Admin Panel</span>
       </div>
 
+      {/* Tillbaka till hemsidan */}
       <Link href="/" className={styles.homeLink}>
-        <i className="ti ti-home" />
+        <i className="ti ti-arrow-narrow-left" aria-hidden="true" />
         Hemsidan
       </Link>
 
+      {/* Navigation */}
       <nav className={styles.nav}>
-        {nav.map(section => (
-          <div key={section.group}>
-            <p className={styles.sectionLabel}>{section.group}</p>
-            {section.links.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`${styles.navItem} ${isActive(link.href, link.exact) ? styles.active : ''}`}
-              >
-                <i className={`ti ${link.icon}`} />
-                {link.label}
-                {link.badge && (
-                  <span className={styles.newBadge}>{link.badge}</span>
-                )}
-              </Link>
-            ))}
+        {SECTIONS.map((section) => (
+          <div key={section.title} className={styles.section}>
+            <span className={styles.sectionTitle}>{section.title}</span>
+
+            {section.items.map((item) => {
+              const active = isActive(item.href)
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`${styles.link} ${active ? styles.linkActive : ''}`}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  <span className={styles.linkBar} aria-hidden="true" />
+                  <i className={`ti ${item.icon} ${styles.linkIcon}`} aria-hidden="true" />
+                  <span className={styles.linkLabel}>{item.label}</span>
+                  {item.badge && <span className={styles.badge}>{item.badge}</span>}
+                </Link>
+              )
+            })}
           </div>
         ))}
       </nav>
 
+      {/* Footer */}
       <div className={styles.footer}>
-        Atilli Berg © {new Date().getFullYear()}
+        <span className={styles.footerMonogram} aria-hidden="true">AB</span>
+        <span className={styles.footerText}>Atilli Berg © {new Date().getFullYear()}</span>
       </div>
     </aside>
   )
