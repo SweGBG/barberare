@@ -13,28 +13,41 @@ type Service = {
   created_at: string
 }
 
-const emptyForm = { name: '', duration_minutes: 30, price: 0 }
+/* Formulär-state hålls som strängar — inputs är strängar av naturen.
+   Konvertering till number sker först vid submit. Detta eliminerar
+   NaN-buggen när ett number-fält töms. */
+type ServiceForm = {
+  name: string
+  duration_minutes: string
+  price: string
+}
+
+const emptyForm: ServiceForm = { name: '', duration_minutes: '30', price: '' }
 
 export default function TjansterPage() {
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [editing, setEditing] = useState<Service | null>(null)
-  const [form, setForm] = useState(emptyForm)
+  const [form, setForm] = useState<ServiceForm>(emptyForm)
+  const [formError, setFormError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState<string | null>(null)
   const supabase = createClient()
 
   useEffect(() => {
     fetchServices()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function fetchServices() {
     setLoading(true)
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('services')
       .select('*')
       .order('price', { ascending: true })
+
+    if (error) console.error('Kunde inte hämta tjänster:', error.message)
     setServices(data ?? [])
     setLoading(false)
   }
@@ -42,6 +55,7 @@ export default function TjansterPage() {
   function openNew() {
     setEditing(null)
     setForm(emptyForm)
+    setFormError(null)
     setShowModal(true)
   }
 
@@ -49,40 +63,78 @@ export default function TjansterPage() {
     setEditing(service)
     setForm({
       name: service.name,
-      duration_minutes: service.duration_minutes,
-      price: service.price,
+      duration_minutes: String(service.duration_minutes),
+      price: String(service.price),
     })
+    setFormError(null)
     setShowModal(true)
+  }
+
+  function closeModal() {
+    setShowModal(false)
+    setFormError(null)
   }
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault()
-    setSaving(true)
+    setFormError(null)
 
-    if (editing) {
-      await supabase
-        .from('services')
-        .update(form)
-        .eq('id', editing.id)
-    } else {
-      await supabase
-        .from('services')
-        .insert(form)
+    // Validera och konvertera — här, inte i onChange
+    const duration = Number(form.duration_minutes)
+    const price = Number(form.price)
+
+    if (!form.name.trim()) {
+      setFormError('Ange ett tjänstnamn.')
+      return
+    }
+    if (!form.duration_minutes || Number.isNaN(duration) || duration < 5) {
+      setFormError('Ange en giltig varaktighet (minst 5 min).')
+      return
+    }
+    if (form.price === '' || Number.isNaN(price) || price < 0) {
+      setFormError('Ange ett giltigt pris.')
+      return
     }
 
+    setSaving(true)
+
+    const payload = {
+      name: form.name.trim(),
+      duration_minutes: duration,
+      price,
+    }
+
+    const { error } = editing
+      ? await supabase.from('services').update(payload).eq('id', editing.id)
+      : await supabase.from('services').insert(payload)
+
     setSaving(false)
+
+    if (error) {
+      // RLS-nekningar hamnar här — visa dem, svälj dem aldrig tyst
+      setFormError(`Kunde inte spara: ${error.message}`)
+      return
+    }
+
     setShowModal(false)
     fetchServices()
   }
 
   async function handleDelete(id: string) {
+    if (!window.confirm('Ta bort tjänsten? Detta går inte att ångra.')) return
+
     setDeleting(id)
-    await supabase.from('services').delete().eq('id', id)
+    const { error } = await supabase.from('services').delete().eq('id', id)
     setDeleting(null)
+
+    if (error) {
+      console.error('Kunde inte ta bort tjänst:', error.message)
+      alert(`Kunde inte ta bort: ${error.message}`)
+      return
+    }
+
     fetchServices()
   }
-
-  const totalRevenuePotential = services.reduce((sum, s) => sum + s.price, 0)
 
   return (
     <AdminLayout>
@@ -144,6 +196,7 @@ export default function TjansterPage() {
                     <button
                       className={styles.editBtn}
                       onClick={() => openEdit(service)}
+                      aria-label={`Redigera ${service.name}`}
                     >
                       <i className="ti ti-edit" aria-hidden="true" />
                     </button>
@@ -151,6 +204,7 @@ export default function TjansterPage() {
                       className={styles.deleteBtn}
                       onClick={() => handleDelete(service.id)}
                       disabled={deleting === service.id}
+                      aria-label={`Ta bort ${service.name}`}
                     >
                       <i className="ti ti-trash" aria-hidden="true" />
                     </button>
@@ -187,7 +241,9 @@ export default function TjansterPage() {
                   <span className={styles.priceName}>{service.name}</span>
                   <span className={styles.priceDur}>{service.duration_minutes} min</span>
                 </div>
-                <span className={styles.priceAmount}>{service.price.toLocaleString('sv-SE')} kr</span>
+                <span className={styles.priceAmount}>
+                  {service.price.toLocaleString('sv-SE')} kr
+                </span>
               </div>
             ))}
           </div>
@@ -196,13 +252,15 @@ export default function TjansterPage() {
 
       {/* MODAL */}
       {showModal && (
-        <div className={styles.overlay} onClick={() => setShowModal(false)}>
+        <div className={styles.overlay} onClick={closeModal}>
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>
                 {editing ? 'Redigera tjänst' : 'Ny tjänst'}
               </h2>
-              <button className={styles.closeBtn} onClick={() => setShowModal(false)}>✕</button>
+              <button className={styles.closeBtn} onClick={closeModal} aria-label="Stäng">
+                ✕
+              </button>
             </div>
 
             <form onSubmit={handleSave} className={styles.form}>
@@ -226,7 +284,7 @@ export default function TjansterPage() {
                     min="5"
                     step="5"
                     value={form.duration_minutes}
-                    onChange={e => setForm({ ...form, duration_minutes: parseInt(e.target.value) })}
+                    onChange={e => setForm({ ...form, duration_minutes: e.target.value })}
                     required
                   />
                 </div>
@@ -238,17 +296,24 @@ export default function TjansterPage() {
                     min="0"
                     step="50"
                     value={form.price}
-                    onChange={e => setForm({ ...form, price: parseInt(e.target.value) })}
+                    onChange={e => setForm({ ...form, price: e.target.value })}
+                    placeholder="0"
                     required
                   />
                 </div>
               </div>
 
+              {formError && (
+                <p className={styles.formError} role="alert">
+                  {formError}
+                </p>
+              )}
+
               <div className={styles.modalActions}>
                 <button
                   type="button"
                   className={styles.cancelBtn}
-                  onClick={() => setShowModal(false)}
+                  onClick={closeModal}
                 >
                   Avbryt
                 </button>
