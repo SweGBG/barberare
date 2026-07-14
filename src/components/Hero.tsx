@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import styles from './Hero.module.css'
+import GoldDustField from './GoldDustField'
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1]
 
@@ -13,6 +14,9 @@ export default function Hero() {
       <div className={styles.bgWrap}>
         <div className={styles.bg} />
         <div className={styles.bgVignette} />
+
+        {/* Guldstoft-effekt */}
+        <GoldDustField />
       </div>
 
       <div className={styles.inner}>
@@ -30,11 +34,14 @@ export default function Hero() {
             className={styles.logoImg}
             draggable={false}
           />
+
           <div className={styles.logoGlow} aria-hidden="true" />
         </motion.div>
 
+
         {/* ── Höger: text ── */}
         <div className={styles.textSide}>
+
           <motion.p
             className={styles.eyebrow}
             initial={{ opacity: 0, y: 12 }}
@@ -46,6 +53,7 @@ export default function Hero() {
             <span className={styles.eyebrowLine} />
           </motion.p>
 
+
           <motion.h1
             className={styles.title}
             initial={{ opacity: 0, y: 20 }}
@@ -53,8 +61,11 @@ export default function Hero() {
             transition={{ duration: 1, ease, delay: 0.4 }}
           >
             Atilli Berg
-            <span className={styles.subtitle}>Frisör &amp; Barberare</span>
+            <span className={styles.subtitle}>
+              Frisör &amp; Barberare
+            </span>
           </motion.h1>
+
 
           <motion.p
             className={styles.lead}
@@ -67,17 +78,26 @@ export default function Hero() {
             Vår passion är ditt hår — din stil är vår stolthet.
           </motion.p>
 
+
           <motion.div
             className={styles.btns}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease, delay: 0.75 }}
           >
-            <a href="/boka" className={styles.btnGold}>Boka din tid</a>
-            <a href="/#tjanster" className={styles.btnGhost}>Våra tjänster</a>
+            <a href="/boka" className={styles.btnGold}>
+              Boka din tid
+            </a>
+
+            <a href="/#tjanster" className={styles.btnGhost}>
+              Våra tjänster
+            </a>
           </motion.div>
+
         </div>
+
       </div>
+
 
       {/* Scroll-indikator */}
       <motion.div
@@ -88,8 +108,11 @@ export default function Hero() {
         aria-hidden="true"
       >
         <span className={styles.scrollLine} />
-        <span className={styles.scrollText}>Scrolla</span>
+        <span className={styles.scrollText}>
+          Scrolla
+        </span>
       </motion.div>
+
     </section>
   )
 }
