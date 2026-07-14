@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import Script from 'next/script'
 import './globals.css'
+import { LangProvider } from '@/lib/LangContext'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://barberare.vercel.app'),
@@ -28,6 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'sv_SE',
+    alternateLocale: 'en_GB',
     siteName: 'Atilli Berg',
     title: 'Atilli Berg | Herrfrisör & Barberare i Göteborg',
     description:
@@ -106,7 +108,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        {children}
+        <LangProvider>{children}</LangProvider>
         <Analytics />
       </body>
     </html>

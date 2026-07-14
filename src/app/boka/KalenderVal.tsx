@@ -2,13 +2,10 @@
 
 import { useState } from 'react'
 import type { Datum } from './types'
+import { useLang } from '@/lib/LangContext'
+import { t } from '@/lib/translations'
 import styles from './boka-components.module.css'
 
-const manader = [
-  'Januari','Februari','Mars','April','Maj','Juni',
-  'Juli','Augusti','September','Oktober','November','December',
-]
-const dagLabels = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön']
 const tider = [
   '09:00','09:45','10:30','11:15',
   '13:00','13:45','14:30','15:15',
@@ -26,6 +23,10 @@ interface Props {
 }
 
 export default function KalenderVal({ datum, tid, onDatum, onTid, onNasta, onTillbaka }: Props) {
+  const { lang } = useLang()
+  const tr = t[lang].boka
+  const manader = tr.manader
+  const dagLabels = tr.dagLabels
   const idag = new Date()
   const [manad, setManad] = useState<number>(idag.getMonth())
   const [ar, setAr] = useState<number>(idag.getFullYear())
@@ -80,7 +81,7 @@ export default function KalenderVal({ datum, tid, onDatum, onTid, onNasta, onTil
         })}
       </div>
 
-      <div className={styles.ornament}>Välj tid</div>
+      <div className={styles.ornament}>{tr.valjTid}</div>
 
       <div className={styles.tidGrid}>
         {tider.map((t, i) => {
@@ -98,13 +99,13 @@ export default function KalenderVal({ datum, tid, onDatum, onTid, onNasta, onTil
       </div>
 
       <div className={styles.knappar}>
-        <button className={styles.knappSekundar} onClick={onTillbaka}>← Tillbaka</button>
+        <button className={styles.knappSekundar} onClick={onTillbaka}>{tr.tillbaka}</button>
         <button
           className={styles.knappPrimar}
           onClick={onNasta}
           disabled={!datum || !tid}
         >
-          Mina uppgifter →
+          {tr.minaUppgifter}
         </button>
       </div>
     </div>

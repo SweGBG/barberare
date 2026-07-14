@@ -3,20 +3,17 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { useLang } from '@/lib/LangContext'
+import { t } from '@/lib/translations'
+import LanguageToggle from './LanguageToggle'
 import styles from './Navbar.module.css'
 
 const supabase = createClient()
 
-const links = [
-  { href: '/#hem', label: 'Hem' },
-  { href: '/#tjanster', label: 'Tjänster' },
-  { href: '/boka', label: 'Boka tid' },
-  { href: '/#priser', label: 'Priser' },
-  { href: '/#om', label: 'Om oss' },
-  { href: '/kontakt', label: 'Kontakt' },
-]
-
 export default function Navbar() {
+  const { lang } = useLang()
+  const tr = t[lang].nav
+  const links = tr.links
   const [scrolled, setScrolled] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [isAdmin, setIsAdmin] = useState(false)
@@ -90,7 +87,7 @@ export default function Navbar() {
         {/* ── Logotyp ── */}
         <a href="/" className={styles.brand} onClick={close}>
           <span className={styles.brandMain}>Atilli Berg</span>
-          <span className={styles.brandSub}>Frisör &amp; Barberare</span>
+          <span className={styles.brandSub}>{tr.brandSub}</span>
         </a>
 
         {/* ── Länkar (desktop) ── */}
@@ -110,19 +107,20 @@ export default function Navbar() {
 
         {/* ── Höger: auth ── */}
         <div className={styles.actions}>
+          <span className={styles.desktopToggle}><LanguageToggle /></span>
           {user ? (
             <div data-dropdown className={styles.kontoWrap}>
               <button
                 className={styles.kontoBtn}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                aria-label="Konto"
+                aria-label={tr.konto}
                 aria-expanded={dropdownOpen}
               >
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <circle cx="12" cy="8" r="4" />
                   <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
                 </svg>
-                <span className={styles.kontoLabel}>Mitt konto</span>
+                <span className={styles.kontoLabel}>{tr.konto}</span>
               </button>
 
               {dropdownOpen && (
@@ -132,25 +130,25 @@ export default function Navbar() {
                   </div>
                   {isAdmin && (
                     <a href="/admin" className={styles.dropdownItemGold} onClick={() => setDropdownOpen(false)}>
-                      <span>Admin</span><span className={styles.dropdownArrow}>›</span>
+                      <span>{tr.admin}</span><span className={styles.dropdownArrow}>›</span>
                     </a>
                   )}
                   <a href="/medlem" className={styles.dropdownItemGold} onClick={() => setDropdownOpen(false)}>
-                    <span>Mina sidor</span><span className={styles.dropdownArrow}>›</span>
+                    <span>{tr.minaSidor}</span><span className={styles.dropdownArrow}>›</span>
                   </a>
                   <a href="/boka" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
-                    <span>Boka ny tid</span><span className={styles.dropdownArrow}>›</span>
+                    <span>{tr.bokaNy}</span><span className={styles.dropdownArrow}>›</span>
                   </a>
                   <button className={styles.dropdownLogout} onClick={handleLogout}>
-                    Logga ut
+                    {tr.loggaUt}
                   </button>
                 </div>
               )}
             </div>
           ) : (
             <>
-              <a href="/logga-in" className={styles.btnOutline}>Logga in</a>
-              <a href="/skapa-konto" className={styles.btnGold}>Skapa konto</a>
+              <a href="/logga-in" className={styles.btnOutline}>{tr.loggaIn}</a>
+              <a href="/skapa-konto" className={styles.btnGold}>{tr.skapaKonto}</a>
             </>
           )}
 
@@ -158,7 +156,7 @@ export default function Navbar() {
           <button
             className={`${styles.burger} ${menuOpen ? styles.burgerOpen : ''}`}
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label={menuOpen ? 'Stäng meny' : 'Öppna meny'}
+            aria-label={menuOpen ? tr.stangMeny : tr.oppnaMeny}
             aria-expanded={menuOpen}
           >
             <span /><span /><span />
@@ -177,18 +175,19 @@ export default function Navbar() {
         </ul>
 
         <div className={styles.mobileAuth}>
+          <div className={styles.mobileToggle}><LanguageToggle /></div>
           {user ? (
             <>
               <p className={styles.mobileEmail}>{user.email}</p>
-              {isAdmin && <a href="/admin" className={styles.btnOutline} onClick={close}>Admin</a>}
-              <a href="/medlem" className={styles.btnOutline} onClick={close}>Mina sidor</a>
-              <a href="/boka" className={styles.btnGold} onClick={close}>Boka tid</a>
-              <button className={styles.mobileLogout} onClick={handleLogout}>Logga ut</button>
+              {isAdmin && <a href="/admin" className={styles.btnOutline} onClick={close}>{tr.admin}</a>}
+              <a href="/medlem" className={styles.btnOutline} onClick={close}>{tr.minaSidor}</a>
+              <a href="/boka" className={styles.btnGold} onClick={close}>{tr.bokaTid}</a>
+              <button className={styles.mobileLogout} onClick={handleLogout}>{tr.loggaUt}</button>
             </>
           ) : (
             <>
-              <a href="/logga-in" className={styles.btnOutline} onClick={close}>Logga in</a>
-              <a href="/skapa-konto" className={styles.btnGold} onClick={close}>Skapa konto</a>
+              <a href="/logga-in" className={styles.btnOutline} onClick={close}>{tr.loggaIn}</a>
+              <a href="/skapa-konto" className={styles.btnGold} onClick={close}>{tr.skapaKonto}</a>
             </>
           )}
         </div>

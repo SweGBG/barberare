@@ -2,12 +2,9 @@
 
 import { useState } from 'react'
 import type { Bokning } from './types'
+import { useLang } from '@/lib/LangContext'
+import { t } from '@/lib/translations'
 import styles from './boka-components.module.css'
-
-const manader = [
-  'Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni',
-  'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December',
-]
 
 interface Props {
   bokning: Bokning
@@ -17,6 +14,9 @@ interface Props {
 }
 
 export default function KontaktForm({ bokning, onChange, onNasta, onTillbaka }: Props) {
+  const { lang } = useLang()
+  const tr = t[lang].boka
+  const manader = tr.manader
   const { tjanst, datum, tid } = bokning
   const [laddar, setLaddar] = useState(false)
   const [fel, setFel] = useState<string | null>(null)
@@ -36,13 +36,13 @@ export default function KontaktForm({ bokning, onChange, onNasta, onTillbaka }: 
       const data = await res.json()
 
       if (!res.ok) {
-        setFel(data.error || 'Något gick fel, försök igen.')
+        setFel(data.error || tr.felGenerisk)
         return
       }
 
       onNasta()
     } catch {
-      setFel('Kunde inte nå servern, kontrollera din uppkoppling.')
+      setFel(tr.felServer)
     } finally {
       setLaddar(false)
     }
@@ -50,30 +50,30 @@ export default function KontaktForm({ bokning, onChange, onNasta, onTillbaka }: 
 
   return (
     <div>
-      <p className={styles.sektionsTitel}>Dina uppgifter</p>
+      <p className={styles.sektionsTitel}>{tr.dinaUppgifter}</p>
 
       <div className={styles.sammanfattning}>
         <div className={styles.sammRad}>
-          <span className={styles.sammLabel}>Tjänst</span>
+          <span className={styles.sammLabel}>{tr.tjanst}</span>
           <span>{tjanst?.namn}</span>
         </div>
         <div className={styles.sammRad}>
-          <span className={styles.sammLabel}>Datum</span>
+          <span className={styles.sammLabel}>{tr.datum}</span>
           <span>{datum?.dag} {datum !== null ? manader[datum.manad] : ''} {datum?.ar}</span>
         </div>
         <div className={styles.sammRad}>
-          <span className={styles.sammLabel}>Tid</span>
+          <span className={styles.sammLabel}>{tr.tid}</span>
           <span>{tid}</span>
         </div>
         <div className={`${styles.sammRad} ${styles.sammTotalt}`}>
-          <span className={styles.sammLabel}>Totalt</span>
+          <span className={styles.sammLabel}>{tr.totalt}</span>
           <span>{tjanst?.pris}</span>
         </div>
       </div>
 
       <div className={styles.formGrid}>
         <div>
-          <label className={styles.formLabel}>Förnamn</label>
+          <label className={styles.formLabel}>{tr.fornamn}</label>
           <input
             className={styles.formInput}
             value={bokning.namn}
@@ -82,7 +82,7 @@ export default function KontaktForm({ bokning, onChange, onNasta, onTillbaka }: 
           />
         </div>
         <div>
-          <label className={styles.formLabel}>Efternamn</label>
+          <label className={styles.formLabel}>{tr.efternamn}</label>
           <input
             className={styles.formInput}
             value={bokning.efternamn}
@@ -91,7 +91,7 @@ export default function KontaktForm({ bokning, onChange, onNasta, onTillbaka }: 
           />
         </div>
         <div>
-          <label className={styles.formLabel}>E-post</label>
+          <label className={styles.formLabel}>{tr.epost}</label>
           <input
             className={styles.formInput}
             type="email"
@@ -101,7 +101,7 @@ export default function KontaktForm({ bokning, onChange, onNasta, onTillbaka }: 
           />
         </div>
         <div>
-          <label className={styles.formLabel}>Telefon</label>
+          <label className={styles.formLabel}>{tr.telefon}</label>
           <input
             className={styles.formInput}
             type="tel"
@@ -111,12 +111,12 @@ export default function KontaktForm({ bokning, onChange, onNasta, onTillbaka }: 
           />
         </div>
         <div className={styles.formFull}>
-          <label className={styles.formLabel}>Meddelande (valfritt)</label>
+          <label className={styles.formLabel}>{tr.meddelande}</label>
           <textarea
             className={`${styles.formInput} ${styles.formTextarea}`}
             value={bokning.meddelande}
             onChange={(e) => onChange('meddelande', e.target.value)}
-            placeholder="Önskemål, allergier eller annat vi bör veta..."
+            placeholder={tr.meddelandePlaceholder}
           />
         </div>
       </div>
@@ -127,14 +127,14 @@ export default function KontaktForm({ bokning, onChange, onNasta, onTillbaka }: 
 
       <div className={styles.knappar}>
         <button className={styles.knappSekundar} onClick={onTillbaka} disabled={laddar}>
-          ← Tillbaka
+          {tr.tillbaka}
         </button>
         <button
           className={styles.knappPrimar}
           onClick={skickaBokning}
           disabled={!kanGaVidere || laddar}
         >
-          {laddar ? 'Skickar...' : 'Bekräfta bokning →'}
+          {laddar ? tr.skickar : tr.bekrafta}
         </button>
       </div>
     </div>

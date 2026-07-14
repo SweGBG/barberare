@@ -1,0 +1,53 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid rgba(201, 162, 75, 0.25);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.flagBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 36px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  opacity: 0.45;
+  filter: saturate(0.5);
+  transition: opacity 0.25s ease, filter 0.25s ease, background 0.25s ease;
+}
+
+.flagBtn:hover { opacity: 0.8; filter: saturate(0.85); }
+
+.active {
+  opacity: 1;
+  filter: saturate(1);
+  background: rgba(201, 162, 75, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(201, 162, 75, 0.35);
+}
+
+.flag {
+  width: 21px;
+  height: 13px;
+  border-radius: 1.5px;
+  display: block;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.4);
+}
+
+.sep {
+  width: 1px;
+  height: 16px;
+  background: rgba(201, 162, 75, 0.25);
+}
+
+/* Mobilmeny: större touch targets */
+@media (max-width: 900px) {
+  .flagBtn { min-width: 46px; min-height: 44px; }
+}

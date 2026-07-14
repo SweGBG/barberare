@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useLang } from '@/lib/LangContext'
+import { t } from '@/lib/translations'
 import styles from './Footer.module.css'
 
 const supabase = createClient()
@@ -13,20 +15,16 @@ interface OpeningHour {
   is_closed: boolean
 }
 
-const dagNamn = ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag']
-
-const fallbackTider = [
-  { dag: 'Mån–Fre', tid: '09–19' },
-  { dag: 'Lördag', tid: '10–17' },
-  { dag: 'Söndag', tid: 'Stängt' },
-]
-
 function fmt(t: string | null): string {
   if (!t) return ''
   return t.slice(0, 5)
 }
 
 export default function Footer() {
+  const { lang } = useLang()
+  const tr = t[lang].footer
+  const dagNamn = tr.dagNamn
+  const fallbackTider = tr.fallbackTider
   const [tider, setTider] = useState<OpeningHour[] | null>(null)
 
   useEffect(() => {
@@ -48,20 +46,16 @@ export default function Footer() {
         <div className={styles.bokaInner}>
           <p className={styles.eyebrow}>
             <span className={styles.eyebrowLine} />
-            Boka din tid
+            {tr.bokaEyebrow}
             <span className={styles.eyebrowLine} />
           </p>
           <h2 className={styles.bokaTitle}>
-            Redo för ett <em>nytt kapitel?</em>
+            {tr.bokaTitle1}<em>{tr.bokaTitle2}</em>
           </h2>
-          <p className={styles.bokaSub}>
-            Vi tar emot bokningar direkt här på sajten — snabbt, enkelt och
-            alltid bekräftat via e-post. Välj tjänst, tid och fyll i dina
-            uppgifter på under en minut.
-          </p>
-          <a href="/boka" className={styles.bokaBtn}>Boka tid nu</a>
+          <p className={styles.bokaSub}>{tr.bokaSub}</p>
+          <a href="/boka" className={styles.bokaBtn}>{tr.bokaBtn}</a>
           <p className={styles.bokaTel}>
-            Eller ring oss: <a href="tel:031000000">031-00 00 00</a>
+            {tr.ellerRing} <a href="tel:031000000">031-00 00 00</a>
           </p>
         </div>
       </section>
@@ -72,35 +66,35 @@ export default function Footer() {
           <div className={styles.footerBrand}>
             <div className={styles.footerLogo}>
               <span className={styles.footerLogoMain}>Atilli Berg</span>
-              <span className={styles.footerLogoSub}>Frisör &amp; Barberare</span>
+              <span className={styles.footerLogoSub}>{t[lang].nav.brandSub}</span>
             </div>
             <p className={styles.footerTagline}>
-              Tradition möter passion.<br />
-              Hantverksskicklighet sedan 2026.
+              {tr.tagline1}<br />
+              {tr.tagline2}
             </p>
           </div>
 
           <div className={styles.footerCol}>
-            <h5 className={styles.colHead}>Öppettider</h5>
+            <h5 className={styles.colHead}>{tr.colHours}</h5>
             {tider
-              ? tider.map((t) => (
-                  <p key={t.day_of_week} className={styles.tidRad}>
-                    <span>{dagNamn[t.day_of_week] ?? `Dag ${t.day_of_week}`}</span>
+              ? tider.map((rad) => (
+                  <p key={rad.day_of_week} className={styles.tidRad}>
+                    <span>{dagNamn[rad.day_of_week] ?? `Dag ${rad.day_of_week}`}</span>
                     <span>
-                      {t.is_closed ? 'Stängt' : `${fmt(t.open_time)}–${fmt(t.close_time)}`}
+                      {rad.is_closed ? tr.stangt : `${fmt(rad.open_time)}–${fmt(rad.close_time)}`}
                     </span>
                   </p>
                 ))
-              : fallbackTider.map((t) => (
-                  <p key={t.dag} className={styles.tidRad}>
-                    <span>{t.dag}</span>
-                    <span>{t.tid}</span>
+              : fallbackTider.map((ft) => (
+                  <p key={ft.dag} className={styles.tidRad}>
+                    <span>{ft.dag}</span>
+                    <span>{ft.tid}</span>
                   </p>
                 ))}
           </div>
 
           <div className={styles.footerCol}>
-            <h5 className={styles.colHead}>Hitta oss</h5>
+            <h5 className={styles.colHead}>{tr.colFind}</h5>
             <p>Din gata 1</p>
             <p>Göteborg</p>
             <a href="tel:031000000" style={{ marginTop: '12px' }}>031-00 00 00</a>
@@ -109,19 +103,16 @@ export default function Footer() {
           </div>
 
           <div className={styles.footerCol}>
-            <h5 className={styles.colHead}>Navigera</h5>
-            <a href="/#tjanster">Tjänster</a>
-            <a href="/#galleri">Galleri</a>
-            <a href="/#priser">Prislista</a>
-            <a href="/#om">Om oss</a>
-            <a href="/kontakt">Kontakt</a>
-            <a href="/boka">Boka tid</a>
+            <h5 className={styles.colHead}>{tr.colNav}</h5>
+            {tr.navLinks.map((l) => (
+              <a key={l.href} href={l.href}>{l.label}</a>
+            ))}
           </div>
         </div>
 
         <div className={styles.footerBottom}>
-          <p>© 2026 Atilli Berg. Alla rättigheter förbehållna.</p>
-          <p>Göteborg, Sverige</p>
+          <p>© 2026 Atilli Berg. {tr.rights}</p>
+          <p>{tr.city}</p>
         </div>
       </footer>
     </>

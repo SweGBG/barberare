@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Navbar from '@/components/Navbar';
+import { useLang } from '@/lib/LangContext';
+import { t } from '@/lib/translations';
 import styles from './medlem.module.css';
 
 interface Booking {
@@ -14,12 +16,10 @@ interface Booking {
   services?: { name: string } | null;
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  confirmed: 'Bekräftad', pending: 'Väntar', in_progress: 'Pågår',
-  completed: 'Genomförd', cancelled: 'Avbokad',
-};
-
 export default function MedlemPage() {
+  const { lang } = useLang();
+  const tr = t[lang].medlem;
+  const STATUS_LABELS = tr.status;
   const [user, setUser] = useState<any>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -108,10 +108,9 @@ export default function MedlemPage() {
 
   const formatDate = (d: string) => {
     const dt = new Date(d);
-    const m = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
-    return `${dt.getDate()} ${m[dt.getMonth()]} ${dt.getFullYear()}`;
+    return `${dt.getDate()} ${tr.manader[dt.getMonth()]} ${dt.getFullYear()}`;
   };
-  const formatTime = (d: string) => new Date(d).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
+  const formatTime = (d: string) => new Date(d).toLocaleTimeString(lang === 'sv' ? 'sv-SE' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
   const getStatusClass = (s: string) => ({ confirmed: styles.statusConfirmed, cancelled: styles.statusCancelled, completed: styles.statusCompleted, pending: styles.statusPending, in_progress: styles.statusInProgress }[s] ?? '');
   const getServiceName = (b: Booking) => (b.services as any)?.[0]?.name ?? (b.services as any)?.name ?? '–';
 
@@ -130,7 +129,7 @@ export default function MedlemPage() {
     <><Navbar />
     <div className={styles.loadingContainer}>
       <div className={styles.loader} />
-      <p>Laddar din profil...</p>
+      <p>{tr.laddarProfil}</p>
     </div></>
   );
 
@@ -145,35 +144,35 @@ export default function MedlemPage() {
         <div className={styles.header}>
           <div className={styles.headerContent}>
             <div>
-              <p className={styles.eyebrow}>Välkommen tillbaka</p>
+              <p className={styles.eyebrow}>{tr.valkommen}</p>
               <h1 className={styles.title}>{profileData.client_name || user?.email?.split('@')[0]}</h1>
             </div>
             <div className={styles.headerActions}>
-              <button onClick={() => setShowProfile(true)} className={styles.profileBtn}>Redigera profil</button>
-              <button onClick={handleLogout} className={styles.logoutBtn}>Logga ut</button>
+              <button onClick={() => setShowProfile(true)} className={styles.profileBtn}>{tr.redigeraProfil}</button>
+              <button onClick={handleLogout} className={styles.logoutBtn}>{tr.loggaUt}</button>
             </div>
           </div>
         </div>
 
         <div className={styles.content}>
           <div className={styles.statsGrid}>
-            <div className={styles.statCard}><p className={styles.statLabel}>Totalt besök</p><p className={styles.statValue}>{s.totalVisits}</p></div>
-            <div className={styles.statCard}><p className={styles.statLabel}>Totalt spenderat</p><p className={styles.statValue}>{s.totalSpent.toLocaleString('sv-SE')} kr</p></div>
-            <div className={styles.statCard}><p className={styles.statLabel}>Medlem sedan</p><p className={styles.statValue}>{s.memberSince.toLocaleDateString('sv-SE', { month: 'short', year: 'numeric' })}</p></div>
-            <div className={styles.statCard}><p className={styles.statLabel}>Nästa besök</p><p className={styles.statValue}>{s.nextBooking ? `${new Date(s.nextBooking.booking_date).getDate()}/${new Date(s.nextBooking.booking_date).getMonth() + 1}` : 'Ingen bokning'}</p></div>
+            <div className={styles.statCard}><p className={styles.statLabel}>{tr.totaltBesok}</p><p className={styles.statValue}>{s.totalVisits}</p></div>
+            <div className={styles.statCard}><p className={styles.statLabel}>{tr.totaltSpenderat}</p><p className={styles.statValue}>{s.totalSpent.toLocaleString('sv-SE')} kr</p></div>
+            <div className={styles.statCard}><p className={styles.statLabel}>{tr.medlemSedan}</p><p className={styles.statValue}>{s.memberSince.toLocaleDateString(lang === 'sv' ? 'sv-SE' : 'en-GB', { month: 'short', year: 'numeric' })}</p></div>
+            <div className={styles.statCard}><p className={styles.statLabel}>{tr.nastaBesok}</p><p className={styles.statValue}>{s.nextBooking ? `${new Date(s.nextBooking.booking_date).getDate()}/${new Date(s.nextBooking.booking_date).getMonth() + 1}` : tr.ingenBokning}</p></div>
           </div>
 
           <div className={styles.section}>
             <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Kommande bokningar</h2>
-              <a href="/boka" className={styles.bookBtn}>Boka ny tid</a>
+              <h2 className={styles.sectionTitle}>{tr.kommande}</h2>
+              <a href="/boka" className={styles.bookBtn}>{tr.bokaNy}</a>
             </div>
             {kommande.length === 0 ? (
               <div className={styles.emptyState}>
                 <p className={styles.emptyIcon}>📅</p>
-                <p className={styles.emptyTitle}>Inga kommande bokningar</p>
-                <p className={styles.emptyText}>Du har inga bokade tider just nu.</p>
-                <a href="/boka" className={styles.emptyBtn}>Boka tid</a>
+                <p className={styles.emptyTitle}>{tr.ingaKommande}</p>
+                <p className={styles.emptyText}>{tr.ingaKommandeText}</p>
+                <a href="/boka" className={styles.emptyBtn}>{tr.bokaTid}</a>
               </div>
             ) : (
               <div className={styles.bookingGrid}>
@@ -184,12 +183,12 @@ export default function MedlemPage() {
                       <span className={`${styles.status} ${getStatusClass(b.status)}`}>{STATUS_LABELS[b.status] ?? b.status}</span>
                     </div>
                     <div className={styles.bookingDetails}>
-                      <div className={styles.detail}><span className={styles.detailLabel}>Datum</span><span className={styles.detailValue}>{formatDate(b.booking_date)}</span></div>
-                      <div className={styles.detail}><span className={styles.detailLabel}>Tid</span><span className={styles.detailValue}>{formatTime(b.booking_date)}</span></div>
-                      {b.duration_minutes && <div className={styles.detail}><span className={styles.detailLabel}>Varaktighet</span><span className={styles.detailValue}>{b.duration_minutes} min</span></div>}
-                      <div className={styles.detail}><span className={styles.detailLabel}>Pris</span><span className={styles.detailPrice}>{b.price ? `${b.price.toLocaleString('sv-SE')} kr` : '–'}</span></div>
+                      <div className={styles.detail}><span className={styles.detailLabel}>{tr.datum}</span><span className={styles.detailValue}>{formatDate(b.booking_date)}</span></div>
+                      <div className={styles.detail}><span className={styles.detailLabel}>{tr.tidLabel}</span><span className={styles.detailValue}>{formatTime(b.booking_date)}</span></div>
+                      {b.duration_minutes && <div className={styles.detail}><span className={styles.detailLabel}>{tr.varaktighet}</span><span className={styles.detailValue}>{b.duration_minutes} min</span></div>}
+                      <div className={styles.detail}><span className={styles.detailLabel}>{tr.pris}</span><span className={styles.detailPrice}>{b.price ? `${b.price.toLocaleString('sv-SE')} kr` : '–'}</span></div>
                     </div>
-                    {b.status !== 'cancelled' && <button onClick={() => setCancelModal(b.id)} className={styles.cancelBtn}>Avboka</button>}
+                    {b.status !== 'cancelled' && <button onClick={() => setCancelModal(b.id)} className={styles.cancelBtn}>{tr.avboka}</button>}
                   </div>
                 ))}
               </div>
@@ -198,11 +197,11 @@ export default function MedlemPage() {
 
           {tidigare.length > 0 && (
             <div className={styles.section}>
-              <h2 className={styles.sectionTitle}>Tidigare bokningar</h2>
+              <h2 className={styles.sectionTitle}>{tr.tidigare}</h2>
               <div className={styles.historyList}>
                 {tidigare.map(b => (
                   <div key={b.id} className={styles.historyItem}>
-                    <div className={styles.historyLeft}><p className={styles.historyService}>{getServiceName(b)}</p><p className={styles.historyDate}>{formatDate(b.booking_date)} kl {formatTime(b.booking_date)}</p></div>
+                    <div className={styles.historyLeft}><p className={styles.historyService}>{getServiceName(b)}</p><p className={styles.historyDate}>{formatDate(b.booking_date)} {tr.kl} {formatTime(b.booking_date)}</p></div>
                     <div className={styles.historyRight}><span className={styles.historyPrice}>{b.price ? `${b.price.toLocaleString('sv-SE')} kr` : '–'}</span><span className={`${styles.status} ${getStatusClass(b.status)}`}>{STATUS_LABELS[b.status] ?? b.status}</span></div>
                   </div>
                 ))}
@@ -211,11 +210,11 @@ export default function MedlemPage() {
           )}
 
           <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Snabblänkar</h2>
+            <h2 className={styles.sectionTitle}>{tr.snabblankar}</h2>
             <div className={styles.quickLinks}>
-              <a href="/boka" className={styles.quickLink}><span className={styles.quickIcon}>📅</span><span className={styles.quickText}>Boka ny tid</span></a>
-              <a href="/priser" className={styles.quickLink}><span className={styles.quickIcon}>💰</span><span className={styles.quickText}>Se prislista</span></a>
-              <a href="/kontakt" className={styles.quickLink}><span className={styles.quickIcon}>📞</span><span className={styles.quickText}>Kontakta oss</span></a>
+              <a href="/boka" className={styles.quickLink}><span className={styles.quickIcon}>📅</span><span className={styles.quickText}>{tr.qlBoka}</span></a>
+              <a href="/priser" className={styles.quickLink}><span className={styles.quickIcon}>💰</span><span className={styles.quickText}>{tr.qlPriser}</span></a>
+              <a href="/kontakt" className={styles.quickLink}><span className={styles.quickIcon}>📞</span><span className={styles.quickText}>{tr.qlKontakt}</span></a>
             </div>
           </div>
         </div>
@@ -223,12 +222,12 @@ export default function MedlemPage() {
         {showProfile && (
           <div className={styles.modalOverlay} onClick={() => setShowProfile(false)}>
             <div className={styles.modal} onClick={e => e.stopPropagation()}>
-              <div className={styles.modalHeader}><h2 className={styles.modalTitle}>Redigera profil</h2><button onClick={() => setShowProfile(false)} className={styles.modalClose}>✕</button></div>
+              <div className={styles.modalHeader}><h2 className={styles.modalTitle}>{tr.modalTitle}</h2><button onClick={() => setShowProfile(false)} className={styles.modalClose}>✕</button></div>
               <form onSubmit={handleUpdateProfile} className={styles.modalForm}>
-                <div className={styles.formField}><label className={styles.formLabel}>Namn</label><input type="text" value={profileData.client_name} onChange={e => setProfileData({ ...profileData, client_name: e.target.value })} className={styles.formInput} required /></div>
-                <div className={styles.formField}><label className={styles.formLabel}>Telefon</label><input type="tel" value={profileData.client_phone} onChange={e => setProfileData({ ...profileData, client_phone: e.target.value })} className={styles.formInput} /></div>
-                <div className={styles.formField}><label className={styles.formLabel}>E-post</label><input type="email" value={profileData.email} className={styles.formInput} disabled /></div>
-                <div className={styles.modalActions}><button type="button" onClick={() => setShowProfile(false)} className={styles.cancelModalBtn}>Avbryt</button><button type="submit" className={styles.saveBtn}>Spara ändringar</button></div>
+                <div className={styles.formField}><label className={styles.formLabel}>{tr.namn}</label><input type="text" value={profileData.client_name} onChange={e => setProfileData({ ...profileData, client_name: e.target.value })} className={styles.formInput} required /></div>
+                <div className={styles.formField}><label className={styles.formLabel}>{tr.telefon}</label><input type="tel" value={profileData.client_phone} onChange={e => setProfileData({ ...profileData, client_phone: e.target.value })} className={styles.formInput} /></div>
+                <div className={styles.formField}><label className={styles.formLabel}>{tr.epost}</label><input type="email" value={profileData.email} className={styles.formInput} disabled /></div>
+                <div className={styles.modalActions}><button type="button" onClick={() => setShowProfile(false)} className={styles.cancelModalBtn}>{tr.avbryt}</button><button type="submit" className={styles.saveBtn}>{tr.spara}</button></div>
               </form>
             </div>
           </div>
@@ -237,9 +236,9 @@ export default function MedlemPage() {
         {cancelModal && (
           <div className={styles.modalOverlay} onClick={() => setCancelModal(null)}>
             <div className={styles.confirmModal} onClick={e => e.stopPropagation()}>
-              <h3 className={styles.confirmTitle}>Avboka bokning?</h3>
-              <p className={styles.confirmText}>Är du säker? Detta kan inte ångras.</p>
-              <div className={styles.confirmActions}><button onClick={() => setCancelModal(null)} className={styles.cancelModalBtn}>Nej, behåll</button><button onClick={() => handleCancelBooking(cancelModal)} className={styles.confirmBtn}>Ja, avboka</button></div>
+              <h3 className={styles.confirmTitle}>{tr.avbokaTitle}</h3>
+              <p className={styles.confirmText}>{tr.avbokaText}</p>
+              <div className={styles.confirmActions}><button onClick={() => setCancelModal(null)} className={styles.cancelModalBtn}>{tr.nejBehall}</button><button onClick={() => handleCancelBooking(cancelModal)} className={styles.confirmBtn}>{tr.jaAvboka}</button></div>
             </div>
           </div>
         )}

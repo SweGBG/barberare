@@ -5,11 +5,15 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { useLang } from '@/lib/LangContext'
+import { t } from '@/lib/translations'
 import styles from './skapa-konto.module.css'
 
 export default function SkapaKontoPage() {
     const router = useRouter()
     const supabase = createClient()
+    const { lang } = useLang()
+    const tr = t[lang].skapaKonto
     const fileRef = useRef<HTMLInputElement>(null)
 
     const [form, setForm] = useState({
@@ -37,11 +41,11 @@ export default function SkapaKontoPage() {
         setError('')
 
         if (form.lösenord !== form.bekrafta) {
-            setError('Lösenorden matchar inte.')
+            setError(tr.felMatchar)
             return
         }
         if (form.lösenord.length < 6) {
-            setError('Lösenordet måste vara minst 6 tecken.')
+            setError(tr.felLangd)
             return
         }
 
@@ -95,9 +99,9 @@ export default function SkapaKontoPage() {
             router.push('/skapa-konto/bekraftelse')
 
         } catch (err: unknown) {
-            const msg = err instanceof Error ? err.message : 'Något gick fel'
+            const msg = err instanceof Error ? err.message : tr.felGenerisk
             if (msg.includes('already registered')) {
-                setError('Den e-postadressen är redan registrerad.')
+                setError(tr.felRegistrerad)
             } else {
                 setError(msg)
             }
@@ -111,10 +115,10 @@ export default function SkapaKontoPage() {
             <Navbar />
             <main className={styles.main}>
                 <div className={styles.hero}>
-                    <p className={styles.eyebrow}>Exklusiv salong · Est. 2022</p>
-                    <h1 className={styles.title}>Skapa <em>konto</em></h1>
+                    <p className={styles.eyebrow}>{tr.eyebrow}</p>
+                    <h1 className={styles.title}>{tr.title1}<em>{tr.title2}</em></h1>
                     <div className={styles.divider} />
-                    <p className={styles.sub}>Bli medlem och hantera dina bokningar enkelt.</p>
+                    <p className={styles.sub}>{tr.sub}</p>
                 </div>
 
                 <div className={styles.kortWrap}>
@@ -132,7 +136,7 @@ export default function SkapaKontoPage() {
                                 ) : (
                                     <div className={styles.avatarPlaceholder}>
                                         <i className="ti ti-user" />
-                                        <span>Välj bild</span>
+                                        <span>{tr.valjBild}</span>
                                     </div>
                                 )}
                             </button>
@@ -143,13 +147,13 @@ export default function SkapaKontoPage() {
                                 style={{ display: 'none' }}
                                 onChange={handleFile}
                             />
-                            <p className={styles.avatarHint}>Klicka för att ladda upp profilbild</p>
+                            <p className={styles.avatarHint}>{tr.profilbild}</p>
                         </div>
 
                         <form onSubmit={handleSubmit} className={styles.form}>
                             <div className={styles.rad}>
                                 <div className={styles.falt}>
-                                    <label className={styles.label}>Förnamn *</label>
+                                    <label className={styles.label}>{tr.fornamn}</label>
                                     <input
                                         className={styles.input}
                                         type="text"
@@ -160,7 +164,7 @@ export default function SkapaKontoPage() {
                                     />
                                 </div>
                                 <div className={styles.falt}>
-                                    <label className={styles.label}>Efternamn *</label>
+                                    <label className={styles.label}>{tr.efternamn}</label>
                                     <input
                                         className={styles.input}
                                         type="text"
@@ -173,7 +177,7 @@ export default function SkapaKontoPage() {
                             </div>
 
                             <div className={styles.falt}>
-                                <label className={styles.label}>E-post *</label>
+                                <label className={styles.label}>{tr.epost}</label>
                                 <input
                                     className={styles.input}
                                     type="email"
@@ -185,7 +189,7 @@ export default function SkapaKontoPage() {
                             </div>
 
                             <div className={styles.falt}>
-                                <label className={styles.label}>Telefon</label>
+                                <label className={styles.label}>{tr.telefon}</label>
                                 <input
                                     className={styles.input}
                                     type="tel"
@@ -197,22 +201,22 @@ export default function SkapaKontoPage() {
 
                             <div className={styles.rad}>
                                 <div className={styles.falt}>
-                                    <label className={styles.label}>Lösenord *</label>
+                                    <label className={styles.label}>{tr.losenord}</label>
                                     <input
                                         className={styles.input}
                                         type="password"
-                                        placeholder="Minst 6 tecken"
+                                        placeholder={tr.losenordPlaceholder}
                                         value={form.lösenord}
                                         onChange={e => setForm({ ...form, lösenord: e.target.value })}
                                         required
                                     />
                                 </div>
                                 <div className={styles.falt}>
-                                    <label className={styles.label}>Bekräfta lösenord *</label>
+                                    <label className={styles.label}>{tr.bekrafta}</label>
                                     <input
                                         className={styles.input}
                                         type="password"
-                                        placeholder="Upprepa lösenord"
+                                        placeholder={tr.bekraftaPlaceholder}
                                         value={form.bekrafta}
                                         onChange={e => setForm({ ...form, bekrafta: e.target.value })}
                                         required
@@ -227,12 +231,12 @@ export default function SkapaKontoPage() {
                                 className={styles.submitBtn}
                                 disabled={loading}
                             >
-                                {loading ? 'Skapar konto...' : 'Skapa konto'}
+                                {loading ? tr.skaparKonto : tr.skapaKonto}
                             </button>
 
                             <p className={styles.loginLink}>
-                                Har du redan ett konto?{' '}
-                                <a href="/logga-in" className={styles.link}>Logga in här</a>
+                                {tr.redanKonto}{' '}
+                                <a href="/logga-in" className={styles.link}>{tr.loggaInHar}</a>
                             </p>
                         </form>
                     </div>

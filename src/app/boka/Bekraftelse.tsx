@@ -1,16 +1,18 @@
+'use client'
+
+import { useLang } from '@/lib/LangContext'
+import { t } from '@/lib/translations'
 import type { Bokning } from './types'
 import styles from './boka-components.module.css'
-
-const manader = [
-  'Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni',
-  'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December',
-]
 
 interface Props {
   bokning: Bokning
 }
 
 export default function Bekraftelse({ bokning }: Props) {
+  const { lang } = useLang()
+  const tr = t[lang].boka
+  const manader = tr.manader
   const { tjanst, datum, tid, namn } = bokning
 
   return (
@@ -23,49 +25,46 @@ export default function Bekraftelse({ bokning }: Props) {
           <span className={styles.bekIconCheck}>✓</span>
         </div>
 
-        <p className={styles.bekEyebrow}>— Bekräftat</p>
+        <p className={styles.bekEyebrow}>{tr.bekEyebrow}</p>
         <h2 className={styles.bekTitel}>
-          Vi ses,<br /><em>{namn}.</em>
+          {tr.bekTitel1}<br /><em>{namn}.</em>
         </h2>
 
-        <p className={styles.bekIngress}>
-          Din bokning är registrerad. En bekräftelse
-          landar i din inbox inom några minuter.
-        </p>
+        <p className={styles.bekIngress}>{tr.bekIngress}</p>
 
-        <a href="/" className={styles.bekHem}>← Tillbaka till startsidan</a>
+        <a href="/" className={styles.bekHem}>{tr.bekHem}</a>
       </div>
 
       <div className={styles.bekRight}>
         <div className={styles.kvitto}>
           <div className={styles.kvittoTop}>
-            <p className={styles.kvittoLabel}>Bokningsdetaljer</p>
+            <p className={styles.kvittoLabel}>{tr.bekDetaljer}</p>
             <div className={styles.kvittoDivider} />
           </div>
 
           <div className={styles.kvittoRader}>
             <div className={styles.kvittoRad}>
-              <span className={styles.kvittoNyckel}>Tjänst</span>
+              <span className={styles.kvittoNyckel}>{tr.tjanst}</span>
               <span className={styles.kvittoVarde}>{tjanst?.namn}</span>
             </div>
             <div className={styles.kvittoRad}>
-              <span className={styles.kvittoNyckel}>Datum</span>
+              <span className={styles.kvittoNyckel}>{tr.datum}</span>
               <span className={styles.kvittoVarde}>
                 {datum?.dag} {datum !== null ? manader[datum.manad] : ''} {datum?.ar}
               </span>
             </div>
             <div className={styles.kvittoRad}>
-              <span className={styles.kvittoNyckel}>Tid</span>
+              <span className={styles.kvittoNyckel}>{tr.tid}</span>
               <span className={styles.kvittoVarde}>{tid}</span>
             </div>
             <div className={styles.kvittoRad}>
-              <span className={styles.kvittoNyckel}>Längd</span>
+              <span className={styles.kvittoNyckel}>{tr.bekLangd}</span>
               <span className={styles.kvittoVarde}>{tjanst?.tid}</span>
             </div>
           </div>
 
           <div className={styles.kvittoFooter}>
-            <span className={styles.kvittoTotaltLabel}>Totalt</span>
+            <span className={styles.kvittoTotaltLabel}>{tr.totalt}</span>
             <span className={styles.kvittoTotalt}>{tjanst?.pris}</span>
           </div>
 
@@ -77,9 +76,7 @@ export default function Bekraftelse({ bokning }: Props) {
           </div>
         </div>
 
-        <p className={styles.bekObs}>
-          Inga förskottsbetalningar. Betala i salongen efter besöket.
-        </p>
+        <p className={styles.bekObs}>{tr.bekObs}</p>
       </div>
 
     </div>
