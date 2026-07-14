@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { Tjanst } from './types'
+import { useLang } from '@/lib/LangContext'
+import { t } from '@/lib/translations'
 import styles from './boka-components.module.css'
 
 interface Props {
@@ -12,6 +14,8 @@ interface Props {
 }
 
 export default function TjanstVal({ vald, onValj, onNasta }: Props) {
+  const { lang } = useLang()
+  const tr = t[lang].boka
   const [tjanster, setTjanster] = useState<Tjanst[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -43,14 +47,14 @@ export default function TjanstVal({ vald, onValj, onNasta }: Props) {
   if (loading) {
     return (
       <div className={styles.loading}>
-        <p>Laddar tjänster...</p>
+        <p>{tr.laddarTjanster}</p>
       </div>
     )
   }
 
   return (
     <div>
-      <p className={styles.sektionsTitel}>Välj tjänst</p>
+      <p className={styles.sektionsTitel}>{tr.valjTjanst}</p>
       <div className={styles.tjanstGrid}>
         {tjanster.map((t) => (
           <div
@@ -69,7 +73,7 @@ export default function TjanstVal({ vald, onValj, onNasta }: Props) {
       <div className={styles.knappar}>
         <span />
         <button className={styles.knappPrimar} onClick={onNasta} disabled={!vald}>
-          Välj datum →
+          {tr.valjDatum}
         </button>
       </div>
     </div>

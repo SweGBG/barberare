@@ -8,6 +8,8 @@ import KalenderVal from './KalenderVal'
 import KontaktForm from './KontaktForm'
 import Bekraftelse from './Bekraftelse'
 import type { Bokning } from './types'
+import { useLang } from '@/lib/LangContext'
+import { t } from '@/lib/translations'
 import styles from './boka.module.css'
 
 const tomBokning: Bokning = {
@@ -21,9 +23,10 @@ const tomBokning: Bokning = {
   meddelande: '',
 }
 
-const stegLabels = ['Tjänst', 'Datum & Tid', 'Dina uppgifter', 'Bekräftelse']
-
 export default function BokaPage() {
+  const { lang } = useLang()
+  const tr = t[lang].boka
+  const stegLabels = tr.steg
   const [steg, setSteg] = useState<number>(1)
   const [bokning, setBokning] = useState<Bokning>(tomBokning)
 
@@ -61,12 +64,12 @@ export default function BokaPage() {
             </svg>
           </div>
 
-          <p className={styles.eyebrow}>Exklusiv salong · Est. 2026</p>
+          <p className={styles.eyebrow}>{tr.eyebrow}</p>
           <h1 className={styles.title}>
-            Boka din <em>tid</em>
+            {tr.title1}<em>{tr.title2}</em>
           </h1>
           <div className={styles.divider} />
-          <p className={styles.sub}>Välj tjänst, datum och tid — enkelt och smidigt.</p>
+          <p className={styles.sub}>{tr.sub}</p>
         </div>
 
         <div className={styles.stegBar}>

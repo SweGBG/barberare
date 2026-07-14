@@ -3,10 +3,14 @@
 import { motion } from 'framer-motion'
 import styles from './Hero.module.css'
 import GoldDustField from './GoldDustField'
+import { useLang } from '@/lib/LangContext'
+import { t } from '@/lib/translations'
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1]
 
 export default function Hero() {
+  const { lang } = useLang()
+  const tr = t[lang].hero
   return (
     <section className={styles.hero} id="hem">
 
@@ -30,7 +34,7 @@ export default function Hero() {
         >
           <img
             src="/atilli-logo.png"
-            alt="Atilli Berg — Frisör & Barberare, Est. 2026"
+            alt={tr.logoAlt}
             className={styles.logoImg}
             draggable={false}
           />
@@ -49,7 +53,7 @@ export default function Hero() {
             transition={{ duration: 0.8, ease, delay: 0.25 }}
           >
             <span className={styles.eyebrowLine} />
-            Välkommen till
+            {tr.eyebrow}
             <span className={styles.eyebrowLine} />
           </motion.p>
 
@@ -62,7 +66,7 @@ export default function Hero() {
           >
             Atilli Berg
             <span className={styles.subtitle}>
-              Frisör &amp; Barberare
+              {tr.subtitle}
             </span>
           </motion.h1>
 
@@ -73,9 +77,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease, delay: 0.6 }}
           >
-            På Atilli Berg kombinerar vi traditionellt hantverk med
-            moderna tekniker för att ge dig en stil som passar dig.
-            Vår passion är ditt hår — din stil är vår stolthet.
+            {tr.lead}
           </motion.p>
 
 
@@ -86,11 +88,11 @@ export default function Hero() {
             transition={{ duration: 0.8, ease, delay: 0.75 }}
           >
             <a href="/boka" className={styles.btnGold}>
-              Boka din tid
+              {tr.cta1}
             </a>
 
             <a href="/#tjanster" className={styles.btnGhost}>
-              Våra tjänster
+              {tr.cta2}
             </a>
           </motion.div>
 
@@ -109,7 +111,7 @@ export default function Hero() {
       >
         <span className={styles.scrollLine} />
         <span className={styles.scrollText}>
-          Scrolla
+          {tr.scroll}
         </span>
       </motion.div>
 

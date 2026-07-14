@@ -2,9 +2,13 @@
 
 import { useState } from 'react'
 import Navbar from '@/components/Navbar'
+import { useLang } from '@/lib/LangContext'
+import { t } from '@/lib/translations'
 import styles from './kontakt.module.css'
 
 export default function KontaktPage() {
+  const { lang } = useLang()
+  const tr = t[lang].kontakt
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' })
   const [status, setStatus] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle')
 
@@ -25,12 +29,9 @@ export default function KontaktPage() {
       <main className={styles.page}>
 
         <div className={styles.header}>
-          <p className={styles.eyebrow}>Kontakta oss</p>
-          <h1 className={styles.title}>Vi svarar<br /><em>inom 24h</em></h1>
-          <p className={styles.sub}>
-            Har du frågor om tjänster, priser eller vill boka via telefon?
-            Fyll i formuläret så hör vi av oss.
-          </p>
+          <p className={styles.eyebrow}>{tr.eyebrow}</p>
+          <h1 className={styles.title}>{tr.title1}<br /><em>{tr.title2}</em></h1>
+          <p className={styles.sub}>{tr.sub}</p>
         </div>
 
         <div className={styles.grid}>
@@ -40,23 +41,23 @@ export default function KontaktPage() {
             {status === 'sent' ? (
               <div className={styles.success}>
                 <div className={styles.successIcon}>✓</div>
-                <h3>Meddelande skickat!</h3>
-                <p>Vi återkommer inom 24 timmar.</p>
+                <h3>{tr.skickat}</h3>
+                <p>{tr.skickatSub}</p>
               </div>
             ) : (
               <>
                 <div className={styles.row}>
                   <div className={styles.field}>
-                    <label>Namn *</label>
+                    <label>{tr.namn}</label>
                     <input
                       type="text"
-                      placeholder="Ditt namn"
+                      placeholder={tr.namnPlaceholder}
                       value={form.name}
                       onChange={e => setForm({ ...form, name: e.target.value })}
                     />
                   </div>
                   <div className={styles.field}>
-                    <label>Email *</label>
+                    <label>{tr.email}</label>
                     <input
                       type="email"
                       placeholder="din@email.se"
@@ -66,7 +67,7 @@ export default function KontaktPage() {
                   </div>
                 </div>
                 <div className={styles.field}>
-                  <label>Telefon</label>
+                  <label>{tr.telefon}</label>
                   <input
                     type="tel"
                     placeholder="070-000 00 00"
@@ -75,23 +76,23 @@ export default function KontaktPage() {
                   />
                 </div>
                 <div className={styles.field}>
-                  <label>Meddelande *</label>
+                  <label>{tr.meddelande}</label>
                   <textarea
-                    placeholder="Skriv ditt meddelande här..."
+                    placeholder={tr.meddelandePlaceholder}
                     rows={5}
                     value={form.message}
                     onChange={e => setForm({ ...form, message: e.target.value })}
                   />
                 </div>
                 {status === 'error' && (
-                  <p className={styles.errorMsg}>Något gick fel. Försök igen.</p>
+                  <p className={styles.errorMsg}>{tr.fel}</p>
                 )}
                 <button
                   className={styles.submitBtn}
                   onClick={handleSubmit}
                   disabled={status === 'loading'}
                 >
-                  {status === 'loading' ? 'Skickar...' : 'Skicka meddelande'}
+                  {status === 'loading' ? tr.skickar : tr.skicka}
                 </button>
               </>
             )}
@@ -100,23 +101,23 @@ export default function KontaktPage() {
           {/* INFO */}
           <div className={styles.infoCard}>
             <div className={styles.infoBlock}>
-              <h4>Öppettider</h4>
-              <p>Måndag – Fredag <span>09:00 – 19:00</span></p>
-              <p>Lördag <span>10:00 – 17:00</span></p>
-              <p>Söndag <span>Stängt</span></p>
+              <h4>{tr.oppettider}</h4>
+              <p>{tr.manFre} <span>09:00 – 19:00</span></p>
+              <p>{tr.lordag} <span>10:00 – 17:00</span></p>
+              <p>{tr.sondag} <span>{tr.stangt}</span></p>
             </div>
             <div className={styles.infoBlock}>
-              <h4>Hitta oss</h4>
+              <h4>{tr.hittaOss}</h4>
               <p>Din gata 1</p>
               <p>Din stad</p>
             </div>
             <div className={styles.infoBlock}>
-              <h4>Direkt kontakt</h4>
+              <h4>{tr.direktKontakt}</h4>
               <a href="tel:031000000">031-00 00 00</a>
               <a href="mailto:info@atilliberg.se">info@atilliberg.se</a>
             </div>
             <a href="/boka" className={styles.bokaBtn}>
-              Boka tid direkt →
+              {tr.bokaBtn}
             </a>
           </div>
 

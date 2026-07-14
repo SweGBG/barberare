@@ -401,3 +401,12 @@
   .brandMain { font-size: 16px; }
   .brandSub { font-size: 6.5px; letter-spacing: 0.34em; }
 }
+
+
+/* ── Språkväxlare ── */
+.desktopToggle { display: flex; align-items: center; }
+.mobileToggle { display: none; }
+@media (max-width: 900px) {
+  .desktopToggle { display: none; }
+  .mobileToggle { display: flex; justify-content: center; margin-bottom: 6px; }
+}
