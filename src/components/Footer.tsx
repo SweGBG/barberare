@@ -6,8 +6,6 @@ import { useLang } from '@/lib/LangContext'
 import { t } from '@/lib/translations'
 import styles from './Footer.module.css'
 
-const supabase = createClient()
-
 interface OpeningHour {
   day_of_week: number
   open_time: string | null
@@ -29,6 +27,11 @@ export default function Footer() {
 
   useEffect(() => {
     const hamta = async () => {
+      // Skapa klienten HÄR, i webbläsaren vid render — inte på modulnivå.
+      // På modulnivå kan NEXT_PUBLIC_SUPABASE_ANON_KEY vara otillgänglig,
+      // vilket ger "No API key found in request" (400) sporadiskt.
+      const supabase = createClient()
+
       const { data, error } = await supabase
         .from('opening_hours')
         .select('day_of_week, open_time, close_time, is_closed')
