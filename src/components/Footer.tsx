@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useLang } from '@/lib/LangContext'
 import { t } from '@/lib/translations'
 import styles from './Footer.module.css'
+import SweGBGCredit from "./SweGBGCredit";
 
 interface OpeningHour {
   day_of_week: number
@@ -117,6 +118,7 @@ export default function Footer() {
           <p>© 2026 Atilli Berg. {tr.rights}</p>
           <p>{tr.city}</p>
         </div>
+        <SweGBGCredit lang={lang} accent="#c9a24b" text="rgba(245,240,232,.5)" line="rgba(201,162,75,.22)" />
       </footer>
     </>
   )
