@@ -36,6 +36,18 @@ export const t = {
       scroll: 'Scrolla',
       logoAlt: 'Atilli Berg — Frisör & Barberare, Est. 2026',
     },
+    film: {
+      aria: 'Barberarens verktyg vaknar, lager för lager',
+      tag: 'Stol 01 · Göteborg · Est. 2026',
+      eyebrow: 'Ritualen',
+      lines: ['Borsten lyfter.', 'Kniven vaknar.', 'Hantverket tar form.'],
+      steps: ['Varm handduk & lödder', 'Rakkniv i stål', 'Sax, kam & finish'],
+      hint: 'Scrolla för att öppna',
+      open: (tid: string) => `Öppet nu · stänger ${tid}`,
+      closed: (dag: string, tid: string) => `Stängt just nu · öppnar ${dag} ${tid}`,
+      today: 'i dag',
+      tomorrow: 'i morgon',
+    },
     features: {
       ariaLabel: 'Varför Atilli Berg',
       items: [
@@ -65,7 +77,7 @@ export const t = {
     galleri: {
       title: 'Vårt arbete',
       sub: 'Resultatet talar för sig självt.',
-      labels: ['Klippning', 'Rakning', 'Skäggtrim', 'Styling', 'Salongen'],
+      labels: ['Salongen', 'Klippning', 'Ritualen', 'Sax & kam', 'Maskinklipp', 'Stolen', 'Korridoren', 'Hantverket'],
     },
     om: {
       title: 'Om Atilli Berg',
@@ -314,6 +326,18 @@ export const t = {
       scroll: 'Scroll',
       logoAlt: 'Atilli Berg — Hairdresser & Barber, Est. 2026',
     },
+    film: {
+      aria: "The barber's tools awaken, layer by layer",
+      tag: 'Chair 01 · Gothenburg · Est. 2026',
+      eyebrow: 'The ritual',
+      lines: ['The brush rises.', 'The blade awakens.', 'Craft takes shape.'],
+      steps: ['Hot towel & lather', 'Steel straight razor', 'Scissors, comb & finish'],
+      hint: 'Scroll to open',
+      open: (tid: string) => `Open now · closes ${tid}`,
+      closed: (dag: string, tid: string) => `Closed right now · opens ${dag} ${tid}`,
+      today: 'today',
+      tomorrow: 'tomorrow',
+    },
     features: {
       ariaLabel: 'Why Atilli Berg',
       items: [
@@ -343,7 +367,7 @@ export const t = {
     galleri: {
       title: 'Our work',
       sub: 'The results speak for themselves.',
-      labels: ['Haircut', 'Shave', 'Beard trim', 'Styling', 'The salon'],
+      labels: ['The salon', 'Haircut', 'The ritual', 'Scissors & comb', 'Clipper work', 'The chair', 'The corridor', 'The craft'],
     },
     om: {
       title: 'About Atilli Berg',

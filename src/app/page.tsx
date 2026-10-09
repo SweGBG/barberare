@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar'
-import Hero from '@/components/Hero'
+import HeroFilm from '@/components/HeroFilm'
+import MotionEngine from '@/components/MotionEngine'
 import Features from '@/components/Features'
 import Tjanster from '@/components/Tjanster'
 import Galleri from '@/components/Galleri'
@@ -11,11 +12,11 @@ export const revalidate = 300
 
 export default function Home() {
   return (
-    <main style={{ background: 'var(--bg)', overflowX: 'hidden' }}>
+    <main style={{ background: 'var(--bg)', overflowX: 'clip' }}>
       <Navbar />
 
-      {/* ── Hero ── */}
-      <Hero />
+      {/* ── Hero: scroll-styrd film ── */}
+      <HeroFilm />
 
       {/* ── Varför Atilli Berg ── */}
       <Features />
@@ -35,6 +36,7 @@ export default function Home() {
 
       {/* ── Boka-CTA + Footer ── */}
       <Footer />
+      <MotionEngine />
     </main>
   )
 }

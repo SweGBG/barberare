@@ -1,0 +1,520 @@
+/* ── Atilli Berg · Hero-film (scroll-styrd) ──
+   Koncept: "Ritualen" — stationen vaknar, verktygen svävar isär i guldstoft. */
+
+.film {
+  position: relative;
+  height: 430vh;
+  background: #0a0908;
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+/* poster speglar canvasens geometri exakt, så intoningen aldrig hoppar */
+.poster,
+.canvas {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  display: block;
+}
+.poster {
+  top: 8%;
+  height: 92%;
+  object-fit: cover;
+  object-position: 50% 100%;
+}
+.canvas {
+  top: 0;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ready {
+  opacity: 1;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(10, 9, 8, 0.92), rgba(10, 9, 8, 0.6) 26%, transparent 44%),
+    linear-gradient(180deg, rgba(10, 9, 8, 0.85), transparent 18%, transparent 64%, rgba(10, 9, 8, 0.94)),
+    radial-gradient(120% 90% at 55% 45%, transparent 55%, rgba(10, 9, 8, 0.7));
+}
+
+/* ── små detaljer ── */
+.tag {
+  position: absolute;
+  top: 92px;
+  right: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(10, 9, 8, 0.55);
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.rec {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 10px var(--gold);
+  animation: blink 1.6s steps(2) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.loader {
+  position: absolute;
+  top: 92px;
+  left: 28px;
+  width: 26px;
+  height: 26px;
+  transition: opacity 0.6s 0.4s;
+}
+.done {
+  opacity: 0;
+}
+.loader svg {
+  width: 100%;
+  height: 100%;
+  rotate: -90deg;
+  fill: none;
+  stroke-width: 1.5;
+}
+.loader circle {
+  stroke: var(--border);
+}
+.loader .lp {
+  stroke: var(--gold);
+  stroke-dasharray: 100.5;
+  stroke-dashoffset: calc(100.5 - var(--lp) * 100.5);
+  transition: stroke-dashoffset 0.4s;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.eyebrowLine {
+  width: 34px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+
+/* ── Intro ── */
+.intro,
+.copy,
+.steps {
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.intro {
+  position: absolute;
+  z-index: 2;
+  left: max(28px, 5vw);
+  top: 50%;
+  translate: 0 -46%;
+  width: min(38vw, 540px);
+}
+.h1 {
+  margin: 14px 0 8px;
+  line-height: 0;
+}
+.logo {
+  width: min(118%, 600px);
+  height: auto;
+  margin-left: -11%;
+  mix-blend-mode: lighten;
+  -webkit-mask: radial-gradient(48% 52% at 50% 50%, #000 62%, transparent 92%);
+  mask: radial-gradient(48% 52% at 50% 50%, #000 62%, transparent 92%);
+  filter: drop-shadow(0 0 30px rgba(201, 162, 75, 0.18));
+  animation: materialize 2.4s 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes materialize {
+  0% {
+    opacity: 0;
+    filter: blur(22px) brightness(2.2) saturate(0);
+    transform: scale(1.08);
+  }
+  45% {
+    opacity: 1;
+    filter: blur(6px) brightness(1.5) saturate(0.5);
+  }
+  100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 30px rgba(201, 162, 75, 0.18));
+    transform: none;
+  }
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.lead {
+  max-width: 440px;
+  font-size: 15px;
+  line-height: 1.85;
+  color: rgba(237, 227, 203, 0.78);
+  text-shadow: 0 2px 18px rgba(10, 9, 8, 0.9);
+  animation: rise 1.1s 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.btns {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 26px;
+  margin-top: 30px;
+  animation: rise 1.1s 1.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.eyebrow {
+  animation: rise 1s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(6px);
+  }
+}
+.btnGold {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 28px;
+  border-radius: 2px;
+  background: var(--gold-grad);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-decoration: none;
+  overflow: hidden;
+  box-shadow: 0 12px 30px -12px rgba(201, 162, 75, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btnGold svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  transition: transform 0.4s;
+}
+.btnGold::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btnGold:hover {
+  transform: translateY(-2px);
+}
+.btnGold:hover::after {
+  transform: translateX(120%);
+}
+.btnGold:hover svg {
+  transform: translateX(4px);
+}
+.btnGhost {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dark);
+  text-decoration: none;
+}
+.btnGhost::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0.3);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btnGhost:hover::after {
+  transform: scaleX(1);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  min-height: 1.6em;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  animation: rise 1s 1.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--warm-dim);
+}
+.live .dot {
+  background: var(--gold-dim);
+}
+.live .dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--gold-dim);
+  animation: ping 2s ease-out infinite;
+}
+@keyframes ping {
+  to {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+/* ── Rubriker per steg ── */
+.copy {
+  position: absolute;
+  left: max(28px, 5vw);
+  top: 50%;
+  translate: 0 -30%;
+  width: min(32vw, 460px);
+}
+.lines {
+  position: relative;
+  height: 2.3em;
+  margin-top: 16px;
+  font-size: clamp(38px, 4.4vw, 66px);
+}
+.line {
+  position: absolute;
+  inset: 0 auto auto 0;
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: 1em;
+  line-height: 1.06;
+  color: var(--dark);
+  text-shadow: 0 2px 24px rgba(10, 9, 8, 0.9);
+  opacity: 0;
+  transform: translateY(30px);
+  filter: blur(10px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.l1 {
+  font-style: italic;
+  background: var(--gold-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+}
+.film[data-step='0'] .l0,
+.film[data-step='1'] .l1,
+.film[data-step='2'] .l2 {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.steps {
+  position: absolute;
+  right: 28px;
+  bottom: clamp(60px, 12vh, 120px);
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  text-align: right;
+}
+.steps li {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0.35;
+  transition: opacity 0.6s, color 0.6s;
+}
+.steps li span {
+  color: var(--gold);
+}
+.film[data-step='0'] .steps li:nth-child(1),
+.film[data-step='1'] .steps li:nth-child(-n + 2),
+.film[data-step='2'] .steps li {
+  opacity: 1;
+  color: var(--dark);
+}
+
+/* intro ↔ rubriker */
+.film:not([data-step='intro']) .intro {
+  opacity: 0;
+  transform: translateY(-36px);
+  filter: blur(10px);
+  pointer-events: none;
+}
+.film[data-step='intro'] .copy,
+.film[data-step='intro'] .steps {
+  opacity: 0;
+  transform: translateY(24px);
+  pointer-events: none;
+}
+
+.hint {
+  position: absolute;
+  left: 50%;
+  bottom: 52px;
+  translate: -50% 0;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: opacity 0.6s;
+  animation: hintPulse 2.4s ease-in-out infinite;
+}
+.film:not([data-step='intro']) .hint {
+  opacity: 0;
+}
+@keyframes hintPulse {
+  50% {
+    translate: -50% 4px;
+  }
+}
+
+.bar {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  bottom: 30px;
+  height: 1px;
+  background: var(--border);
+}
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--gold-grad);
+  transform-origin: left;
+  transform: scaleX(var(--bp, 0));
+}
+
+/* ── Telefon ── */
+@media (max-width: 760px) {
+  .film {
+    height: 330vh;
+  }
+  .poster {
+    top: 7%;
+    height: 64%;
+    object-position: 50% 0;
+  }
+  .vignette {
+    background: linear-gradient(180deg, rgba(10, 9, 8, 0.8), transparent 16%, transparent 52%, rgba(10, 9, 8, 0.92) 66%, #0a0908 74%);
+  }
+  .tag {
+    top: 80px;
+    right: 16px;
+    font-size: 8.5px;
+  }
+  .loader {
+    top: 80px;
+    left: 16px;
+  }
+  .intro {
+    left: 20px;
+    right: 20px;
+    top: auto;
+    bottom: 36px;
+    translate: none;
+    width: auto;
+  }
+  .logo {
+    width: 104%;
+    margin-left: -10%;
+  }
+  .h1 {
+    margin: 6px 0 0;
+  }
+  .lead {
+    display: none;
+  }
+  .btns {
+    margin-top: 14px;
+    gap: 20px;
+  }
+  .status {
+    margin-top: 12px;
+  }
+  .copy {
+    left: 20px;
+    right: 20px;
+    top: auto;
+    bottom: 56px;
+    translate: none;
+    width: auto;
+  }
+  .lines {
+    font-size: clamp(32px, 9vw, 44px);
+  }
+  .steps,
+  .hint {
+    display: none;
+  }
+  .bar {
+    left: 20px;
+    right: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .film {
+    height: 100vh;
+  }
+  .logo,
+  .lead,
+  .btns,
+  .eyebrow,
+  .status {
+    animation: none;
+  }
+}

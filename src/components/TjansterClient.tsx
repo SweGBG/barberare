@@ -1,15 +1,37 @@
 'use client'
 
+import type { CSSProperties } from 'react'
 import { useLang } from '@/lib/LangContext'
 import { t } from '@/lib/translations'
 import type { Service } from './Tjanster'
 import styles from './Tjanster.module.css'
 
+/* Egna, färgsatta bilder (Unsplash, graderade till svart & guld) */
 const bilder: Record<string, string> = {
-  klipp: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80',
-  skägg: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&q=80',
-  rak: 'https://images.unsplash.com/photo-1493256338651-d82f7acb2b38?w=800&q=80',
-  styl: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=800&q=80',
+  fade: '/img/gal-maskin.webp',
+  klipp: '/img/svc-klipp.webp',
+  skägg: '/img/svc-skagg.webp',
+  rak: '/img/svc-rak.webp',
+  styl: '/img/svc-styl.webp',
+}
+const ROMAN = ['I', 'II', 'III', 'IV']
+/* reserver när en tjänst inte matchar något eget ord */
+const RESERV = ['/img/svc-rak.webp', '/img/svc-styl.webp', '/img/gal-sax.webp', '/img/svc-skagg.webp', '/img/svc-klipp.webp']
+
+/** Ger varje tjänst en egen bild: unika träffar först, sedan kombinationer, sist reserver. */
+function bildFor(namn: string[]): string[] {
+  const traff = namn.map((n) => Object.keys(bilder).filter((k) => n.toLowerCase().includes(k)))
+  const ut: string[] = new Array(namn.length).fill('')
+  const tagna = new Set<string>()
+  const ordning = namn.map((_, i) => i).sort((a, b) => (traff[a].length || 99) - (traff[b].length || 99))
+  for (const i of ordning) {
+    const fri = traff[i].map((k) => bilder[k]).find((b) => !tagna.has(b))
+      ?? RESERV.find((b) => !tagna.has(b))
+      ?? RESERV[i % RESERV.length]
+    ut[i] = fri
+    tagna.add(fri)
+  }
+  return ut
 }
 
 function matcha<T>(namn: string, karta: Record<string, T>): T | undefined {
@@ -23,39 +45,47 @@ export default function TjansterClient({ tjanster }: { tjanster: Service[] }) {
   const tr = t[lang].tjanster
 
   return (
-    <section className={styles.section} id="tjanster">
-      <div className={styles.header}>
+    <section className={styles.section} id="tjanster" data-progress>
+      <header className={styles.header} data-reveal>
+        <p className={styles.eyebrow}>
+          <span className={styles.eyebrowLine} />
+          {lang === 'sv' ? 'Menyn' : 'The menu'}
+          <span className={styles.eyebrowLine} />
+        </p>
         <h2 className={styles.title}>{tr.title}</h2>
         <Flourish />
-      </div>
+      </header>
 
       <div className={styles.grid}>
-        {tjanster.slice(0, 4).map((tj) => {
-          const bild = matcha(tj.name, bilder) ?? bilder.klipp
+        {tjanster.slice(0, 4).map((tj, i, lista) => {
+          const bild = bildFor(lista.map((x) => x.name))[i]
           const desc = matcha(tj.name, tr.beskrivningar) ?? tr.fallbackDesc
-
           return (
-            <article key={tj.id} className={styles.card}>
-              <div className={styles.imgWrap}>
-                <img src={bild} alt={tj.name} loading="lazy" />
-                <div className={styles.imgTint} />
+            <article key={tj.id} className={styles.card} data-reveal style={{ '--k': i } as CSSProperties}>
+              <div className={styles.media}>
+                <img src={bild} alt={tj.name} loading="lazy" className={styles.img} />
+                <span className={styles.sheen} aria-hidden />
+                <span className={styles.frame} aria-hidden />
+                <span className={styles.roman} aria-hidden>{ROMAN[i]}</span>
               </div>
-
-              <div className={styles.cardBody}>
-                <h3 className={styles.cardName}>{tj.name}</h3>
-                <p className={styles.cardDesc}>{desc}</p>
-                <p className={styles.cardPris}>
-                  {tr.fr} {tj.price} {tr.kr}
-                  <span className={styles.cardTid}> · {tj.duration_minutes} {tr.min}</span>
-                </p>
-                <a href="/boka" className={styles.cardBtn}>{tr.boka}</a>
+              <div className={styles.body}>
+                <h3 className={styles.name}>{tj.name}</h3>
+                <p className={styles.desc}>{desc}</p>
+                <div className={styles.meta}>
+                  <span className={styles.price}>{tr.fr} {tj.price} {tr.kr}</span>
+                  <span className={styles.time}>{tj.duration_minutes} {tr.min}</span>
+                </div>
+                <a href="/boka" className={styles.cta}>
+                  {tr.boka}
+                  <svg viewBox="0 0 24 24" aria-hidden><path d="M4 12h15M13 6l6 6-6 6" /></svg>
+                </a>
               </div>
             </article>
           )
         })}
       </div>
 
-      <div className={styles.more}>
+      <div className={styles.more} data-reveal>
         <a href="/boka" className={styles.moreBtn}>{tr.seAlla}</a>
       </div>
     </section>
