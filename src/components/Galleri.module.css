@@ -1,91 +1,198 @@
+/* ── Galleri · tre kolumner på olika djup (parallax via --p från MotionEngine) ── */
+
 .section {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 90px 28px;
+  position: relative;
+  padding: 120px 28px 160px;
+  background:
+    radial-gradient(50% 40% at 85% 20%, rgba(201, 162, 75, 0.06), transparent 70%),
+    #0c0a07;
+  border-top: 1px solid var(--border);
+  overflow: hidden;
 }
 
 .header {
-  text-align: center;
-  margin-bottom: 46px;
+  max-width: 1320px;
+  margin: 0 auto 70px;
 }
-
-.title {
-  font-family: 'Playfair Display', serif;
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 10.5px;
   font-weight: 600;
-  font-size: clamp(26px, 3.2vw, 38px);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
-  background: var(--gold-grad);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  margin-bottom: 10px;
+  color: var(--gold);
 }
-
+.eyebrowLine {
+  width: 34px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+.title {
+  margin: 16px 0 10px;
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: clamp(38px, 4.6vw, 64px);
+  color: var(--dark);
+}
 .sub {
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--warm-dim);
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--gold-dim);
 }
 
-.grid {
+.cols {
+  max-width: 1320px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 220px;
-  gap: 16px;
+  grid-template-columns: 1.15fr 1fr 0.9fr;
+  gap: clamp(14px, 2vw, 26px);
+  align-items: start;
+}
+.col {
+  display: grid;
+  gap: clamp(14px, 2vw, 26px);
+  transform: translateY(calc((0.5 - var(--p, 0.5)) * var(--speed) * 1px));
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform;
+}
+.col:nth-child(2) {
+  margin-top: 90px;
+}
+.col:nth-child(3) {
+  margin-top: 30px;
 }
 
 .item {
   position: relative;
+  aspect-ratio: var(--ar);
   overflow: hidden;
-  border-radius: 3px;
-  border: 1px solid rgba(201, 162, 75, 0.2);
+  background: #0d0b08;
+  cursor: zoom-in;
 }
-
-.wide { grid-column: span 2; }
-.tall { grid-row: span 2; }
-
 .item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(0.8);
-  transition: transform 0.5s ease, filter 0.4s ease;
+  transform: scale(1.04);
+  filter: brightness(0.86);
+  transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1), filter 0.8s;
 }
-
 .item:hover img {
-  transform: scale(1.06);
-  filter: saturate(1);
+  transform: scale(1.1);
+  filter: brightness(1);
 }
-
-.overlay {
+.item::after {
+  content: '';
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: flex-end;
-  padding: 16px;
-  background: linear-gradient(180deg, transparent 45%, rgba(8, 7, 5, 0.85) 100%);
+  background: linear-gradient(180deg, transparent 55%, rgba(10, 9, 8, 0.85));
+  opacity: 0.7;
+  transition: opacity 0.6s;
+  pointer-events: none;
 }
-
+.item:hover::after {
+  opacity: 1;
+}
+/* guldhörn som ritas in */
+.corners {
+  position: absolute;
+  inset: 14px;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--gold), var(--gold)) top left / 22px 1px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) top left / 1px 22px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) bottom right / 22px 1px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) bottom right / 1px 22px no-repeat;
+  opacity: 0;
+  transform: scale(1.06);
+  transition: opacity 0.6s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.item:hover .corners {
+  opacity: 1;
+  transform: none;
+}
 .label {
+  position: absolute;
+  z-index: 3;
+  left: 26px;
+  bottom: 22px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--dark);
+  transform: translateY(8px);
+  opacity: 0.85;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s;
+}
+.label span {
+  font-family: 'Raleway', sans-serif;
   font-size: 10px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
   font-weight: 700;
-  color: var(--gold-dim);
+  letter-spacing: 0.24em;
+  color: var(--gold);
+}
+.item:hover .label {
+  transform: none;
+  opacity: 1;
 }
 
-@media (max-width: 1100px) {
-  .grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 200px; }
+/* avslöjande */
+.header,
+.item {
+  opacity: 0;
+  translate: 0 40px;
+  filter: blur(6px);
+  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), translate 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--k, 0) * 0.12s);
+}
+[data-in='1'].header,
+[data-in='1'].item {
+  opacity: 1;
+  translate: 0 0;
+  filter: none;
 }
 
-@media (max-width: 768px) {
-  .section { padding: 70px 20px; }
+@media (max-width: 900px) {
+  .cols {
+    grid-template-columns: 1fr 1fr;
+  }
+  .col:nth-child(3) {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 0;
+  }
+  .col {
+    transform: none;
+  }
+  .col:nth-child(2) {
+    margin-top: 40px;
+  }
 }
-
-@media (max-width: 480px) {
-  .grid { grid-template-columns: 1fr; grid-auto-rows: 220px; }
-  .wide { grid-column: span 1; }
-  .tall { grid-row: span 1; }
+@media (max-width: 560px) {
+  .section {
+    padding: 90px 20px 100px;
+  }
+  .label {
+    left: 16px;
+    bottom: 14px;
+    font-size: 17px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .col {
+    transform: none;
+  }
+  .header,
+  .item {
+    opacity: 1;
+    translate: none;
+    filter: none;
+  }
 }

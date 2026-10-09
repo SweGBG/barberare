@@ -1,15 +1,26 @@
 'use client'
 
+import type { CSSProperties } from 'react'
 import { useLang } from '@/lib/LangContext'
 import { t } from '@/lib/translations'
 import styles from './Galleri.module.css'
 
+/* Ordningen följer t[lang].galleri.labels */
 const bilder = [
-  { id: 1, span: 'wide', img: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1000&q=80' },
-  { id: 2, span: 'tall', img: 'https://images.unsplash.com/photo-1493256338651-d82f7acb2b38?w=800&q=80' },
-  { id: 3, span: '', img: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&q=80' },
-  { id: 4, span: '', img: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=800&q=80' },
-  { id: 5, span: 'wide', img: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=1000&q=80' },
+  { src: '/img/gal-salong.webp', ar: '4 / 3' },
+  { src: '/img/gal-klipp.webp', ar: '4 / 5' },
+  { src: '/img/gal-film-a.webp', ar: '4 / 5' },
+  { src: '/img/gal-sax.webp', ar: '4 / 5' },
+  { src: '/img/gal-maskin.webp', ar: '3 / 2' },
+  { src: '/img/gal-stol.webp', ar: '4 / 5' },
+  { src: '/img/gal-korridor.webp', ar: '3 / 4' },
+  { src: '/img/gal-film-b.webp', ar: '4 / 5' },
+]
+/* tre kolumner på olika djup — glider i olika takt */
+const KOLUMNER = [
+  { speed: 70, items: [0, 3, 6] },
+  { speed: -50, items: [1, 4, 7] },
+  { speed: 110, items: [2, 5] },
 ]
 
 export default function Galleri() {
@@ -17,22 +28,29 @@ export default function Galleri() {
   const tr = t[lang].galleri
 
   return (
-    <section className={styles.section} id="galleri">
-      <div className={styles.header}>
+    <section className={styles.section} id="galleri" data-progress>
+      <header className={styles.header} data-reveal>
+        <p className={styles.eyebrow}>
+          <span className={styles.eyebrowLine} />
+          {lang === 'sv' ? 'Galleri' : 'Gallery'}
+        </p>
         <h2 className={styles.title}>{tr.title}</h2>
         <p className={styles.sub}>{tr.sub}</p>
-      </div>
+      </header>
 
-      <div className={styles.grid}>
-        {bilder.map((b, i) => (
-          <div
-            key={b.id}
-            className={`${styles.item} ${b.span === 'wide' ? styles.wide : ''} ${b.span === 'tall' ? styles.tall : ''}`}
-          >
-            <img src={b.img} alt={tr.labels[i]} loading="lazy" />
-            <div className={styles.overlay}>
-              <span className={styles.label}>{tr.labels[i]}</span>
-            </div>
+      <div className={styles.cols}>
+        {KOLUMNER.map((col, c) => (
+          <div key={c} className={styles.col} style={{ '--speed': col.speed } as CSSProperties}>
+            {col.items.map((i) => (
+              <figure key={i} className={styles.item} data-reveal style={{ '--ar': bilder[i].ar, '--k': c } as CSSProperties}>
+                <img src={bilder[i].src} alt={tr.labels[i]} loading="lazy" />
+                <span className={styles.corners} aria-hidden />
+                <figcaption className={styles.label}>
+                  <span>{String(i + 1).padStart(2, '0')}</span>
+                  {tr.labels[i]}
+                </figcaption>
+              </figure>
+            ))}
           </div>
         ))}
       </div>

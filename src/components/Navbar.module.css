@@ -6,15 +6,15 @@
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(8, 7, 5, 0.82);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(201, 162, 75, 0.12);
+  background: linear-gradient(180deg, rgba(8, 7, 5, 0.78), rgba(8, 7, 5, 0));
+  border-bottom: 1px solid transparent;
   transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .scrolled {
-  background: rgba(8, 7, 5, 0.96);
+  background: rgba(8, 7, 5, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom-color: rgba(201, 162, 75, 0.28);
 }
 
