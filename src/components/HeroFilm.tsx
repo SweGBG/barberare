@@ -15,6 +15,34 @@ import styles from './HeroFilm.module.css'
 export const FILM_FRAMES = 120
 const pad = (n: number) => String(n).padStart(4, '0')
 
+/* Mobil: filmen spelas upp av sig själv (ms) när besökaren börjat scrolla — kort scroll.
+   Dator: filmen följer scrollen bildruta för bildruta — lång scroll. */
+const MOBILE_PLAY_MS = 4200
+const MOBILE_START = 0.05 // scrollandel som startar uppspelningen
+const MOBILE_RESET = 0.02 // tillbaka hit = spola tillbaka till intro
+
+/* Seedad slump så att guldstoftet blir identiskt på server och klient (som Proviant) */
+function rng(seed: number) {
+  return () => ((seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296)
+}
+const r = rng(7)
+const DUST = Array.from({ length: 30 }, () => {
+  const a = r() * Math.PI * 2
+  const dist = 24 + r() * 22 // vmin, där kornet startar
+  return {
+    x: `${(Math.cos(a) * dist).toFixed(1)}vmin`,
+    y: `${(Math.sin(a) * dist * 0.6).toFixed(1)}vmin`,
+    d: `${(0.1 + r() * 1.3).toFixed(2)}s`,
+    s: `${(2 + r() * 3).toFixed(1)}px`,
+  }
+})
+const SPARKS = Array.from({ length: 12 }, () => ({
+  left: `${(14 + r() * 68).toFixed(1)}%`,
+  top: `${(12 + r() * 76).toFixed(1)}%`,
+  d: `${(2.6 + r() * 4).toFixed(1)}s`,
+  t: `${(3 + r() * 4).toFixed(1)}s`,
+}))
+
 type Hour = { day_of_week: number; open_time: string | null; close_time: string | null; is_closed: boolean }
 /* Fallback = samma tider som i footern (translations.fallbackTider). 0 = söndag. */
 const FALLBACK: Hour[] = [
@@ -101,7 +129,8 @@ export default function HeroFilm() {
     if (!ctx) return
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const set = window.matchMedia('(max-width: 760px)').matches ? 'm' : 'd'
+    const mobile = window.matchMedia('(max-width: 760px)').matches
+    const set = mobile ? 'm' : 'd'
     const frames: (HTMLImageElement | null)[] = new Array(FILM_FRAMES).fill(null)
     let count = 0
     let alive = true
@@ -159,22 +188,60 @@ export default function HeroFilm() {
       canvas.height = h
       draw(Math.round(current), true)
     }
-    const tick = () => {
-      // mjuk inbromsning mot rätt bildruta — känns som film, inte bläddrat block
-      current += (target - current) * 0.16
-      if (Math.abs(target - current) < 0.04) current = target
-      draw(Math.round(current))
-      raf = current !== target ? requestAnimationFrame(tick) : 0
-    }
-    const onScroll = () => {
+    const LAST = FILM_FRAMES - 1
+    const scrollProgress = () => {
       const r = section.getBoundingClientRect()
       const total = r.height - window.innerHeight
-      const p = reduced ? 0 : Math.min(1, Math.max(0, total > 0 ? -r.top / total : 0))
+      return reduced ? 0 : Math.min(1, Math.max(0, total > 0 ? -r.top / total : 0))
+    }
+
+    /* ── System 1 · DATOR: scroll-scrub över lång sektion ── */
+    const desktopScroll = () => {
+      const p = scrollProgress()
       section.style.setProperty('--bp', p.toFixed(3))
       section.dataset.step = p < 0.14 ? 'intro' : String(Math.min(2, Math.floor(((p - 0.14) / 0.86) * 3.15)))
-      target = p * (FILM_FRAMES - 1)
+      target = p * LAST
       if (!raf) raf = requestAnimationFrame(tick)
     }
+
+    /* ── System 2 · MOBIL: kort scroll startar en självgående uppspelning ── */
+    let playing = false
+    let playStart = 0
+    let playFrom = 0
+    const mobileStep = () => {
+      const fp = current / LAST
+      section.style.setProperty('--bp', fp.toFixed(3))
+      section.dataset.step = !playing && fp < 0.03 ? 'intro' : String(Math.min(2, Math.floor(fp * 3)))
+    }
+    const mobileScroll = () => {
+      const p = scrollProgress()
+      if (!playing && p > MOBILE_START && current < LAST) {
+        playing = true
+        playStart = performance.now()
+        playFrom = current
+      } else if (p < MOBILE_RESET) {
+        playing = false // spola tillbaka till intro
+        target = 0
+      }
+      if (playing) target = Math.max(target, p * LAST) // scrollar man fort hänger filmen med
+      mobileStep()
+      if (!raf) raf = requestAnimationFrame(tick)
+    }
+
+    const tick = (now: number) => {
+      if (mobile && playing) {
+        const auto = playFrom + ((now - playStart) / MOBILE_PLAY_MS) * LAST
+        target = Math.min(LAST, Math.max(target, auto))
+        if (target >= LAST) playing = false
+      }
+      // mjuk inbromsning mot rätt bildruta — känns som film, inte bläddrat block
+      current += (target - current) * (mobile ? 0.22 : 0.16)
+      if (Math.abs(target - current) < 0.04) current = target
+      draw(Math.round(current))
+      if (mobile) mobileStep()
+      raf = current !== target || (mobile && playing) ? requestAnimationFrame(tick) : 0
+    }
+    const onScroll = mobile ? mobileScroll : desktopScroll
 
     ;(async () => {
       await load(0)
@@ -234,7 +301,19 @@ export default function HeroFilm() {
             {tr.hero.eyebrow}
           </p>
           <h1 className={styles.h1}>
+            {/* guldstoft som samlas i loggan (som Proviant) */}
+            <span className={styles.dust} aria-hidden>
+              {DUST.map((g, i) => (
+                <i key={i} style={{ '--x': g.x, '--y': g.y, '--d': g.d, '--s': g.s } as CSSProperties} />
+              ))}
+            </span>
             <img src="/img/atilli-logo.webp" alt={tr.hero.logoAlt} className={styles.logo} draggable={false} />
+            <span className={styles.gloss} aria-hidden />
+            <span className={styles.sparks} aria-hidden>
+              {SPARKS.map((s, i) => (
+                <i key={i} style={{ left: s.left, top: s.top, '--d': s.d, '--t': s.t } as CSSProperties} />
+              ))}
+            </span>
             <span className={styles.srOnly}>Atilli Berg — {tr.hero.subtitle}</span>
           </h1>
           <p className={styles.lead}>{tr.hero.lead}</p>
