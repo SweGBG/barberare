@@ -1,5 +1,6 @@
 'use client'
 
+import type { CSSProperties } from 'react'
 import { useLang } from '@/lib/LangContext'
 import { t } from '@/lib/translations'
 import styles from './Features.module.css'
@@ -28,11 +29,24 @@ export default function Features() {
   const tr = t[lang].features
 
   return (
-    <section className={styles.strip} aria-label={tr.ariaLabel}>
+    <section className={styles.strip} aria-label={tr.ariaLabel} data-reveal>
+      {/* ram: linjer som ritas ut från mitten, romb, ljus som löper längs kanten */}
+      <span className={`${styles.rule} ${styles.top}`} aria-hidden><i /></span>
+      <span className={`${styles.rule} ${styles.bottom}`} aria-hidden><i /></span>
+      <span className={styles.gem} aria-hidden />
+      <span className={`${styles.gem} ${styles.gemBottom}`} aria-hidden />
+      <span className={`${styles.corner} ${styles.tl}`} aria-hidden />
+      <span className={`${styles.corner} ${styles.tr}`} aria-hidden />
+      <span className={`${styles.corner} ${styles.bl}`} aria-hidden />
+      <span className={`${styles.corner} ${styles.br}`} aria-hidden />
+
       <div className={styles.inner}>
         {tr.items.map((f, i) => (
-          <div key={f.title} className={styles.item}>
-            <div className={styles.icon}>{icons[i]}</div>
+          <div key={f.title} className={styles.item} style={{ '--i': i } as CSSProperties}>
+            <div className={styles.icon}>
+              <span className={styles.ring} aria-hidden />
+              {icons[i]}
+            </div>
             <div>
               <h3 className={styles.title}>{f.title}</h3>
               <p className={styles.desc}>{f.desc}</p>

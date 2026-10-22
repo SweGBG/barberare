@@ -260,12 +260,40 @@ export default function HeroFilm() {
       }
     })()
 
+    /* ── Interaktivt: emblemet lutar mot muspekaren, ljuset följer ── */
+    let mx = 0, my = 0, tx = 0, ty = 0, praf = 0
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    const ptick = () => {
+      mx += (tx - mx) * 0.08
+      my += (ty - my) * 0.08
+      section.style.setProperty('--mx', mx.toFixed(4))
+      section.style.setProperty('--my', my.toFixed(4))
+      praf = Math.abs(tx - mx) + Math.abs(ty - my) > 0.001 ? requestAnimationFrame(ptick) : 0
+    }
+    const onPointer = (e: PointerEvent) => {
+      tx = (e.clientX / window.innerWidth) * 2 - 1
+      ty = (e.clientY / window.innerHeight) * 2 - 1
+      if (!praf) praf = requestAnimationFrame(ptick)
+    }
+    const onLeave = () => {
+      tx = 0
+      ty = 0
+      if (!praf) praf = requestAnimationFrame(ptick)
+    }
+    if (fine && !reduced) {
+      section.addEventListener('pointermove', onPointer)
+      section.addEventListener('pointerleave', onLeave)
+    }
+
     onScroll()
     window.addEventListener('resize', resize)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       alive = false
       cancelAnimationFrame(raf)
+      cancelAnimationFrame(praf)
+      section.removeEventListener('pointermove', onPointer)
+      section.removeEventListener('pointerleave', onLeave)
       window.removeEventListener('resize', resize)
       window.removeEventListener('scroll', onScroll)
     }
@@ -294,37 +322,48 @@ export default function HeroFilm() {
           </svg>
         </div>
 
-        {/* ── Intro på den orörda stationen ── */}
+        {/* ── Intro: emblem vänster, text höger (som konceptbilden) — filmen ligger bakom ── */}
+        <span className={styles.introShade} aria-hidden />
         <div className={styles.intro}>
-          <p className={styles.eyebrow}>
-            <span className={styles.eyebrowLine} />
-            {tr.hero.eyebrow}
-          </p>
-          <h1 className={styles.h1}>
-            {/* guldstoft som samlas i loggan (som Proviant) */}
-            <span className={styles.dust} aria-hidden>
-              {DUST.map((g, i) => (
-                <i key={i} style={{ '--x': g.x, '--y': g.y, '--d': g.d, '--s': g.s } as CSSProperties} />
-              ))}
-            </span>
-            <img src="/img/atilli-logo.webp" alt={tr.hero.logoAlt} className={styles.logo} draggable={false} />
-            <span className={styles.gloss} aria-hidden />
-            <span className={styles.sparks} aria-hidden>
-              {SPARKS.map((s, i) => (
-                <i key={i} style={{ left: s.left, top: s.top, '--d': s.d, '--t': s.t } as CSSProperties} />
-              ))}
-            </span>
-            <span className={styles.srOnly}>Atilli Berg — {tr.hero.subtitle}</span>
-          </h1>
-          <p className={styles.lead}>{tr.hero.lead}</p>
-          <div className={styles.btns}>
-            <a href="/boka" className={styles.btnGold}>
-              <span>{tr.hero.cta1}</span>
-              <svg viewBox="0 0 24 24" aria-hidden><path d="M4 12h15M13 6l6 6-6 6" /></svg>
-            </a>
-            <a href="/#tjanster" className={styles.btnGhost}>{tr.hero.cta2}</a>
+          <div className={styles.emblem}>
+            <div className={styles.emblemTilt}>
+              {/* guldstoft som samlas i loggan (som Proviant) */}
+              <span className={styles.dust} aria-hidden>
+                {DUST.map((g, i) => (
+                  <i key={i} style={{ '--x': g.x, '--y': g.y, '--d': g.d, '--s': g.s } as CSSProperties} />
+                ))}
+              </span>
+              <img src="/img/atilli-logo.webp" alt={tr.hero.logoAlt} className={styles.logo} draggable={false} />
+              <span className={styles.gloss} aria-hidden />
+              <span className={styles.spot} aria-hidden />
+              <span className={styles.sparks} aria-hidden>
+                {SPARKS.map((s, i) => (
+                  <i key={i} style={{ left: s.left, top: s.top, '--d': s.d, '--t': s.t } as CSSProperties} />
+                ))}
+              </span>
+            </div>
           </div>
-          <OpenStatus />
+
+          <div className={styles.text}>
+            <p className={styles.eyebrow}>
+              <span className={styles.eyebrowLine} />
+              {tr.hero.eyebrow}
+              <span className={`${styles.eyebrowLine} ${styles.flip}`} />
+            </p>
+            <h1 className={styles.h1}>
+              <span className={styles.name}>Atilli Berg</span>
+              <span className={styles.sub}>{tr.hero.subtitle}</span>
+            </h1>
+            <p className={styles.lead}>{tr.hero.lead}</p>
+            <div className={styles.btns}>
+              <a href="/boka" className={styles.btnGold}>
+                <span>{tr.hero.cta1}</span>
+                <svg viewBox="0 0 24 24" aria-hidden><path d="M4 12h15M13 6l6 6-6 6" /></svg>
+              </a>
+              <a href="/#tjanster" className={styles.btnGhost}>{tr.hero.cta2}</a>
+            </div>
+            <OpenStatus />
+          </div>
         </div>
 
         {/* ── Rubriker under filmen ── */}
