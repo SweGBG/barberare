@@ -18,8 +18,12 @@ const pad = (n: number) => String(n).padStart(4, '0')
 /* Mobil: filmen spelas upp av sig själv (ms) när besökaren börjat scrolla — kort scroll.
    Dator: filmen följer scrollen bildruta för bildruta — lång scroll. */
 const MOBILE_PLAY_MS = 4200
+/* Dator: andel av scrollen — ren film i början, filmen klar vid FILM_END, varumärket poppar vid REVEAL_AT */
+const START_END = 0.05
+const FILM_END = 0.78
+const REVEAL_AT = 0.76
 const MOBILE_START = 0.05 // scrollandel som startar uppspelningen
-const MOBILE_RESET = 0.02 // tillbaka hit = spola tillbaka till intro
+const MOBILE_RESET = 0.02 // tillbaka hit = spola tillbaka till början
 
 /* Seedad slump så att guldstoftet blir identiskt på server och klient (som Proviant) */
 function rng(seed: number) {
@@ -195,12 +199,28 @@ export default function HeroFilm() {
       return reduced ? 0 : Math.min(1, Math.max(0, total > 0 ? -r.top / total : 0))
     }
 
+    /* ── Brand reveal: filmen först, sedan poppar emblem + text fram över sista bilden ──
+       data-brand = syns nu · data-played = animationerna har startat (en gång) */
+    const setBrand = (on: boolean) => {
+      if (on) {
+        if (section.dataset.brand) return
+        section.dataset.brand = '1'
+        section.dataset.played = '1'
+      } else if (section.dataset.brand) {
+        delete section.dataset.brand
+      }
+    }
+    if (reduced) setBrand(true)
+
     /* ── System 1 · DATOR: scroll-scrub över lång sektion ── */
     const desktopScroll = () => {
       const p = scrollProgress()
-      section.style.setProperty('--bp', p.toFixed(3))
-      section.dataset.step = p < 0.14 ? 'intro' : String(Math.min(2, Math.floor(((p - 0.14) / 0.86) * 3.15)))
-      target = p * LAST
+      const fp = Math.min(1, p / FILM_END) // filmen är klar vid FILM_END, sedan står sista bilden kvar
+      section.style.setProperty('--bp', fp.toFixed(3))
+      section.dataset.step =
+        p < START_END ? 'start' : String(Math.min(2, Math.floor(((p - START_END) / (FILM_END - START_END)) * 3)))
+      if (!reduced) setBrand(p >= REVEAL_AT)
+      target = fp * LAST
       if (!raf) raf = requestAnimationFrame(tick)
     }
 
@@ -211,7 +231,8 @@ export default function HeroFilm() {
     const mobileStep = () => {
       const fp = current / LAST
       section.style.setProperty('--bp', fp.toFixed(3))
-      section.dataset.step = !playing && fp < 0.03 ? 'intro' : String(Math.min(2, Math.floor(fp * 3)))
+      section.dataset.step = !playing && fp < 0.03 ? 'start' : String(Math.min(2, Math.floor(fp * 3)))
+      if (!reduced) setBrand(fp >= 0.97)
     }
     const mobileScroll = () => {
       const p = scrollProgress()
@@ -220,7 +241,7 @@ export default function HeroFilm() {
         playStart = performance.now()
         playFrom = current
       } else if (p < MOBILE_RESET) {
-        playing = false // spola tillbaka till intro
+        playing = false // spola tillbaka till början
         target = 0
       }
       if (playing) target = Math.max(target, p * LAST) // scrollar man fort hänger filmen med
@@ -302,7 +323,7 @@ export default function HeroFilm() {
   const pct = Math.round((loaded / FILM_FRAMES) * 100)
 
   return (
-    <section className={styles.film} ref={sectionRef} id="hem" data-step="intro" aria-label={tr.film.aria}>
+    <section className={styles.film} ref={sectionRef} id="hem" data-step="start" aria-label={tr.film.aria}>
       <div className={styles.stage}>
         <picture>
           <source media="(max-width: 760px)" srcSet={`/film/m/${pad(1)}.webp`} />
