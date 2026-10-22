@@ -1,9 +1,10 @@
 'use client'
 
-import type { CSSProperties } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { useLang } from '@/lib/LangContext'
 import { t } from '@/lib/translations'
 import styles from './Galleri.module.css'
+import GalleriLightbox from './GalleriLightbox'
 
 /* Ordningen följer t[lang].galleri.labels */
 const bilder = [
@@ -26,6 +27,8 @@ const KOLUMNER = [
 export default function Galleri() {
   const { lang } = useLang()
   const tr = t[lang].galleri
+  const [open, setOpen] = useState<number | null>(null)
+  const [origin, setOrigin] = useState<HTMLElement | null>(null)
 
   return (
     <section className={styles.section} id="galleri" data-progress>
@@ -42,8 +45,17 @@ export default function Galleri() {
         {KOLUMNER.map((col, c) => (
           <div key={c} className={styles.col} style={{ '--speed': col.speed } as CSSProperties}>
             {col.items.map((i) => (
-              <figure key={i} className={styles.item} data-reveal style={{ '--ar': bilder[i].ar, '--k': c } as CSSProperties}>
+              <figure key={i} className={styles.item} data-reveal data-gal={i} style={{ '--ar': bilder[i].ar, '--k': c } as CSSProperties}>
                 <img src={bilder[i].src} alt={tr.labels[i]} loading="lazy" />
+                <button
+                  type="button"
+                  className={styles.hit}
+                  aria-label={`${tr.labels[i]} — ${lang === 'sv' ? 'öppna' : 'open'}`}
+                  onClick={(e) => {
+                    setOrigin(e.currentTarget.parentElement)
+                    setOpen(i)
+                  }}
+                />
                 <span className={styles.corners} aria-hidden />
                 <figcaption className={styles.label}>
                   <span>{String(i + 1).padStart(2, '0')}</span>
@@ -54,6 +66,15 @@ export default function Galleri() {
           </div>
         ))}
       </div>
+
+      <GalleriLightbox
+        bilder={bilder}
+        index={open}
+        origin={origin}
+        lang={lang}
+        onIndex={setOpen}
+        onClose={() => setOpen(null)}
+      />
     </section>
   )
 }

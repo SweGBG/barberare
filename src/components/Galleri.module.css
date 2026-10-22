@@ -93,6 +93,25 @@
   transition: opacity 0.6s;
   pointer-events: none;
 }
+/* hela rutan är klickbar */
+.hit {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: zoom-in;
+}
+.hit:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: -8px;
+}
+.item:has(.hit:focus-visible) img {
+  transform: scale(1.1);
+  filter: brightness(1);
+}
 .item:hover::after {
   opacity: 1;
 }
