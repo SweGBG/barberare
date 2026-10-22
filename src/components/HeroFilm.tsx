@@ -69,10 +69,10 @@ function OpenStatus() {
       const supabase = createClient()
       supabase
         .from('opening_hours')
-        .select('day_of_week, open_time, close_time, is_closed')
+        .select('day_of_week, open_time, close_time, is_open') // kolumnen heter is_open i Supabase
         .order('day_of_week')
         .then(({ data, error }) => {
-          if (!error && data && data.length) setHours(data as Hour[])
+          if (!error && data && data.length) setHours(data.map((d) => ({ ...d, is_closed: !d.is_open })) as Hour[])
         })
     } catch {
       /* ingen Supabase-konfig (t.ex. lokal preview) — reservtiderna gäller */

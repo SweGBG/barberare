@@ -35,10 +35,11 @@ export default function Footer() {
 
       const { data, error } = await supabase
         .from('opening_hours')
-        .select('day_of_week, open_time, close_time, is_closed')
+        .select('day_of_week, open_time, close_time, is_open') // kolumnen heter is_open i Supabase
         .order('day_of_week')
 
-      if (!error && data && data.length > 0) setTider(data as OpeningHour[])
+      if (!error && data && data.length > 0)
+        setTider(data.map((d) => ({ ...d, is_closed: !d.is_open })) as OpeningHour[])
     }
     hamta()
   }, [])
