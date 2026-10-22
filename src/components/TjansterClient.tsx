@@ -97,8 +97,8 @@ function Flourish() {
     <svg className={styles.flourish} width="220" height="26" viewBox="0 0 220 26" fill="none" aria-hidden="true">
       <line x1="0" y1="13" x2="86" y2="13" stroke="rgba(201,162,75,0.5)" strokeWidth="0.7" />
       <line x1="134" y1="13" x2="220" y2="13" stroke="rgba(201,162,75,0.5)" strokeWidth="0.7" />
-      <path d="M96 13c4-6 10-6 14 0-4 6-10 6-14 0Z" stroke="#C9A24B" strokeWidth="0.8" fill="none" />
-      <circle cx="103" cy="13" r="1.6" fill="#C9A24B" />
+      <path d="M103 13c4-6 10-6 14 0-4 6-10 6-14 0Z" stroke="#C9A24B" strokeWidth="0.8" fill="none" />
+      <circle cx="110" cy="13" r="1.6" fill="#C9A24B" />
       <path d="M86 13c3 0 5-3 5-3M86 13c3 0 5 3 5 3M134 13c-3 0-5-3-5-3M134 13c-3 0-5 3-5 3"
         stroke="rgba(201,162,75,0.7)" strokeWidth="0.7" />
     </svg>

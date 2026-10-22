@@ -238,7 +238,8 @@ export default function HeroFilm() {
       if (on) {
         if (section.dataset.brand) return
         section.dataset.brand = '1'
-        if (!section.dataset.played && !reduced) {
+        // pausa bara om man faktiskt är kvar i heron — inte vid hopp via menyn (#tjanster m.fl.)
+        if (!section.dataset.played && !reduced && scrollProgress() < 0.95) {
           // första gången: lås fast vid filmens slut medan loggan landar
           const top = window.scrollY + section.getBoundingClientRect().top
           const total = section.offsetHeight - window.innerHeight
