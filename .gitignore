@@ -39,3 +39,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# aldrig i repot: arkiv, körbara filer, nycklar
+*.zip
+*.rar
+*.7z
+*.exe
+*.msi
+*.torrent
+*.winmd
+.env
+.env.*
+*.pem
+*.key
