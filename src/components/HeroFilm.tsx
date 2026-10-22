@@ -22,6 +22,8 @@ const MOBILE_PLAY_MS = 4200
 const START_END = 0.05
 const FILM_END = 0.78
 const REVEAL_AT = 0.76
+const HOLD_AT = 0.8 // här står sidan still medan loggan sätter sig
+const HOLD_MS = 2600
 const MOBILE_START = 0.05 // scrollandel som startar uppspelningen
 const MOBILE_RESET = 0.02 // tillbaka hit = spola tillbaka till början
 
@@ -201,10 +203,47 @@ export default function HeroFilm() {
 
     /* ── Brand reveal: filmen först, sedan poppar emblem + text fram över sista bilden ──
        data-brand = syns nu · data-played = animationerna har startat (en gång) */
+    /* Paus: första gången loggan avslöjas stannar sidan en stund så att man ser den "sätta sig".
+       Hjul, touch, tangenter och scrollbar spärras — och scrollen hålls kvar på samma ställe. */
+    let holdY = -1
+    let holdTimer = 0
+    const stopEvent = (e: Event) => e.preventDefault()
+    const stopKeys = (e: KeyboardEvent) => {
+      if ([' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'End', 'Home'].includes(e.key)) e.preventDefault()
+    }
+    const pinScroll = () => {
+      if (holdY >= 0 && Math.abs(window.scrollY - holdY) > 2) window.scrollTo({ top: holdY, behavior: 'instant' })
+    }
+    const release = () => {
+      holdY = -1
+      clearTimeout(holdTimer)
+      window.removeEventListener('wheel', stopEvent)
+      window.removeEventListener('touchmove', stopEvent)
+      window.removeEventListener('keydown', stopKeys)
+      window.removeEventListener('scroll', pinScroll)
+      delete section.dataset.holding
+    }
+    const hold = (y: number) => {
+      holdY = Math.round(y)
+      window.scrollTo({ top: holdY, behavior: 'instant' })
+      section.dataset.holding = '1'
+      window.addEventListener('wheel', stopEvent, { passive: false })
+      window.addEventListener('touchmove', stopEvent, { passive: false })
+      window.addEventListener('keydown', stopKeys)
+      window.addEventListener('scroll', pinScroll)
+      holdTimer = window.setTimeout(release, HOLD_MS)
+    }
+
     const setBrand = (on: boolean) => {
       if (on) {
         if (section.dataset.brand) return
         section.dataset.brand = '1'
+        if (!section.dataset.played && !reduced) {
+          // första gången: lås fast vid filmens slut medan loggan landar
+          const top = window.scrollY + section.getBoundingClientRect().top
+          const total = section.offsetHeight - window.innerHeight
+          hold(mobile ? window.scrollY : top + total * HOLD_AT)
+        }
         section.dataset.played = '1'
       } else if (section.dataset.brand) {
         delete section.dataset.brand
@@ -313,6 +352,7 @@ export default function HeroFilm() {
       alive = false
       cancelAnimationFrame(raf)
       cancelAnimationFrame(praf)
+      release()
       section.removeEventListener('pointermove', onPointer)
       section.removeEventListener('pointerleave', onLeave)
       window.removeEventListener('resize', resize)
